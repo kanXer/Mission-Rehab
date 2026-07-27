@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react"
 import Link from "next/link"
-import { ArrowLeft, Calendar, Loader, Youtube } from "lucide-react"
+import { ArrowLeft, Calendar, Loader } from "lucide-react"
 import Header from "@/components/Header"
 import Footer from "@/components/Footer"
 import ScrollReveal from "@/components/ScrollReveal"
@@ -19,10 +19,35 @@ interface Post {
   createdAt: string
 }
 
-function getYoutubeId(url: string): string | null {
-  if (!url) return null
-  const match = url.match(/(?:youtube\.com\/watch\?v=|youtu\.be\/|youtube\.com\/embed\/)([a-zA-Z0-9_-]{11})/)
-  return match?.[1] ?? null
+// Fail-proof YouTube ID extraction logic
+function getYoutubeId(url?: string): string | null {
+  if (!url || typeof url !== "string") return null
+  const cleanUrl = url.trim()
+  
+  // Direct 11-character ID pass-through check
+  if (/^[a-zA-Z0-9_-]{11}$/.test(cleanUrl)) return cleanUrl
+
+  try {
+    const parsed = new URL(cleanUrl.startsWith("http") ? cleanUrl : `https://${cleanUrl}`)
+    if (parsed.hostname.includes("youtu.be")) {
+      return parsed.pathname.slice(1).split("/")[0] || null
+    }
+    if (parsed.hostname.includes("youtube.com")) {
+      if (parsed.pathname.startsWith("/embed/")) {
+        return parsed.pathname.split("/")[2] || null
+      }
+      if (parsed.pathname.startsWith("/shorts/")) {
+        return parsed.pathname.split("/")[2] || null
+      }
+      return parsed.searchParams.get("v")
+    }
+  } catch (e) {
+    // Regex Fallback
+    const regExp = /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|\&v=)([^#\&\?]*).*/
+    const match = cleanUrl.match(regExp)
+    return match && match[2].length === 11 ? match[2] : null
+  }
+  return null
 }
 
 export default function BlogPostClient({ slug }: { slug: string }) {
@@ -30,11 +55,19 @@ export default function BlogPostClient({ slug }: { slug: string }) {
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {
+    let isMounted = true
     fetch(`/api/blog/${slug}`)
       .then((r) => r.json())
-      .then((data) => { if (data.post) setPost(data.post) })
+      .then((data) => {
+        if (isMounted && data.post) setPost(data.post)
+      })
       .catch(() => {})
-      .finally(() => setLoading(false))
+      .finally(() => {
+        if (isMounted) setLoading(false)
+      })
+    return () => {
+      isMounted = false
+    }
   }, [slug])
 
   if (loading) {
@@ -64,14 +97,14 @@ export default function BlogPostClient({ slug }: { slug: string }) {
     )
   }
 
-  const youtubeId = post.youtubeUrl ? getYoutubeId(post.youtubeUrl) : null
+  const youtubeId = getYoutubeId(post.youtubeUrl)
 
   return (
     <>
       <Header />
-      <main id="main-content" className="pt-0">
-        <article className="bg-slate-50 dark:bg-navy-900 overflow-hidden relative">
-          {/* Hero section with title overlay on image */}
+      <main id="main-content" className="pt-0 min-h-screen">
+        <article className="bg-slate-50 dark:bg-navy-900 overflow-hidden relative pb-12">
+          {/* Hero section */}
           {post.image ? (
             <div className="relative h-[60vh] min-h-[420px] max-h-[600px] overflow-hidden">
               <img
@@ -159,7 +192,6 @@ export default function BlogPostClient({ slug }: { slug: string }) {
           )}
 
           <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
-
             {/* Decorative divider */}
             <div className="relative mb-10 mt-10">
               <div className="absolute inset-0 flex items-center">
@@ -180,20 +212,23 @@ export default function BlogPostClient({ slug }: { slug: string }) {
                   dangerouslySetInnerHTML={{ __html: post.content }}
                 />
 
-                {/* YouTube Video Embed - Exactly below article content */}
-                {youtubeId && (
+                {/* YouTube Video Embed */}
+                {youtubeId ? (
                   <div className="mt-8 pt-6 border-t border-slate-100 dark:border-navy-700">
-                    <div className="w-full aspect-video rounded-2xl overflow-hidden shadow-lg bg-black">
+                    <h3 className="text-lg font-semibold text-navy-800 dark:text-white mb-4">
+                      Watch Video
+                    </h3>
+                    <div className="w-full aspect-video rounded-2xl overflow-hidden shadow-lg bg-black relative">
                       <iframe
-                        className="w-full h-full border-0"
-                        src={`https://www.youtube-nocookie.com/embed/${youtubeId}?rel=0`}
+                        className="w-full h-full border-0 relative z-10"
+                        src={`https://www.youtube.com/embed/${youtubeId}?rel=0`}
                         title={post.title}
-                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
                         allowFullScreen
                       />
                     </div>
                   </div>
-                )}
+                ) : null}
               </div>
             </ScrollReveal>
 
@@ -229,3 +264,4 @@ export default function BlogPostClient({ slug }: { slug: string }) {
     </>
   )
 }
+  
