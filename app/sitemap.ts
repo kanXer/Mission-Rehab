@@ -1,60 +1,38 @@
 import type { MetadataRoute } from "next"
 import { getDb } from "@/lib/mongodb"
 
-const BASE_URL = "https://gorakhpurmission.in"
+const base = "https://gorakhpurmission.in"
 
-// Force dynamic generation or set a revalidation interval (e.g., 1 hour = 3600s)
-export const revalidate = 3600; 
+const staticPages: MetadataRoute.Sitemap = [
+  { url: base, lastModified: new Date(), changeFrequency: "daily", priority: 1.0 },
+  { url: `${base}/about`, lastModified: new Date(), changeFrequency: "monthly", priority: 0.8 },
+  { url: `${base}/services`, lastModified: new Date(), changeFrequency: "monthly", priority: 0.8 },
+  { url: `${base}/blog`, lastModified: new Date(), changeFrequency: "daily", priority: 0.9 },
+  { url: `${base}/gallery`, lastModified: new Date(), changeFrequency: "weekly", priority: 0.7 },
+  { url: `${base}/testimonials`, lastModified: new Date(), changeFrequency: "weekly", priority: 0.7 },
+  { url: `${base}/faq`, lastModified: new Date(), changeFrequency: "monthly", priority: 0.7 },
+  { url: `${base}/contact`, lastModified: new Date(), changeFrequency: "monthly", priority: 0.8 },
+  { url: `${base}/book-appointment`, lastModified: new Date(), changeFrequency: "monthly", priority: 0.9 },
+]
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
-  const staticPages: MetadataRoute.Sitemap = [
-    { url: BASE_URL, lastModified: new Date(), changeFrequency: "daily", priority: 1.0 },
-    { url: `${BASE_URL}/about`, lastModified: new Date(), changeFrequency: "monthly", priority: 0.8 },
-    { url: `${BASE_URL}/services`, lastModified: new Date(), changeFrequency: "monthly", priority: 0.8 },
-    { url: `${BASE_URL}/blog`, lastModified: new Date(), changeFrequency: "daily", priority: 0.9 },
-    { url: `${BASE_URL}/gallery`, lastModified: new Date(), changeFrequency: "weekly", priority: 0.7 },
-    { url: `${BASE_URL}/testimonials`, lastModified: new Date(), changeFrequency: "weekly", priority: 0.7 },
-    { url: `${BASE_URL}/faq`, lastModified: new Date(), changeFrequency: "monthly", priority: 0.7 },
-    { url: `${BASE_URL}/contact`, lastModified: new Date(), changeFrequency: "monthly", priority: 0.8 },
-    { url: `${BASE_URL}/book-appointment`, lastModified: new Date(), changeFrequency: "monthly", priority: 0.9 },
-  ]
-
   try {
     const db = await getDb()
-    if (!db) {
-      console.error("Sitemap error: Database instance could not be retrieved.")
-      return staticPages
-    }
-
     const posts = await db
       .collection("blog")
-      .find(
-        { slug: { $exists: true, $ne: "" } }, // Filter directly in MongoDB query
-        { projection: { slug: 1, updatedAt: 1, createdAt: 1 } }
-      )
+      .find({}, { projection: { slug: 1, createdAt: 1 } })
       .sort({ createdAt: -1 })
       .toArray()
 
-    const blogPages: MetadataRoute.Sitemap = posts.map((post) => {
-      const rawDate = post.updatedAt || post.createdAt
-      let parsedDate = new Date()
-
-      if (rawDate) {
-        parsedDate = new Date(rawDate)
-      }
-
-      return {
-        url: `${BASE_URL}/blog/${post.slug}`,
-        lastModified: isNaN(parsedDate.getTime()) ? new Date() : parsedDate,
-        changeFrequency: "monthly" as const,
-        priority: 0.6,
-      }
-    })
+    const blogPages: MetadataRoute.Sitemap = posts.map((post) => ({
+      url: `${base}/blog/${post.slug}`,
+      lastModified: new Date(post.createdAt),
+      changeFrequency: "monthly" as const,
+      priority: 0.6,
+    }))
 
     return [...staticPages, ...blogPages]
-  } catch (error) {
-    // Log detailed error to Vercel/Server logs to pinpoint exact cause
-    console.error("Failed to generate blog sitemap:", error)
+  } catch {
     return staticPages
   }
 }

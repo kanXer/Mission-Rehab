@@ -9,7 +9,13 @@ html {
 }
 
 body {
-  font-family: 'Inter', system-ui, sans-serif;
+  /* Font family is now handled by next/font in layout.tsx */
+}
+
+@layer base {
+  b, strong {
+    font-weight: 700 !important;
+  }
 }
 
 @layer utilities {

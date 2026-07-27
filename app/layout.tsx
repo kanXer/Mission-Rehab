@@ -6,7 +6,10 @@ import LoadingBar from "@/components/LoadingBar"
 import BackToTop from "@/components/BackToTop"
 import ScrollToTop from "@/components/ScrollToTop"
 import { ToastProvider } from "@/components/ToastProvider"
+import { Inter } from "next/font/google"
 import "./globals.css"
+
+const inter = Inter({ subsets: ["latin"], weight: ["400", "500", "600", "700", "800"] })
 
 const siteUrl = "https://gorakhpurmission.in"
 const siteName = "Gorakhpur Mission Rehab"
@@ -101,8 +104,8 @@ const medicalSchema = {
       },
       geo: {
         "@type": "GeoCoordinates",
-        latitude: "26.7968246", // Gorakhpur local coordinates update kar sakte hain
-        longitude: "83.3826921",
+        latitude: "26.7606", // Gorakhpur local coordinates update kar sakte hain
+        longitude: "83.3732",
       },
       contactPoint: {
         "@type": "ContactPoint",
@@ -171,7 +174,7 @@ export default function RootLayout({
           dangerouslySetInnerHTML={{ __html: JSON.stringify(medicalSchema) }}
         />
       </head>
-      <body className="antialiased bg-white dark:bg-navy-900 text-navy-800 dark:text-slate-100 transition-colors duration-300">
+      <body className={`${inter.className} antialiased bg-white dark:bg-navy-900 text-navy-800 dark:text-slate-100 transition-colors duration-300`}>
         <a
           href="#main-content"
           className="sr-only focus:not-sr-only focus:absolute focus:top-4 focus:left-4 focus:z-[100] focus:px-4 focus:py-2 focus:bg-brand-600 focus:text-white focus:rounded-lg focus:shadow-lg"

@@ -98,7 +98,7 @@ function Toolbar({ editor }: { editor: TiptapEditor }) {
             <button
               key={i}
               type="button"
-              onMouseDown={(e) => { e.preventDefault(); (btn as any).action() }}
+              onPointerDown={(e) => { e.preventDefault(); (btn as any).action() }}
               className={`p-1.5 rounded-md transition-colors ${
                 (btn as any).active
                   ? "bg-brand-100 dark:bg-brand-900/40 text-brand-700 dark:text-brand-300"
