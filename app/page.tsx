@@ -18,10 +18,10 @@ export default function Home() {
       <main id="main-content">
         <Hero />
         <About />
-        <Services />
-          <Testimonials />
           <Gallery />
           <GoogleProfile />
+        <Services />
+          <Testimonials />
           <FAQ />
         <Appointment />
       </main>
