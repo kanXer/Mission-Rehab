@@ -24,7 +24,6 @@ function getYoutubeId(url?: string): string | null {
   if (!url || typeof url !== "string") return null
   const cleanUrl = url.trim()
   
-  // Direct 11-character ID pass-through check
   if (/^[a-zA-Z0-9_-]{11}$/.test(cleanUrl)) return cleanUrl
 
   try {
@@ -42,7 +41,6 @@ function getYoutubeId(url?: string): string | null {
       return parsed.searchParams.get("v")
     }
   } catch (e) {
-    // Regex Fallback
     const regExp = /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|\&v=)([^#\&\?]*).*/
     const match = cleanUrl.match(regExp)
     return match && match[2].length === 11 ? match[2] : null
@@ -104,7 +102,7 @@ export default function BlogPostClient({ slug }: { slug: string }) {
       <Header />
       <main id="main-content" className="pt-0 min-h-screen">
         <article className="bg-slate-50 dark:bg-navy-900 overflow-hidden relative pb-12">
-          {/* Hero section */}
+          {/* Hero section with title overlay on image */}
           {post.image ? (
             <div className="relative h-[60vh] min-h-[420px] max-h-[600px] overflow-hidden">
               <img
@@ -192,6 +190,7 @@ export default function BlogPostClient({ slug }: { slug: string }) {
           )}
 
           <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+
             {/* Decorative divider */}
             <div className="relative mb-10 mt-10">
               <div className="absolute inset-0 flex items-center">
@@ -204,31 +203,28 @@ export default function BlogPostClient({ slug }: { slug: string }) {
               </div>
             </div>
 
-            {/* Content card */}
+            {/* Main Content Card */}
             <ScrollReveal>
-              <div className="bg-white dark:bg-navy-800 rounded-3xl border border-slate-200 dark:border-navy-700 shadow-xl p-8 sm:p-10 lg:p-12 mb-12">
+              <div className="bg-white dark:bg-navy-800 rounded-3xl border border-slate-200 dark:border-navy-700 shadow-xl p-6 sm:p-10 lg:p-12 mb-12">
+                
+                {/* YouTube Video - Card ke andarr, text se theek pehle */}
+                {youtubeId ? (
+                  <div className="mb-8 w-full aspect-video rounded-2xl overflow-hidden shadow-lg bg-black relative border border-slate-100 dark:border-navy-700">
+                    <iframe
+                      className="w-full h-full border-0 relative z-10"
+                      src={`https://www.youtube.com/embed/${youtubeId}?rel=0`}
+                      title={post.title}
+                      allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                      allowFullScreen
+                    />
+                  </div>
+                ) : null}
+
+                {/* Article Prose Content ("Some careers are built...") */}
                 <div
                   className="prose prose-lg max-w-none dark:prose-invert prose-headings:text-navy-800 dark:prose-headings:text-white prose-a:text-brand-600 dark:prose-a:text-brand-400 prose-img:rounded-2xl prose-img:shadow-xl prose-blockquote:border-l-brand-500 prose-blockquote:bg-brand-50/50 dark:prose-blockquote:bg-brand-900/20 prose-blockquote:py-2 prose-blockquote:px-6 prose-blockquote:rounded-r-2xl prose-code:text-brand-700 dark:prose-code:text-brand-300 prose-code:bg-slate-100 dark:prose-code:bg-navy-700 prose-code:px-1.5 prose-code:py-0.5 prose-code:rounded-lg prose-code:text-sm"
                   dangerouslySetInnerHTML={{ __html: post.content }}
                 />
-
-                {/* YouTube Video Embed */}
-                {youtubeId ? (
-                  <div className="mt-8 pt-6 border-t border-slate-100 dark:border-navy-700">
-                    <h3 className="text-lg font-semibold text-navy-800 dark:text-white mb-4">
-                      Watch Video
-                    </h3>
-                    <div className="w-full aspect-video rounded-2xl overflow-hidden shadow-lg bg-black relative">
-                      <iframe
-                        className="w-full h-full border-0 relative z-10"
-                        src={`https://www.youtube.com/embed/${youtubeId}?rel=0`}
-                        title={post.title}
-                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-                        allowFullScreen
-                      />
-                    </div>
-                  </div>
-                ) : null}
               </div>
             </ScrollReveal>
 
@@ -264,4 +260,3 @@ export default function BlogPostClient({ slug }: { slug: string }) {
     </>
   )
 }
-  
