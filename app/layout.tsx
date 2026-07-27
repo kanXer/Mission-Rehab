@@ -101,8 +101,8 @@ const medicalSchema = {
       },
       geo: {
         "@type": "GeoCoordinates",
-        latitude: "26.7606", // Gorakhpur local coordinates update kar sakte hain
-        longitude: "83.3732",
+        latitude: "26.7968246", // Gorakhpur local coordinates update kar sakte hain
+        longitude: "83.3826921",
       },
       contactPoint: {
         "@type": "ContactPoint",
