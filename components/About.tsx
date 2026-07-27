@@ -189,51 +189,6 @@ export default function About() {
           </ScrollReveal>
         </div>
 
-        {/* Science of Recovery Section */}
-        <div className="mb-20">
-          <ScrollReveal>
-            <div className="text-center mb-12">
-              <span className="inline-block text-xs font-semibold uppercase tracking-[0.2em] text-accent-600 dark:text-accent-400 mb-3">
-                Science of Recovery
-              </span>
-              <h3 className="text-3xl sm:text-4xl font-bold text-navy-800 dark:text-white mb-4">
-                Why Science-Backed Rehab <span className="text-gradient">Matters</span>
-              </h3>
-              <p className="text-slate-600 dark:text-slate-300 max-w-2xl mx-auto text-lg">
-                True neuro-recovery requires brain challenge, repetition, and the right therapeutic approach — not just passive modalities.
-              </p>
-            </div>
-          </ScrollReveal>
-
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-            {concepts.map((item) => (
-              <ScrollReveal key={item.title}>
-                <div className="group relative text-center p-8 bg-white dark:bg-navy-800 rounded-2xl border border-slate-200 dark:border-navy-700 hover:border-brand-200 dark:hover:border-brand-600 hover:shadow-xl transition-all h-full flex flex-col justify-between">
-                  <div className="absolute inset-0 bg-gradient-to-b from-brand-50/50 dark:from-brand-900/30 via-transparent to-accent-50/30 dark:to-accent-900/20 rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity -z-10" />
-                  <div>
-                    <div className="w-14 h-14 bg-gradient-to-br from-accent-50 dark:from-accent-900/30 to-brand-50 dark:to-brand-900/30 rounded-2xl flex items-center justify-center mx-auto mb-4 group-hover:scale-110 group-hover:rotate-3 transition-all">
-                      <item.icon className="w-7 h-7 text-accent-600 dark:text-accent-400" />
-                    </div>
-                    <h4 className="text-lg font-bold text-navy-800 dark:text-white mb-2">{item.title}</h4>
-                    <p className="text-sm text-slate-600 dark:text-slate-300 leading-relaxed">{item.desc}</p>
-                  </div>
-                </div>
-              </ScrollReveal>
-            ))}
-          </div>
-        </div>
-
-        {/* Doctor Quote */}
-        <ScrollReveal>
-          <div className="bg-gradient-to-r from-navy-800 to-navy-700 rounded-3xl p-8 md:p-12 shadow-2xl text-center mb-16">
-            <Quote className="w-10 h-10 text-brand-400/50 dark:text-brand-300/50 mx-auto mb-4" />
-            <blockquote className="text-xl md:text-2xl text-white font-medium italic max-w-4xl mx-auto leading-relaxed">
-              &ldquo;I chose to return to my hometown because I believe no family should have to leave their city in search of quality Neuro Rehabilitation. My mission is to ensure that every patient receives evidence-based, compassionate rehabilitation with dignity, hope and respect.&rdquo;
-            </blockquote>
-            <p className="text-brand-300 dark:text-brand-200 mt-4 font-semibold">— Dr. Devejya Srivastava (PT)</p>
-          </div>
-        </ScrollReveal>
-
         {/* Local SEO Summary Footer Block */}
         <ScrollReveal>
           <div className="text-center max-w-4xl mx-auto pt-6 border-t border-slate-200 dark:border-navy-800">
