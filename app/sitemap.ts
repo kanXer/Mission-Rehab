@@ -3,6 +3,9 @@ import { getDb } from "@/lib/mongodb"
 
 const BASE_URL = "https://gorakhpurmission.in"
 
+// Force dynamic generation or set a revalidation interval (e.g., 1 hour = 3600s)
+export const revalidate = 3600; 
+
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const staticPages: MetadataRoute.Sitemap = [
     { url: BASE_URL, lastModified: new Date(), changeFrequency: "daily", priority: 1.0 },
@@ -18,28 +21,39 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
 
   try {
     const db = await getDb()
+    if (!db) {
+      console.error("Sitemap error: Database instance could not be retrieved.")
+      return staticPages
+    }
+
     const posts = await db
       .collection("blog")
-      .find({}, { projection: { slug: 1, updatedAt: 1, createdAt: 1 } })
+      .find(
+        { slug: { $exists: true, $ne: "" } }, // Filter directly in MongoDB query
+        { projection: { slug: 1, updatedAt: 1, createdAt: 1 } }
+      )
       .sort({ createdAt: -1 })
       .toArray()
 
-    const blogPages: MetadataRoute.Sitemap = posts
-      .filter((post) => Boolean(post.slug))
-      .map((post) => {
-        const rawDate = post.updatedAt || post.createdAt
-        const parsedDate = rawDate ? new Date(rawDate) : new Date()
+    const blogPages: MetadataRoute.Sitemap = posts.map((post) => {
+      const rawDate = post.updatedAt || post.createdAt
+      let parsedDate = new Date()
 
-        return {
-          url: `${BASE_URL}/blog/${post.slug}`,
-          lastModified: isNaN(parsedDate.getTime()) ? new Date() : parsedDate,
-          changeFrequency: "monthly" as const,
-          priority: 0.6,
-        }
-      })
+      if (rawDate) {
+        parsedDate = new Date(rawDate)
+      }
+
+      return {
+        url: `${BASE_URL}/blog/${post.slug}`,
+        lastModified: isNaN(parsedDate.getTime()) ? new Date() : parsedDate,
+        changeFrequency: "monthly" as const,
+        priority: 0.6,
+      }
+    })
 
     return [...staticPages, ...blogPages]
   } catch (error) {
+    // Log detailed error to Vercel/Server logs to pinpoint exact cause
     console.error("Failed to generate blog sitemap:", error)
     return staticPages
   }
