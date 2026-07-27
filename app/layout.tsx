@@ -63,6 +63,8 @@ export const metadata: Metadata = {
         alt: `${siteName} - ${doctorName}`,
       },
     ],
+    locale: "en_US",
+    type: "website",
   },
   icons: {
     icon: "/favicon.ico",
