@@ -1,4 +1,5 @@
-import { Phone, MapPin, Calendar, Linkedin } from "lucide-react"
+import { Phone, MapPin, Calendar } from "lucide-react"
+import { FaLinkedin } from "react-icons/fa"
 import Link from "next/link"
 
 export default function TopBar() {
@@ -19,6 +20,14 @@ export default function TopBar() {
                 <MapPin className="w-3.5 h-3.5" />
                 <span>Divyaman Hospital, Bargadwa Bypass, Gorakhpur</span>
               </span>
+              <span className="text-slate-600">|</span>
+              <Link
+                href="/contact"
+                className="flex items-center gap-1 text-emerald-400 hover:text-emerald-300 font-medium transition-colors"
+              >
+                <Calendar className="w-3.5 h-3.5" />
+                <span>Send Enquiry</span>
+              </Link>
             </div>
             <div className="flex items-center gap-3">
               <a
@@ -45,7 +54,7 @@ export default function TopBar() {
                 rel="noopener noreferrer"
                 className="text-slate-400 hover:text-blue-500 transition-colors"
               >
-                <Linkedin className="w-3.5 h-3.5 inline" />
+                <FaLinkedin className="w-3.5 h-3.5 inline" />
                 <span className="ml-1">LinkedIn</span>
               </a>
               <span className="text-slate-600">|</span>

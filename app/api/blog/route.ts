@@ -2,8 +2,8 @@ import { NextRequest, NextResponse } from "next/server"
 import { getDb } from "@/lib/mongodb"
 import { verifyToken, getTokenFromCookies, isAdminEmail } from "@/lib/auth"
 
-function isAdminRequest(): boolean {
-  const tokenStr = getTokenFromCookies()
+async function isAdminRequest(): Promise<boolean> {
+  const tokenStr = await getTokenFromCookies()
   if (!tokenStr) return false
   const payload = verifyToken(tokenStr)
   return payload ? isAdminEmail(payload.email) : false
@@ -27,7 +27,7 @@ export async function GET() {
 }
 
 export async function POST(req: NextRequest) {
-  if (!isAdminRequest()) {
+  if (!(await isAdminRequest())) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
   }
   try {

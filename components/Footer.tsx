@@ -1,5 +1,6 @@
 import Link from "next/link"
-import { Instagram, Activity, Phone, MapPin, Facebook, Linkedin, Mail, Heart } from "lucide-react"
+import { Activity, Phone, MapPin, Mail, Heart } from "lucide-react"
+import { FaInstagram, FaFacebook, FaLinkedin } from "react-icons/fa"
 
 const quickLinks = [
   { label: "Home", href: "/" },
@@ -39,7 +40,7 @@ export default function Footer() {
                 className="text-slate-400 dark:text-slate-500 hover:text-pink-400 transition-colors hover:scale-110 inline-block"
                 aria-label="Instagram"
               >
-                <Instagram className="w-5 h-5" />
+                <FaInstagram className="w-5 h-5" />
               </a>
               <a
                 href="https://facebook.com/gorakhpurmissionrehab"
@@ -48,7 +49,7 @@ export default function Footer() {
                 className="text-slate-400 dark:text-slate-500 hover:text-blue-400 transition-colors hover:scale-110 inline-block"
                 aria-label="Facebook"
               >
-                <Facebook className="w-5 h-5" />
+                <FaFacebook className="w-5 h-5" />
               </a>
               <a
                 href="https://www.linkedin.com/in/dr-devejya-srivastava-784035143/"
@@ -57,7 +58,7 @@ export default function Footer() {
                 className="text-slate-400 dark:text-slate-500 hover:text-blue-500 transition-colors hover:scale-110 inline-block"
                 aria-label="LinkedIn"
               >
-                <Linkedin className="w-5 h-5" />
+                <FaLinkedin className="w-5 h-5" />
               </a>
               <a
                 href="https://www.justdial.com/Gorakhpur/Dr-Devejya-Srivastava-Physiotherapist-Rapti-Nagar/9999PX551-X551-211020214837-H6K4_BZDET/overview?source=SHARE&amp=1"

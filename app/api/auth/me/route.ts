@@ -4,7 +4,7 @@ import { getDb } from "@/lib/mongodb"
 import { ObjectId } from "mongodb"
 
 export async function GET() {
-  const payload = getAuth()
+  const payload = await getAuth()
   if (!payload) return NextResponse.json({ user: null })
 
   const db = await getDb()

@@ -21,7 +21,7 @@ export default function Gallery() {
   const [sound, setSound] = useState(false)
   const [videoModal, setVideoModal] = useState<Item | null>(null)
   const loaded = useRef(false)
-  const timer = useRef<ReturnType<typeof setInterval>>()
+  const timer = useRef<ReturnType<typeof setInterval> | undefined>(undefined)
 
   useEffect(() => {
     if (loaded.current) return

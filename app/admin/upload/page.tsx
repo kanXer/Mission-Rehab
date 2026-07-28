@@ -2,7 +2,8 @@
 
 import { useState, type FormEvent } from "react"
 import Link from "next/link"
-import { Loader, Image as ImageIcon, Upload, Youtube, Plus, ArrowLeft } from "lucide-react"
+import { Loader, Image as ImageIcon, Upload, Plus, ArrowLeft } from "lucide-react"
+import { FaYoutube } from "react-icons/fa"
 import { useToast } from "@/components/ToastProvider"
 import { useAuth } from "@/components/AuthProvider"
 import { useRouter } from "next/navigation"
@@ -131,7 +132,7 @@ export default function UploadPage() {
         {/* YouTube video */}
         <div className="bg-white dark:bg-navy-800 rounded-2xl p-6 border border-slate-200 dark:border-navy-700 shadow-xl">
           <h2 className="text-xl font-bold text-navy-800 dark:text-white flex items-center gap-2 mb-4">
-            <Youtube className="w-6 h-6 text-red-500" /> Add YouTube Video
+            <FaYoutube className="w-6 h-6 text-red-500" /> Add YouTube Video
           </h2>
           <div className="space-y-4">
             <div>

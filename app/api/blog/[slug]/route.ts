@@ -30,17 +30,21 @@ function extractImageUrls(content: string, coverImage: string): string[] {
   return urls.filter(u => u.includes("cloudinary"))
 }
 
-function isAdminRequest(): boolean {
-  const tokenStr = getTokenFromCookies()
+async function isAdminRequest(): Promise<boolean> {
+  const tokenStr = await getTokenFromCookies()
   if (!tokenStr) return false
   const payload = verifyToken(tokenStr)
   return payload ? isAdminEmail(payload.email) : false
 }
 
-export async function GET(_: Request, { params }: { params: { slug: string } }) {
+export async function GET(_: Request, { params }: { params: Promise<{ slug: string }> }) {
   try {
+    const { slug } = await params
+    const decodedSlug = decodeURIComponent(slug)
     const db = await getDb()
-    const post = await db.collection("blog").findOne({ slug: params.slug })
+    const post = await db.collection("blog").findOne({
+      $or: [{ slug: decodedSlug }, { slug }]
+    })
 
     if (!post) {
       return NextResponse.json({ error: "Post not found" }, { status: 404 })
@@ -54,13 +58,14 @@ export async function GET(_: Request, { params }: { params: { slug: string } }) 
   }
 }
 
-export async function PUT(req: NextRequest, { params }: { params: { slug: string } }) {
-  if (!isAdminRequest()) {
+export async function PUT(req: NextRequest, { params }: { params: Promise<{ slug: string }> }) {
+  if (!(await isAdminRequest())) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
   }
   try {
+    const { slug: urlSlug } = await params
     const db = await getDb()
-    const existing = await db.collection("blog").findOne({ slug: params.slug })
+    const existing = await db.collection("blog").findOne({ slug: urlSlug })
     if (!existing) {
       return NextResponse.json({ error: "Post not found" }, { status: 404 })
     }
@@ -83,7 +88,7 @@ export async function PUT(req: NextRequest, { params }: { params: { slug: string
     if (author !== undefined) updateData.author = author
 
     const result = await db.collection("blog").findOneAndUpdate(
-      { slug: params.slug },
+      { slug: urlSlug },
       { $set: updateData },
       { returnDocument: "after" }
     )
@@ -100,13 +105,14 @@ export async function PUT(req: NextRequest, { params }: { params: { slug: string
   }
 }
 
-export async function DELETE(_: Request, { params }: { params: { slug: string } }) {
-  if (!isAdminRequest()) {
+export async function DELETE(_: Request, { params }: { params: Promise<{ slug: string }> }) {
+  if (!(await isAdminRequest())) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
   }
   try {
+    const { slug } = await params
     const db = await getDb()
-    const post = await db.collection("blog").findOne({ slug: params.slug })
+    const post = await db.collection("blog").findOne({ slug })
 
     if (!post) {
       return NextResponse.json({ error: "Post not found" }, { status: 404 })
@@ -124,7 +130,7 @@ export async function DELETE(_: Request, { params }: { params: { slug: string } 
     const failed = results.filter(r => r.status === "rejected").length
     if (failed > 0) console.warn(`${failed} Cloudinary image(s) failed to delete`)
 
-    await db.collection("blog").deleteOne({ slug: params.slug })
+    await db.collection("blog").deleteOne({ slug })
 
     return NextResponse.json({ success: true })
   } catch (e) {

@@ -9,7 +9,7 @@ cloudinary.config({
 })
 
 export async function GET() {
-  const tokenStr = getTokenFromCookies()
+  const tokenStr = await getTokenFromCookies()
   const payload = tokenStr ? verifyToken(tokenStr) : null
   if (!payload || !isAdminEmail(payload.email)) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 })

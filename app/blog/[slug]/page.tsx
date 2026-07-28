@@ -3,15 +3,19 @@ import BlogPostClient from "./BlogPostClient"
 import { getDb } from "@/lib/mongodb"
 
 interface Props {
-  params: { slug: string }
+  params: Promise<{ slug: string }>
 }
 
 const siteUrl = "https://gorakhpurmission.in"
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   try {
+    const { slug } = await params
+    const decodedSlug = decodeURIComponent(slug)
     const db = await getDb()
-    const post = await db.collection("blog").findOne({ slug: params.slug })
+    const post = await db.collection("blog").findOne({
+      $or: [{ slug: decodedSlug }, { slug }]
+    })
     if (!post) return { title: "Post Not Found" }
 
     const title = post.title
@@ -25,7 +29,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
         title,
         description,
         type: "article",
-        url: `${siteUrl}/blog/${params.slug}`,
+        url: `${siteUrl}/blog/${slug}`,
         siteName: "Gorakhpur Mission Rehab",
         images: [{ url: image, width: 1200, height: 630 }],
       },
@@ -41,6 +45,8 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   }
 }
 
-export default function BlogPostPage({ params }: Props) {
-  return <BlogPostClient slug={params.slug} />
+export default async function BlogPostPage({ params }: Props) {
+  const { slug } = await params
+  const decodedSlug = decodeURIComponent(slug)
+  return <BlogPostClient slug={decodedSlug} />
 }

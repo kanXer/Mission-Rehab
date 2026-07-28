@@ -32,12 +32,12 @@ export function verifyToken(token: string): JwtPayload | null {
   }
 }
 
-export function getTokenFromCookies(): string | undefined {
-  return cookies().get(TOKEN_NAME)?.value
+export async function getTokenFromCookies(): Promise<string | undefined> {
+  return (await cookies()).get(TOKEN_NAME)?.value
 }
 
-export function getAuth(): JwtPayload | null {
-  const token = getTokenFromCookies()
+export async function getAuth(): Promise<JwtPayload | null> {
+  const token = await getTokenFromCookies()
   if (!token) return null
   return verifyToken(token)
 }

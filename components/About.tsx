@@ -1,3 +1,5 @@
+'use client'
+
 import Image from "next/image"
 import Link from "next/link"
 import {
@@ -13,9 +15,10 @@ import {
   Heart,
   Shield,
   ChevronRight,
-  Linkedin,
 } from "lucide-react"
+import { FaLinkedin } from "react-icons/fa"
 import ScrollReveal from "./ScrollReveal"
+import TypewriterText from "./TypewriterText"
 
 const concepts = [
   {
@@ -51,7 +54,8 @@ export default function About() {
               About Us
             </span>
             <h2 className="text-4xl sm:text-5xl lg:text-6xl font-extrabold text-navy-800 dark:text-white mb-4">
-              Meet <span className="text-gradient">Dr. Devejya Srivastava</span>
+              <TypewriterText text="Meet " speed={70} delay={200} />
+              <TypewriterText text="Dr. Devejya Srivastava" speed={55} delay={600} className="text-gradient" />
             </h2>
             <p className="text-slate-600 dark:text-slate-300 max-w-3xl mx-auto text-lg">
               Consultant Neuro Rehab Physiotherapist dedicated to rebuilding lives through science-backed, compassionate care at Divyaman Hospital, Gorakhpur.
@@ -85,7 +89,7 @@ export default function About() {
                       className="w-8 h-8 bg-white/10 hover:bg-white/20 rounded-full flex items-center justify-center transition-all hover:scale-110"
                       aria-label="LinkedIn"
                     >
-                      <Linkedin className="w-4 h-4 text-white" />
+                      <FaLinkedin className="w-4 h-4 text-white" />
                     </a>
                     <a
                       href="https://www.justdial.com/Gorakhpur/Dr-Devejya-Srivastava-Physiotherapist-Rapti-Nagar/9999PX551-X551-211020214837-H6K4_BZDET/overview?source=SHARE&amp=1"

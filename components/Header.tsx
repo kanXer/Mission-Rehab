@@ -3,7 +3,7 @@
 import { useState } from "react"
 import Link from "next/link"
 import { usePathname } from "next/navigation"
-import { Menu, X, Calendar, Phone } from "lucide-react"
+import { Menu, X, Calendar, Phone, HelpCircle } from "lucide-react"
 import { useAuth } from "./AuthProvider"
 import ThemeToggle from "./ThemeToggle"
 import AdminHeader from "./AdminHeader"
@@ -74,8 +74,15 @@ export default function Header() {
             </Link>
           </nav>
 
-          <div className="flex items-center gap-1">
+          <div className="flex items-center gap-1.5">
             <ThemeToggle />
+            <Link
+              href="/contact"
+              className="hidden sm:inline-flex items-center gap-1.5 bg-slate-100 hover:bg-slate-200 dark:bg-navy-800 dark:hover:bg-navy-700 text-slate-800 dark:text-slate-100 text-xs font-semibold px-3 py-2 rounded-full transition-all border border-slate-200 dark:border-navy-700"
+            >
+              <HelpCircle className="w-3.5 h-3.5 text-accent-600 dark:text-accent-400" />
+              <span>Enquiry</span>
+            </Link>
             <Link
               href="/book-appointment"
               className="hidden sm:inline-flex items-center gap-1.5 bg-gradient-to-r from-brand-600 to-accent-600 hover:from-brand-700 hover:to-accent-700 text-white text-xs font-semibold px-3.5 py-2 rounded-full transition-all shadow-lg shadow-brand-600/20 hover:scale-105 active:scale-95 dark:shadow-brand-600/10"

@@ -63,3 +63,37 @@ export async function getStats() {
   const total = await db.collection("appointments").countDocuments({})
   return { total, last30: total }
 }
+
+export interface Enquiry {
+  id: string
+  name: string
+  phone: string
+  email: string
+  subject: string
+  message: string
+  timestamp: string
+  source: string
+}
+
+export async function saveEnquiry(
+  enquiry: Omit<Enquiry, "id">
+): Promise<Enquiry> {
+  const db = await getDb()
+
+  const record: Enquiry = {
+    ...enquiry,
+    id: `ENQ-${Date.now()}-${Math.random().toString(36).slice(2, 6).toUpperCase()}`,
+  }
+
+  await db.collection("enquiries").insertOne(record)
+  return record
+}
+
+export async function getEnquiries(): Promise<Enquiry[]> {
+  const db = await getDb()
+  return db
+    .collection<Enquiry>("enquiries")
+    .find({})
+    .sort({ timestamp: -1 })
+    .toArray()
+}

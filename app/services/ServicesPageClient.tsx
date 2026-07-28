@@ -16,25 +16,25 @@ const serviceDetails: Record<string, { icon: any; desc: string; highlights: stri
     icon: Brain,
     desc: "Neuroplasticity-based brain retraining to rebuild movement, speech, and independence after stroke, paralysis, or brain injury.",
     highlights: ["Task-specific motor training", "Cognitive & speech co-therapy", "Spasticity management", "Functional electrical stimulation"],
-    image: "https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?w=600&q=80",
+    image: "/Stroke.jpeg",
   },
   "Gait & Balance Rehabilitation": {
     icon: Activity,
     desc: "Advanced gait analysis and balance training to improve walking patterns, prevent falls, and restore confident mobility.",
     highlights: ["Gait retraining", "Balance & coordination drills", "Fall prevention therapy", "Assistive device training"],
-    image: "https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?w=600&q=80",
+    image: "/balGet.jpeg",
   },
   "Pediatric Neuro Rehabilitation": {
     icon: Baby,
     desc: "Early intervention therapy for children with developmental delays, cerebral palsy, and neurological conditions to improve motor milestones.",
     highlights: ["Play-based therapy", "Gross motor skill training", "Parent education program", "Sensory integration"],
-    image: "https://images.unsplash.com/photo-1685362158423-abf004b858d2?w=600&q=80",
+    image: "/Pediatric-rehab.jpeg",
   },
   "Foot & Ankle Rehabilitation": {
     icon: Footprints,
     desc: "Biomechanical assessment and targeted therapy for plantar fasciitis, heel spurs, ankle sprains, and foot disorders.",
     highlights: ["Gait retraining", "Custom orthotics advice", "Stretching & mobilization", "Shockwave therapy"],
-    image: "https://images.unsplash.com/photo-1545463913-5083aa7359a6?w=600&q=80",
+    image: "/ankles.jpeg",
   },
   "Parkinson's Disease & Movement Disorders": {
     icon: Activity,
@@ -52,7 +52,7 @@ const serviceDetails: Record<string, { icon: any; desc: string; highlights: stri
     icon: Bone,
     desc: "Comprehensive rehabilitation for spinal cord injuries focusing on mobility restoration, strength rebuilding, and adaptive independence.",
     highlights: ["Bed mobility & transfers", "Wheelchair skills training", "Bladder/bowel management", "Upper body strengthening"],
-    image: "https://images.unsplash.com/photo-1576091160399-112ba8d25d1d?w=600&q=80",
+    image: "/Spinal-cord-Injury-rehab.jpeg",
   },
   "Brain Injury (TBI) Rehabilitation": {
     icon: Brain,
@@ -82,7 +82,7 @@ const serviceDetails: Record<string, { icon: any; desc: string; highlights: stri
     icon: Activity,
     desc: "Structured neuro-rehabilitation for GBS recovery focusing on muscle strengthening, functional retraining, and gradual return to daily activities.",
     highlights: ["Progressive strengthening", "Sensory retraining", "Functional mobility", "Respiratory muscle training"],
-    image: "https://images.unsplash.com/photo-1576091160399-112ba8d25d1d?w=600&q=80",
+    image: "/GB.jpeg",
   },
   "Vestibular Rehabilitation (Vertigo / Dizziness)": {
     icon: Accessibility,
@@ -94,13 +94,13 @@ const serviceDetails: Record<string, { icon: any; desc: string; highlights: stri
     icon: Bone,
     desc: "Targeted physiotherapy for frozen shoulder (adhesive capsulitis) to restore range of motion, reduce pain, and speed recovery.",
     highlights: ["Joint mobilization", "Stretching exercises", "Pain relief modalities", "Home exercise program"],
-    image: "https://images.unsplash.com/photo-1545463913-5083aa7359a6?w=600&q=80",
+    image: "/shoulder-rehab.jpeg",
   },
   "Shoulder Pain & Rotator Cuff Injury": {
     icon: Bone,
     desc: "Comprehensive shoulder rehabilitation for rotator cuff injuries, impingement, and shoulder pain through conservative management.",
     highlights: ["Rotator cuff strengthening", "Scapular stabilization", "Postural correction", "Activity modification"],
-    image: "https://images.unsplash.com/photo-1545463913-5083aa7359a6?w=600&q=80",
+    image: "/shoulder-rehab.jpeg",
   },
   "Osteoarthritis Rehabilitation": {
     icon: Bone,
@@ -137,7 +137,7 @@ export default function ServicesPageClient() {
     fetch("/api/services")
       .then((r) => r.json())
       .then((data) => { if (data.services) setServices(data.services) })
-      .catch(() => {})
+      .catch(() => { })
       .finally(() => setLoading(false))
   }, [])
 

@@ -4,7 +4,7 @@ import { getDb } from "@/lib/mongodb"
 import { verifyToken, getTokenFromCookies, isAdminEmail } from "@/lib/auth"
 
 export async function GET() {
-  const tokenStr = getTokenFromCookies()
+  const tokenStr = await getTokenFromCookies()
   const payload = tokenStr ? verifyToken(tokenStr) : null
   if (!payload || !isAdminEmail(payload.email)) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
@@ -26,7 +26,7 @@ export async function GET() {
 }
 
 export async function DELETE(req: NextRequest) {
-  const tokenStr = getTokenFromCookies()
+  const tokenStr = await getTokenFromCookies()
   const payload = tokenStr ? verifyToken(tokenStr) : null
   if (!payload || !isAdminEmail(payload.email)) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 })

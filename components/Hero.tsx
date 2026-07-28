@@ -1,7 +1,10 @@
+'use client'
+
 import Link from "next/link"
 import Image from "next/image"
-import { Phone, MessageSquare, ShieldCheck, Brain, Activity, Users, Star, ChevronRight, TrendingUp, Search } from "lucide-react"
+import { Phone, MessageSquare, ShieldCheck, Brain, Activity, Users, Star, ChevronRight, TrendingUp, Search, HelpCircle } from "lucide-react"
 import ScrollReveal from "./ScrollReveal"
+import TypewriterText from "./TypewriterText"
 
 const trustHighlights = [
   { icon: Brain, label: "Neuroplasticity Therapy" },
@@ -13,9 +16,13 @@ const trendingKeywords = [
   { keyword: "Neuro Physiotherapy", volume: "Trending" },
   { keyword: "Best Neuro Physiotherapist Gorakhpur", volume: "Rising" },
   { keyword: "Stroke Recovery Treatment", volume: "Popular" },
+  { keyword: "Dr. Devejya Srivastava", volume: "Popular" },
   { keyword: "Paralysis Physiotherapy Near Me", volume: "Trending" },
   { keyword: "Brain Retraining Therapy", volume: "Rising" },
 ]
+const heroDescription = `
+Best Neuro Physiotherapy Clinic in Gorakhpur — Dr. Devejya Srivastava (PT) is the top-rated neuro physiotherapist in Gorakhpur, specializing in brain retraining therapy after stroke, paralysis treatment, gait training, spinal cord injury rehab, and pediatric neuro care. From disability to ability — we rebuild lives through neuroplasticity-based recovery at Divyaman Hospital, Gorakhpur. Search "best neuro physiotherapy near me" — you'll find Gorakhpur Mission Rehab.
+`;
 
 export default function Hero() {
   return (
@@ -46,33 +53,21 @@ export default function Hero() {
               </div>
             </ScrollReveal>
 
-            <ScrollReveal>
-              <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-extrabold text-navy-800 dark:text-white leading-[1.05] mb-5 tracking-tight">
-                From Disability to{" "}
-                <span className="text-gradient">Ability</span>
-              </h1>
-            </ScrollReveal>
+            <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-extrabold text-navy-800 dark:text-white leading-[1.05] mb-5 tracking-tight">
+              <TypewriterText text="From Disability to " speed={60} delay={300} />
+              <TypewriterText text="Ability" speed={80} delay={1400} className="text-gradient" />
+            </h1>
 
             <ScrollReveal>
               <p className="text-base sm:text-lg md:text-xl text-slate-600 dark:text-slate-300 leading-relaxed mb-5 max-w-xl">
-                <strong>Best Neuro Physiotherapy Clinic in Gorakhpur</strong> — 
-                <strong>Dr. Devejya Srivastava (PT)</strong> is the top-rated <strong>neuro physiotherapist </strong> 
-                in Gorakhpur, specializing in <strong>brain retraining therapy after stroke</strong>, paralysis treatment, 
-                gait training, spinal cord injury rehab, and pediatric neuro care. From disability to ability 
-                — we rebuild lives through <strong>neuroplasticity-based recovery</strong> at 
-                <strong> Divyaman Hospital, Gorakhpur</strong>. Search <strong>"best neuro physiotherapy near me"</strong> 
+                <strong>Best Neuro Physiotherapy Clinic in Gorakhpur</strong> —
+                <strong>Dr. Devejya Srivastava (PT)</strong> is the top-rated <strong>neuro physiotherapist </strong>
+                in Gorakhpur, specializing in <strong>brain retraining therapy after stroke</strong>, paralysis treatment,
+                gait training, spinal cord injury rehab, and pediatric neuro care. From disability to ability
+                — we rebuild lives through <strong>neuroplasticity-based recovery</strong> at
+                <strong> Divyaman Hospital, Gorakhpur</strong>. Search <strong>"best neuro physiotherapy near me"</strong>
                 — you'll find Gorakhpur Mission Rehab.
               </p>
-            </ScrollReveal>
-
-            <ScrollReveal>
-              <div className="flex flex-wrap gap-2 mb-6">
-                {["Neuro Physiotherapy", "Best Neuro Physiotherapist Gorakhpur", "Dr. Devejya Srivastava", "Stroke Recovery Gorakhpur", "Paralysis Treatment", "Brain Retraining Therapy", "Neuro Rehab Center Gorakhpur", "Gait Training", "Spinal Cord Injury Rehab", "Pediatric Neuro Physiotherapy", "Balance Therapy Elderly", "Cerebral Palsy Therapy", "Heel Pain Treatment", "Post Stroke Physiotherapy", "Fall Prevention Therapy", "Home Physiotherapy Gorakhpur"].map((condition) => (
-                  <span key={condition} className="inline-flex items-center text-xs font-medium bg-brand-100 text-brand-700 px-3 py-1 rounded-full border border-brand-200 dark:bg-brand-900/40 dark:text-brand-200 dark:border-brand-800">
-                    {condition}
-                  </span>
-                ))}
-              </div>
             </ScrollReveal>
 
             <ScrollReveal>
@@ -89,11 +84,10 @@ export default function Hero() {
                     <div key={t.keyword} className="inline-flex items-center gap-1.5 bg-white dark:bg-navy-800 text-xs font-medium px-3 py-1.5 rounded-lg border border-slate-200 dark:border-navy-700 shadow-sm">
                       <Search className="w-3 h-3 text-slate-400" />
                       <span className="text-slate-700 dark:text-slate-200">{t.keyword}</span>
-                      <span className={`text-[9px] font-bold uppercase px-1.5 py-0.5 rounded ${
-                        t.volume === "Trending" ? "bg-orange-100 text-orange-700 dark:bg-orange-900/40 dark:text-orange-300" :
+                      <span className={`text-[9px] font-bold uppercase px-1.5 py-0.5 rounded ${t.volume === "Trending" ? "bg-orange-100 text-orange-700 dark:bg-orange-900/40 dark:text-orange-300" :
                         t.volume === "Rising" ? "bg-green-100 text-green-700 dark:bg-green-900/40 dark:text-green-300" :
-                        "bg-blue-100 text-blue-700 dark:bg-blue-900/40 dark:text-blue-300"
-                      }`}>{t.volume}</span>
+                          "bg-blue-100 text-blue-700 dark:bg-blue-900/40 dark:text-blue-300"
+                        }`}>{t.volume}</span>
                     </div>
                   ))}
                 </div>
@@ -101,22 +95,29 @@ export default function Hero() {
             </ScrollReveal>
 
             <ScrollReveal>
-              <div className="flex flex-col sm:flex-row gap-3 mb-8">
+              <div className="flex flex-col sm:flex-row flex-wrap gap-2.5 mb-8">
                 <Link
                   href="/book-appointment"
-                  className="group inline-flex items-center justify-center gap-2 bg-gradient-to-r from-brand-600 to-accent-600 hover:from-brand-700 hover:to-accent-700 text-white font-semibold px-7 py-3.5 rounded-full transition-all shadow-xl shadow-brand-600/25 hover:shadow-brand-600/40 dark:shadow-brand-900/30 dark:hover:shadow-brand-900/50 hover:scale-[1.02] active:scale-[0.98]"
+                  className="group inline-flex items-center justify-center gap-1.5 bg-gradient-to-r from-brand-600 to-accent-600 hover:from-brand-700 hover:to-accent-700 text-white font-semibold text-sm px-5 py-3 rounded-full transition-all shadow-xl shadow-brand-600/25 hover:shadow-brand-600/40 dark:shadow-brand-900/30 dark:hover:shadow-brand-900/50 hover:scale-[1.02] active:scale-[0.98]"
                 >
                   Book Appointment
-                  <ChevronRight className="w-5 h-5 group-hover:translate-x-0.5 transition-transform" />
+                  <ChevronRight className="w-4 h-4 group-hover:translate-x-0.5 transition-transform" />
+                </Link>
+                <Link
+                  href="/contact"
+                  className="inline-flex items-center justify-center gap-1.5 bg-gradient-to-r from-accent-600 to-brand-600 hover:from-accent-700 hover:to-brand-700 text-white font-semibold text-sm px-5 py-3 rounded-full transition-all shadow-lg shadow-accent-600/20 hover:scale-[1.02] active:scale-[0.98]"
+                >
+                  <HelpCircle className="w-4 h-4" />
+                  Send Enquiry
                 </Link>
                 <a
                   href="https://wa.me/919616962072?text=Hello%20Dr.%20Devejya%2C%20I%20need%20neuro%20rehabilitation%20help%20in%20Gorakhpur"
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="inline-flex items-center justify-center gap-2 bg-white hover:bg-slate-50 text-slate-800 font-semibold px-7 py-3.5 rounded-full transition-all border border-slate-200 shadow-lg hover:shadow-xl dark:bg-navy-800 dark:hover:bg-navy-700 dark:text-slate-100 dark:border-navy-700 dark:shadow-lg dark:shadow-black/10 dark:hover:shadow-xl dark:hover:shadow-black/10 hover:scale-[1.02] active:scale-[0.98]"
+                  className="inline-flex items-center justify-center gap-1.5 bg-white hover:bg-slate-50 text-slate-800 font-semibold text-sm px-5 py-3 rounded-full transition-all border border-slate-200 shadow-lg hover:shadow-xl dark:bg-navy-800 dark:hover:bg-navy-700 dark:text-slate-100 dark:border-navy-700 dark:shadow-lg dark:shadow-black/10 dark:hover:shadow-xl dark:hover:shadow-black/10 hover:scale-[1.02] active:scale-[0.98]"
                 >
-                  <MessageSquare className="w-5 h-5 text-accent-600 dark:text-accent-400" />
-                  Chat on WhatsApp
+                  <MessageSquare className="w-4 h-4 text-accent-600 dark:text-accent-400" />
+                  WhatsApp Now
                 </a>
               </div>
             </ScrollReveal>
