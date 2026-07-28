@@ -52,8 +52,8 @@ export default function Testimonials() {
     })),
     aggregateRating: {
       "@type": "AggregateRating",
-      ratingValue: reviews.length > 0 ? "5.0" : "5.0",
-      reviewCount: reviews.length || 0,
+      ratingValue: reviews.length > 1 ? "5.0" : "5.0",
+      reviewCount: reviews.length || 1,
       bestRating: "5",
     },
   }
