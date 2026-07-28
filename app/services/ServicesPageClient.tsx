@@ -16,7 +16,7 @@ const serviceDetails: Record<string, { icon: any; desc: string; highlights: stri
     icon: Brain,
     desc: "Neuroplasticity-based brain retraining to rebuild movement, speech, and independence after stroke, paralysis, or brain injury.",
     highlights: ["Task-specific motor training", "Cognitive & speech co-therapy", "Spasticity management", "Functional electrical stimulation"],
-    image: "/Stroke.jpeg",
+    image: "/stroke.jpeg",
   },
   "Gait & Balance Rehabilitation": {
     icon: Activity,
@@ -94,13 +94,13 @@ const serviceDetails: Record<string, { icon: any; desc: string; highlights: stri
     icon: Bone,
     desc: "Targeted physiotherapy for frozen shoulder (adhesive capsulitis) to restore range of motion, reduce pain, and speed recovery.",
     highlights: ["Joint mobilization", "Stretching exercises", "Pain relief modalities", "Home exercise program"],
-    image: "/shoulder-rehab.jpeg",
+    image: "/Shoulder-rehab.jpeg",
   },
   "Shoulder Pain & Rotator Cuff Injury": {
     icon: Bone,
     desc: "Comprehensive shoulder rehabilitation for rotator cuff injuries, impingement, and shoulder pain through conservative management.",
     highlights: ["Rotator cuff strengthening", "Scapular stabilization", "Postural correction", "Activity modification"],
-    image: "/shoulder-rehab.jpeg",
+    image: "/Shoulder-rehab.jpeg",
   },
   "Osteoarthritis Rehabilitation": {
     icon: Bone,
