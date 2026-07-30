@@ -1,3 +1,4 @@
+import { ObjectId } from "mongodb"
 import { getDb } from "./mongodb"
 
 interface Appointment {
@@ -73,16 +74,18 @@ export interface Enquiry {
   message: string
   timestamp: string
   source: string
+  status?: "pending" | "completed"
 }
 
 export async function saveEnquiry(
-  enquiry: Omit<Enquiry, "id">
+  enquiry: Omit<Enquiry, "id" | "status">
 ): Promise<Enquiry> {
   const db = await getDb()
 
   const record: Enquiry = {
     ...enquiry,
     id: `ENQ-${Date.now()}-${Math.random().toString(36).slice(2, 6).toUpperCase()}`,
+    status: "pending",
   }
 
   await db.collection("enquiries").insertOne(record)
@@ -96,4 +99,14 @@ export async function getEnquiries(): Promise<Enquiry[]> {
     .find({})
     .sort({ timestamp: -1 })
     .toArray()
+}
+
+export async function markEnquiryCompleted(id: string): Promise<Enquiry | null> {
+  const db = await getDb()
+  const result = await db.collection("enquiries").findOneAndUpdate(
+    { _id: new ObjectId(id) },
+    { $set: { status: "completed" } },
+    { returnDocument: "after" }
+  )
+  return result as unknown as Enquiry | null
 }

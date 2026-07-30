@@ -3,6 +3,8 @@
 @plugin "@tailwindcss/typography";
 
 @theme {
+  --breakpoint-lgg: 1200px;
+
   --color-brand-50: #f0f9ff;
   --color-brand-100: #e0f2fe;
   --color-brand-200: #bae6fd;
@@ -95,4 +97,11 @@ html {
 }
 .animate-blink {
   animation: blink 0.7s step-end infinite;
+}
+
+/* Fix for mobile bottom bar overlap on footer */
+@media (max-width: 767px) {
+  footer .pb-20 {
+    padding-bottom: 6rem !important;
+  }
 }

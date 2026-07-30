@@ -8,6 +8,8 @@ interface TypewriterTextProps {
   delay?: number
   className?: string
   tag?: "span" | "div"
+  showCursor?: boolean  // explicitly control cursor visibility
+  onDone?: () => void   // called when typing finishes
 }
 
 export default function TypewriterText({
@@ -16,9 +18,12 @@ export default function TypewriterText({
   delay = 1,
   className = "",
   tag: Tag = "span",
+  showCursor = true,
+  onDone,
 }: TypewriterTextProps) {
   const [displayed, setDisplayed] = useState("")
   const [started, setStarted] = useState(false)
+  const [done, setDone] = useState(false)
   const ref = useRef<HTMLSpanElement | HTMLDivElement>(null)
 
   useEffect(() => {
@@ -46,7 +51,11 @@ export default function TypewriterText({
       const interval = setInterval(() => {
         setDisplayed(text.slice(0, i + 1))
         i++
-        if (i >= text.length) clearInterval(interval)
+        if (i >= text.length) {
+          clearInterval(interval)
+          setDone(true)
+          onDone?.()
+        }
       }, speed)
       return () => clearInterval(interval)
     }, delay)
@@ -54,10 +63,13 @@ export default function TypewriterText({
     return () => clearTimeout(timeout)
   }, [started, text, speed, delay])
 
+  // Cursor shows only while actively typing (first char shown, not yet done, showCursor allowed)
+  const isCursorVisible = showCursor && started && displayed.length > 0 && !done
+
   return (
     <Tag ref={ref as any} className={className}>
       {displayed}
-      {started && displayed.length < text.length && (
+      {isCursorVisible && (
         <span className="inline-block w-[2px] h-[0.9em] bg-current ml-0.5 animate-blink align-baseline" />
       )}
     </Tag>

@@ -1,5 +1,6 @@
 import Link from "next/link"
-import { Activity, Phone, MapPin, Mail, Heart } from "lucide-react"
+import Image from "next/image"
+import { Phone, MapPin, Mail, Heart } from "lucide-react"
 import { FaInstagram, FaFacebook, FaLinkedin } from "react-icons/fa"
 
 const quickLinks = [
@@ -22,9 +23,14 @@ export default function Footer() {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-10">
           <div className="md:col-span-1">
             <div className="flex items-center gap-2 mb-4">
-              <div className="w-8 h-8 bg-gradient-to-br from-brand-600 to-accent-600 rounded-lg flex items-center justify-center shadow-lg shadow-brand-600/20 dark:shadow-brand-900/40">
-                <Activity className="w-[18px] h-[18px] text-white" />
-              </div>
+              <Image
+                src="/GMRLogo.png"
+                alt="Gorakhpur Mission Rehab Logo"
+                width={200}
+                height={200}
+                quality={100}
+                className="h-10 w-auto object-contain"
+              />
               <span className="text-lg font-bold text-white">Gorakhpur Mission Rehab</span>
             </div>
             <p className="text-sm leading-relaxed text-slate-400 dark:text-slate-500 max-w-xs lg:max-w-none">
@@ -141,15 +147,15 @@ export default function Footer() {
           </div>
         </div>
 
-        <div className="border-t border-navy-700 dark:border-navy-600 mt-10 pt-8 flex flex-col md:flex-row items-center justify-between gap-4">
-          <p className="text-xs text-slate-500 dark:text-slate-400 flex items-center gap-1">
+        <div className="border-t border-navy-700 dark:border-navy-600 mt-10 pt-8 flex flex-col md:flex-row items-center justify-center md:justify-between gap-3 text-center md:text-left">
+          <p className="text-xs text-slate-500 dark:text-slate-400 flex items-center gap-1.5 justify-center md:justify-start">
             &copy; {new Date().getFullYear()} Gorakhpur Mission Rehab. All rights reserved.
-            <Heart className="w-3 h-3 text-red-400/50 ml-1" aria-hidden="true" />
+            <Heart className="w-3 h-3 text-red-400/50 inline-block" aria-hidden="true" />
           </p>
           <p className="text-xs text-slate-500 dark:text-slate-400">
             Created by{" "}
             <a href="https://nexusdigitalmarketingcompany.com" target="_blank" rel="noopener noreferrer"
-              className="hover:text-white dark:hover:text-slate-200 transition-colors font-medium">
+              className="text-brand-400 hover:text-brand-300 dark:text-brand-400 dark:hover:text-brand-300 transition-colors font-semibold underline underline-offset-2 decoration-brand-600/30">
               Nexus Digital Marketing Company
             </a>
           </p>

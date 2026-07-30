@@ -163,6 +163,48 @@ export async function sendOwnerEnquiryNotification(details: {
   }
 }
 
+export async function sendEnquiryCompletedNotification(details: {
+  name: string
+  email: string
+  subject: string
+  message: string
+}) {
+  if (!details.email || details.email === "—" || !process.env.SMTP_EMAIL || !process.env.SMTP_PASS) return
+
+  const html = `
+    <div style="font-family:Arial,sans-serif;max-width:600px;margin:0 auto;background:#f8fafc;border-radius:12px;overflow:hidden;border:1px solid #e2e8f0">
+      <div style="background:linear-gradient(135deg,#0d9488,#0f766e);padding:24px 32px;text-align:center">
+        <div style="font-size:40px;margin-bottom:8px">✅</div>
+        <h1 style="color:#fff;margin:0;font-size:20px">Your Enquiry Has Been Resolved!</h1>
+      </div>
+      <div style="padding:24px 32px">
+        <p style="font-size:14px;color:#475569;margin:0 0 16px">Dear <strong style="color:#1e293b">${details.name}</strong>,</p>
+        <p style="font-size:14px;color:#475569;margin:0 0 16px">Thank you for reaching out to <strong>Gorakhpur Mission Rehab</strong>.</p>
+        <p style="font-size:14px;color:#475569;margin:0 0 16px">Your enquiry regarding <strong>"${details.subject}"</strong> has been reviewed and resolved by our team.</p>
+        ${details.message && details.message !== "—" ? `<div style="padding:16px;background:#f0fdfa;border-radius:8px;border:1px solid #99f6e4;font-size:13px;color:#0f766e;margin-bottom:16px">
+          <strong>Your enquiry:</strong><br>${details.message}
+        </div>` : ""}
+        <p style="font-size:13px;color:#64748b;margin:0">If you have any further questions, feel free to call us at <a href="tel:+919616962072" style="color:#0d9488;text-decoration:none;font-weight:600">+91 9616962072</a>.</p>
+      </div>
+      <div style="background:#f1f5f9;padding:16px 32px;text-align:center;font-size:12px;color:#94a3b8;border-top:1px solid #e2e8f0">
+        <p style="margin:0 0 4px"><strong>Gorakhpur Mission Rehab</strong></p>
+        <p style="margin:0">Divyaman Hospital, Bargadwa Bypass, Raptinagar Phase 1, Gorakhpur — 273001</p>
+      </div>
+    </div>
+  `
+
+  try {
+    await getTransporter().sendMail({
+      from: `"Gorakhpur Mission Rehab" <${process.env.SMTP_EMAIL}>`,
+      to: details.email,
+      subject: "✅ Enquiry Resolved — Gorakhpur Mission Rehab",
+      html,
+    })
+  } catch (e) {
+    console.error("Enquiry completed notification failed:", e)
+  }
+}
+
 export async function sendCustomerEnquiryConfirmation(details: {
   name: string
   email: string

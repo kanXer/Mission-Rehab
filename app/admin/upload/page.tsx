@@ -13,6 +13,7 @@ export default function UploadPage() {
   const [files, setFiles] = useState<FileList | null>(null)
   const [loading, setLoading] = useState(false)
   const [done, setDone] = useState(0)
+  const [imageTitle, setImageTitle] = useState("")
   const [ytUrl, setYtUrl] = useState("")
   const [ytTitle, setYtTitle] = useState("")
   const [addingVideo, setAddingVideo] = useState(false)
@@ -69,19 +70,21 @@ export default function UploadPage() {
       setUploadError(`${files.length - imageFiles.length} non-image file(s) skipped.`)
     }
 
+    const title = imageTitle.trim() || "Gorakhpur Mission Rehab"
     setLoading(true)
     setDone(0)
 
     let count = 0
     for (const file of imageFiles) {
-      const ok = await uploadOne(file, "")
+      const ok = await uploadOne(file, title)
       if (ok) count++
       setDone(count)
     }
 
     setLoading(false)
     setFiles(null)
-    toast(`${count} image(s) uploaded`)
+    setImageTitle("")
+    toast(`${count} image(s) uploaded with title: "${title}"`)
   }
 
   async function addVideo() {
@@ -113,6 +116,12 @@ export default function UploadPage() {
             <ImageIcon className="w-6 h-6 text-brand-600" /> Upload Images
           </h1>
           <form onSubmit={handleSubmit} className="space-y-4">
+            <div>
+              <label className="block text-sm font-medium text-navy-800 dark:text-white mb-1.5">Image Title / Alt Text</label>
+              <input type="text" placeholder="e.g. Stroke Recovery Therapy Session" value={imageTitle} onChange={(e) => setImageTitle(e.target.value)}
+                className="w-full px-4 py-2.5 rounded-xl border border-slate-300 dark:border-navy-600 bg-white dark:bg-navy-800 text-navy-800 dark:text-white text-sm focus:outline-none focus:ring-2 focus:ring-brand-500" />
+              <p className="text-[10px] text-slate-400 dark:text-slate-500 mt-1">Same title will be used as alt text for all uploaded images.</p>
+            </div>
             <input type="file" accept="image/*" multiple onChange={(e) => setFiles(e.target.files)}
               className="w-full text-sm text-slate-500 file:mr-4 file:py-2 file:px-4 file:rounded-xl file:border-0 file:bg-brand-50 dark:file:bg-brand-900/30 file:text-brand-700 dark:file:text-brand-300 file:font-semibold file:cursor-pointer" />
             {uploadError && (

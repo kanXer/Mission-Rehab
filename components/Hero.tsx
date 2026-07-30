@@ -2,7 +2,8 @@
 
 import Link from "next/link"
 import Image from "next/image"
-import { Phone, MessageSquare, ShieldCheck, Brain, Activity, Users, Star, ChevronRight, TrendingUp, Search, HelpCircle } from "lucide-react"
+import { Phone, MessageSquare, ShieldCheck, Brain, Activity, Users, Star, ChevronRight, TrendingUp, Search, HelpCircle, Calendar } from "lucide-react"
+import { FaInstagram, FaFacebook, FaLinkedin } from "react-icons/fa"
 import ScrollReveal from "./ScrollReveal"
 import TypewriterText from "./TypewriterText"
 
@@ -47,15 +48,38 @@ export default function Hero() {
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8 lg:gap-12 items-start">
           <div className="max-w-2xl">
             <ScrollReveal>
+              <div className="mb-6 flex justify-center">
+                <Image
+                  src="/GMRLogo.png"
+                  alt="Gorakhpur Mission Rehab Logo"
+                  width={300}
+                  height={300}
+                  quality={100}
+                  className="h-28 w-auto object-contain brightness-25"
+                  priority
+                />
+              </div>
+            </ScrollReveal>
+
+            <ScrollReveal>
               <div className="inline-flex items-center gap-2 bg-gradient-to-r from-brand-100 to-accent-100 text-brand-800 text-xs sm:text-sm font-semibold px-4 py-1.5 rounded-full mb-6 border border-brand-200/50 shadow-sm dark:from-brand-900/40 dark:to-accent-900/40 dark:text-brand-200 dark:border-brand-800/50 dark:shadow-none">
                 <ShieldCheck className="w-4 h-4" />
                 Directed by Dr. Devejya Srivastava (PT) — Consultant Neuro Rehab
               </div>
             </ScrollReveal>
 
-            <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-extrabold text-navy-800 dark:text-white leading-[1.05] mb-5 tracking-tight">
-              <TypewriterText text="From Disability to " speed={60} delay={300} />
-              <TypewriterText text="Ability" speed={80} delay={1400} className="text-gradient" />
+            <h2 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-extrabold text-navy-800 dark:text-white leading-[1.05] mb-2 tracking-tight whitespace-nowrap">
+              {/* "Gorakhpur " = 10 chars × 60ms = 600ms → done at 200+600 = 800ms */}
+              <TypewriterText text="Gorakhpur " speed={60} delay={200} showCursor={true} />
+              {/* "Mission Rehab" starts at 900ms (after Gorakhpur done) */}
+              <TypewriterText text="Mission Rehab" speed={70} delay={900} className="text-gradient" showCursor={true} />
+            </h2>
+
+            <h1 className="text-xl sm:text-2xl md:text-3xl lg:text-4xl font-extrabold text-navy-800 dark:text-white leading-[1.05] mb-5 tracking-tight whitespace-nowrap">
+              {/* "Mission Rehab" = 13 chars × 70ms = 910ms → done at 900+910 = 1810ms → h1 starts at 1900ms */}
+              <TypewriterText text="From Disability to " speed={60} delay={1900} showCursor={true} />
+              {/* "From Disability to " = 19 chars × 60ms = 1140ms → done at 1900+1140 = 3040ms */}
+              <TypewriterText text="Ability" speed={80} delay={3100} className="text-gradient" showCursor={true} />
             </h1>
 
             <ScrollReveal>
@@ -95,7 +119,7 @@ export default function Hero() {
             </ScrollReveal>
 
             <ScrollReveal>
-              <div className="flex flex-col sm:flex-row flex-wrap gap-2.5 mb-8">
+              <div className="flex flex-col sm:flex-row flex-wrap gap-2.5 mb-4">
                 <Link
                   href="/book-appointment"
                   className="group inline-flex items-center justify-center gap-1.5 bg-gradient-to-r from-brand-600 to-accent-600 hover:from-brand-700 hover:to-accent-700 text-white font-semibold text-sm px-5 py-3 rounded-full transition-all shadow-xl shadow-brand-600/25 hover:shadow-brand-600/40 dark:shadow-brand-900/30 dark:hover:shadow-brand-900/50 hover:scale-[1.02] active:scale-[0.98]"
@@ -118,6 +142,68 @@ export default function Hero() {
                 >
                   <MessageSquare className="w-4 h-4 text-accent-600 dark:text-accent-400" />
                   WhatsApp Now
+                </a>
+              </div>
+            </ScrollReveal>
+
+            <ScrollReveal>
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-2 mb-6">
+                <div className="flex items-start gap-2 bg-brand-50/70 dark:bg-brand-900/20 rounded-xl px-3.5 py-2.5 border border-brand-200/50 dark:border-brand-800/30">
+                  <div className="w-6 h-6 bg-brand-600 rounded-full flex items-center justify-center shrink-0 mt-0.5">
+                    <Calendar className="w-3.5 h-3.5 text-white" />
+                  </div>
+                  <div>
+                    <p className="text-xs font-bold text-navy-800 dark:text-white">Book Appointment</p>
+                    <p className="text-[10px] text-slate-500 dark:text-slate-400 leading-tight">Pick date &amp; time for a clinic visit. Confirmation in 1 hr.</p>
+                  </div>
+                </div>
+                <div className="flex items-start gap-2 bg-accent-50/70 dark:bg-accent-900/20 rounded-xl px-3.5 py-2.5 border border-accent-200/50 dark:border-accent-800/30">
+                  <div className="w-6 h-6 bg-accent-600 rounded-full flex items-center justify-center shrink-0 mt-0.5">
+                    <HelpCircle className="w-3.5 h-3.5 text-white" />
+                  </div>
+                  <div>
+                    <p className="text-xs font-bold text-navy-800 dark:text-white">Send Enquiry</p>
+                    <p className="text-[10px] text-slate-500 dark:text-slate-400 leading-tight">Ask about treatments, pricing, home visits &amp; more.</p>
+                  </div>
+                </div>
+                <div className="flex items-start gap-2 bg-emerald-50/70 dark:bg-emerald-900/20 rounded-xl px-3.5 py-2.5 border border-emerald-200/50 dark:border-emerald-800/30">
+                  <div className="w-6 h-6 bg-emerald-600 rounded-full flex items-center justify-center shrink-0 mt-0.5">
+                    <MessageSquare className="w-3.5 h-3.5 text-white" />
+                  </div>
+                  <div>
+                    <p className="text-xs font-bold text-navy-800 dark:text-white">WhatsApp / Call</p>
+                    <p className="text-[10px] text-slate-500 dark:text-slate-400 leading-tight">Urgent? Chat or call +91 9616962072 for instant help.</p>
+                  </div>
+                </div>
+              </div>
+            </ScrollReveal>
+
+            <ScrollReveal>
+              <div className="flex items-center justify-start gap-4 mb-4">
+                <span className="text-[11px] font-semibold uppercase tracking-wider text-slate-400 dark:text-slate-500">Follow us</span>
+                <div className="h-px flex-1 bg-gradient-to-r from-slate-200 to-transparent dark:from-navy-700" />
+              </div>
+              <div className="flex items-center gap-2.5 mb-5">
+                <a href="https://instagram.com/gorakhpur_missionrehab" target="_blank" rel="noopener noreferrer"
+                  className="w-9 h-9 bg-gradient-to-br from-pink-500 to-orange-400 rounded-xl flex items-center justify-center text-white shadow-md hover:shadow-lg hover:scale-110 transition-all" aria-label="Instagram">
+                  <FaInstagram className="w-4 h-4" />
+                </a>
+                <a href="https://facebook.com/gorakhpurmissionrehab" target="_blank" rel="noopener noreferrer"
+                  className="w-9 h-9 bg-gradient-to-br from-blue-600 to-blue-500 rounded-xl flex items-center justify-center text-white shadow-md hover:shadow-lg hover:scale-110 transition-all" aria-label="Facebook">
+                  <FaFacebook className="w-4 h-4" />
+                </a>
+                <a href="https://www.linkedin.com/in/dr-devejya-srivastava-784035143/" target="_blank" rel="noopener noreferrer"
+                  className="w-9 h-9 bg-gradient-to-br from-blue-700 to-blue-600 rounded-xl flex items-center justify-center text-white shadow-md hover:shadow-lg hover:scale-110 transition-all" aria-label="LinkedIn">
+                  <FaLinkedin className="w-4 h-4" />
+                </a>
+                <a href="https://www.justdial.com/Gorakhpur/Dr-Devejya-Srivastava-Physiotherapist-Rapti-Nagar/9999PX551-X551-211020214837-H6K4_BZDET/overview?source=SHARE&amp=1" target="_blank" rel="noopener noreferrer"
+                  className="w-9 h-9 bg-gradient-to-br from-green-600 to-green-500 rounded-xl flex items-center justify-center text-white text-[10px] font-bold shadow-md hover:shadow-lg hover:scale-110 transition-all" aria-label="JustDial">
+                  JD
+                </a>
+                <div className="h-8 w-px bg-slate-200 dark:bg-navy-700 mx-1" />
+                <a href="tel:+919616962072" className="flex items-center gap-1.5 text-xs font-bold text-red-600 dark:text-red-400 hover:text-red-700 dark:hover:text-red-300 transition-colors">
+                  <Phone className="w-3.5 h-3.5" />
+                  +91 9616962072
                 </a>
               </div>
             </ScrollReveal>

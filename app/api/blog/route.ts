@@ -1,12 +1,12 @@
 import { NextRequest, NextResponse } from "next/server"
 import { getDb } from "@/lib/mongodb"
-import { verifyToken, getTokenFromCookies, isAdminEmail } from "@/lib/auth"
+import { verifyToken, getTokenFromCookies, isUserAdmin } from "@/lib/auth"
 
 async function isAdminRequest(): Promise<boolean> {
   const tokenStr = await getTokenFromCookies()
   if (!tokenStr) return false
   const payload = verifyToken(tokenStr)
-  return payload ? isAdminEmail(payload.email) : false
+  return payload ? await isUserAdmin(payload.id) : false
 }
 
 export async function GET() {

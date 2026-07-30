@@ -4,14 +4,16 @@ import Link from "next/link"
 import { useAuth } from "./AuthProvider"
 import { usePathname, useRouter } from "next/navigation"
 import { useState } from "react"
-import { Shield, LayoutDashboard, FileText, Calendar, Image as ImageIcon, LogOut, Menu, X, Tags } from "lucide-react"
+import { Shield, LayoutDashboard, FileText, Calendar, Image as ImageIcon, LogOut, Menu, X, Tags, MessageSquare, Upload } from "lucide-react"
 
 const adminLinks = [
   { label: "Dashboard", href: "/admin", icon: LayoutDashboard },
   { label: "Blog", href: "/admin/blog", icon: FileText },
   { label: "Categories", href: "/admin/categories", icon: Tags },
   { label: "Gallery", href: "/admin/gallery", icon: ImageIcon },
+  { label: "Upload", href: "/admin/upload", icon: Upload },
   { label: "Bookings", href: "/admin/bookings", icon: Calendar },
+  { label: "Enquiries", href: "/admin/enquiries", icon: MessageSquare },
 ]
 
 export default function AdminHeader() {
@@ -28,7 +30,7 @@ export default function AdminHeader() {
   }
 
   return (
-    <div className="bg-gradient-to-r from-slate-900 via-slate-800 to-slate-900 border-b border-slate-700/50 shadow-lg shadow-black/10">
+    <div className="bg-gradient-to-r from-navy-900 via-navy-800 to-navy-900 border-b border-navy-700/50 shadow-lg shadow-black/10">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center gap-2 sm:gap-4 h-12 sm:h-14 text-sm">
           <div className="flex items-center gap-1.5 text-amber-400 font-semibold shrink-0">
@@ -48,7 +50,7 @@ export default function AdminHeader() {
                   className={`flex items-center gap-1.5 px-3 py-2 rounded-lg font-medium transition-all shrink-0 text-sm ${
                     active
                       ? "bg-amber-500/15 text-amber-300 shadow-inner"
-                      : "text-slate-400 hover:text-slate-200 hover:bg-white/5"
+                      : "text-navy-300 hover:text-amber-300 hover:bg-amber-500/10"
                   }`}
                 >
                   <link.icon className="w-4 h-4" />
@@ -61,12 +63,12 @@ export default function AdminHeader() {
           <div className="ml-auto shrink-0 flex items-center gap-2 sm:gap-3">
             <button
               onClick={() => setMenuOpen(!menuOpen)}
-              className="sm:hidden p-1.5 rounded-lg text-slate-400 hover:text-slate-200 hover:bg-white/5"
+              className="sm:hidden p-1.5 rounded-lg text-navy-300 hover:text-amber-300 hover:bg-amber-500/10"
             >
               {menuOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
             </button>
             <Link href="/"
-              className="text-xs sm:text-sm text-slate-400 hover:text-slate-200 transition-colors font-medium">
+              className="text-xs sm:text-sm text-navy-300 hover:text-amber-300 transition-colors font-medium">
               View Site
             </Link>
             <button onClick={handleLogout}
@@ -78,7 +80,7 @@ export default function AdminHeader() {
         </div>
 
         {menuOpen && (
-          <div className="sm:hidden pb-3 border-t border-slate-700/50 pt-2 space-y-1">
+          <div className="sm:hidden pb-3 border-t border-navy-700/50 pt-2 space-y-1">
             {adminLinks.map((link) => {
               const active = pathname === link.href || pathname.startsWith(link.href + "/")
               return (
@@ -89,7 +91,7 @@ export default function AdminHeader() {
                   className={`flex items-center gap-2 px-3 py-2.5 rounded-lg font-medium transition-colors text-sm ${
                     active
                       ? "bg-amber-500/15 text-amber-300"
-                      : "text-slate-400 hover:text-slate-200 hover:bg-white/5"
+                      : "text-navy-300 hover:text-amber-300 hover:bg-amber-500/10"
                   }`}
                 >
                   <link.icon className="w-4 h-4" />

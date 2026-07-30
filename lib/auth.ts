@@ -1,6 +1,8 @@
 import jwt from "jsonwebtoken"
 import bcrypt from "bcryptjs"
 import { cookies } from "next/headers"
+import { getDb } from "./mongodb"
+import { ObjectId } from "mongodb"
 
 const JWT_SECRET = process.env.JWT_SECRET || "fallback-secret-change-in-production"
 const TOKEN_NAME = "token"
@@ -9,7 +11,6 @@ const ADMIN_EMAIL = process.env.ADMIN_SECRET_EMAIL || ""
 export interface JwtPayload {
   id: string
   email: string
-  isAdmin: boolean
 }
 
 export function hashPassword(password: string): Promise<string> {
@@ -44,4 +45,18 @@ export async function getAuth(): Promise<JwtPayload | null> {
 
 export function isAdminEmail(email: string): boolean {
   return ADMIN_EMAIL.length > 0 && email.toLowerCase() === ADMIN_EMAIL.toLowerCase()
+}
+
+export async function getUserRole(userId: string): Promise<"admin" | "user"> {
+  try {
+    const db = await getDb()
+    const user = await db.collection("users").findOne({ _id: new ObjectId(userId) })
+    return (user?.role === "admin") ? "admin" : "user"
+  } catch {
+    return "user"
+  }
+}
+
+export async function isUserAdmin(userId: string): Promise<boolean> {
+  return (await getUserRole(userId)) === "admin"
 }

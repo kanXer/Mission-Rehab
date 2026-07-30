@@ -1,9 +1,9 @@
 'use client'
 
-import { useState, useMemo, useEffect, type FormEvent } from "react"
+import { useState, useEffect, type FormEvent } from "react"
 import {
   Calendar, Clock, ChevronRight, ChevronLeft, Loader, CheckCircle,
-  Send, ArrowRight,
+  Send, ArrowRight, User, Phone, Mail, MessageSquare, FileText, AlertCircle,
 } from "lucide-react"
 
 const conditions = [
@@ -354,14 +354,15 @@ export default function BookingFormEnhanced() {
         {step === "details" && (
           <div className="animate-fade-in">
             <p className="text-sm text-slate-500 dark:text-slate-400 mb-4">Your contact details</p>
-            <div className="space-y-3.5">
+            <div className="space-y-4">
               <div className="relative">
+                <FileText className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400 dark:text-slate-500" />
                 <select
                   value={condition}
                   onChange={(e) => setCondition(e.target.value)}
-                  className="w-full px-4 py-3 rounded-xl border border-slate-300 dark:border-navy-600 text-sm bg-white dark:bg-navy-800 text-navy-800 dark:text-white focus:outline-none focus:ring-2 focus:ring-brand-500 dark:focus:ring-brand-600 transition-shadow appearance-none"
+                  className="w-full pl-10 pr-10 py-3.5 rounded-xl border border-slate-300 dark:border-navy-600 text-sm bg-white dark:bg-navy-800 text-navy-800 dark:text-white focus:outline-none focus:ring-2 focus:ring-brand-500 dark:focus:ring-brand-600 transition-shadow appearance-none"
                 >
-                  <option value="">Select your condition</option>
+                  <option value="">Select your condition *</option>
                   {conditions.map((c) => (
                     <option key={c} value={c}>{c}</option>
                   ))}
@@ -372,34 +373,46 @@ export default function BookingFormEnhanced() {
                   </svg>
                 </div>
               </div>
-              <input
-                type="text" placeholder="Full Name *" required
-                value={name} onChange={(e) => setName(e.target.value)}
-                className="w-full px-4 py-3 rounded-xl border border-slate-300 dark:border-navy-600 text-sm bg-white dark:bg-navy-800 text-navy-800 dark:text-white placeholder-slate-400 dark:placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-brand-500 dark:focus:ring-brand-600 transition-shadow"
-              />
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
+              <div className="relative">
+                <User className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400 dark:text-slate-500" />
                 <input
-                  type="tel" placeholder="Phone Number *" required
-                  value={phone} onChange={(e) => setPhone(e.target.value)}
-                  className="w-full px-4 py-3 rounded-xl border border-slate-300 dark:border-navy-600 text-sm bg-white dark:bg-navy-800 text-navy-800 dark:text-white placeholder-slate-400 dark:placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-brand-500 dark:focus:ring-brand-600 transition-shadow"
-                />
-                <input
-                  type="email" placeholder="Email Address *" required
-                  value={email} onChange={(e) => setEmail(e.target.value)}
-                  className="w-full px-4 py-3 rounded-xl border border-slate-300 dark:border-navy-600 text-sm bg-white dark:bg-navy-800 text-navy-800 dark:text-white placeholder-slate-400 dark:placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-brand-500 dark:focus:ring-brand-600 transition-shadow"
+                  type="text" placeholder="Full Name *" required
+                  value={name} onChange={(e) => setName(e.target.value)}
+                  className="w-full pl-10 pr-4 py-3.5 rounded-xl border border-slate-300 dark:border-navy-600 text-sm bg-white dark:bg-navy-800 text-navy-800 dark:text-white placeholder-slate-400 dark:placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-brand-500 dark:focus:ring-brand-600 transition-shadow"
                 />
               </div>
-              <textarea
-                placeholder="Brief description (optional)"
-                rows={2} value={message} onChange={(e) => setMessage(e.target.value)}
-                className="w-full px-4 py-3 rounded-xl border border-slate-300 dark:border-navy-600 text-sm bg-white dark:bg-navy-800 text-navy-800 dark:text-white placeholder-slate-400 dark:placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-brand-500 dark:focus:ring-brand-600 transition-shadow resize-none"
-              />
-              <div className="flex gap-2 pt-1">
-                <button type="button" onClick={back} className="px-4 py-2.5 rounded-xl border border-slate-300 dark:border-navy-600 text-sm text-slate-600 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-navy-700 transition-colors">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div className="relative">
+                  <Phone className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400 dark:text-slate-500" />
+                  <input
+                    type="tel" placeholder="Phone Number *" required
+                    value={phone} onChange={(e) => setPhone(e.target.value)}
+                    className="w-full pl-10 pr-4 py-3.5 rounded-xl border border-slate-300 dark:border-navy-600 text-sm bg-white dark:bg-navy-800 text-navy-800 dark:text-white placeholder-slate-400 dark:placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-brand-500 dark:focus:ring-brand-600 transition-shadow"
+                  />
+                </div>
+                <div className="relative">
+                  <Mail className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400 dark:text-slate-500" />
+                  <input
+                    type="email" placeholder="Email Address *" required
+                    value={email} onChange={(e) => setEmail(e.target.value)}
+                    className="w-full pl-10 pr-4 py-3.5 rounded-xl border border-slate-300 dark:border-navy-600 text-sm bg-white dark:bg-navy-800 text-navy-800 dark:text-white placeholder-slate-400 dark:placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-brand-500 dark:focus:ring-brand-600 transition-shadow"
+                  />
+                </div>
+              </div>
+              <div className="relative">
+                <MessageSquare className="absolute left-3.5 top-3.5 w-4 h-4 text-slate-400 dark:text-slate-500" />
+                <textarea
+                  placeholder="Brief description of your condition (optional)"
+                  rows={3} value={message} onChange={(e) => setMessage(e.target.value)}
+                  className="w-full pl-10 pr-4 py-3.5 rounded-xl border border-slate-300 dark:border-navy-600 text-sm bg-white dark:bg-navy-800 text-navy-800 dark:text-white placeholder-slate-400 dark:placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-brand-500 dark:focus:ring-brand-600 transition-shadow resize-none"
+                />
+              </div>
+              <div className="flex gap-3 pt-2">
+                <button type="button" onClick={back} className="px-5 py-3 rounded-xl border border-slate-300 dark:border-navy-600 text-sm font-medium text-slate-600 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-navy-700 transition-colors">
                   <ChevronLeft className="w-4 h-4 inline mr-1" />Back
                 </button>
-                <button type="button" onClick={() => next("details")} className="flex-1 inline-flex items-center justify-center gap-2 bg-gradient-to-r from-brand-600 to-accent-600 text-white font-semibold px-5 py-2.5 rounded-xl shadow-lg dark:shadow-lg dark:shadow-black/10 hover:shadow-xl dark:hover:shadow-xl dark:hover:shadow-black/20 transition-all">
-                  Review <ChevronRight className="w-4 h-4" />
+                <button type="button" onClick={() => next("details")} className="flex-1 inline-flex items-center justify-center gap-2 bg-gradient-to-r from-brand-600 to-accent-600 text-white font-semibold px-5 py-3 rounded-xl shadow-lg dark:shadow-lg dark:shadow-black/10 hover:shadow-xl dark:hover:shadow-xl dark:hover:shadow-black/20 transition-all hover:scale-[1.01] active:scale-[0.98]">
+                  Review &amp; Confirm <ChevronRight className="w-4 h-4" />
                 </button>
               </div>
             </div>

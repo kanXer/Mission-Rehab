@@ -20,10 +20,11 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: "Invalid credentials" }, { status: 401 })
     }
 
-    const payload = { id: user._id.toString(), email: user.email, isAdmin: isAdminEmail(user.email) }
+    const role = user.role || (isAdminEmail(user.email) ? "admin" : "user")
+    const payload = { id: user._id.toString(), email: user.email }
     const token = signToken(payload)
 
-    const res = NextResponse.json({ user: { id: payload.id, email: user.email, name: user.name, isAdmin: payload.isAdmin } })
+    const res = NextResponse.json({ user: { id: payload.id, email: user.email, name: user.name, isAdmin: role === "admin" } })
     res.cookies.set("token", token, { httpOnly: true, secure: process.env.NODE_ENV === "production", sameSite: "lax", path: "/", maxAge: 7 * 86400 })
     return res
   } catch (e) {

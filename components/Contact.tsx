@@ -15,6 +15,9 @@ import {
   Sparkles,
   ShieldCheck,
   Building2,
+  User,
+  FileText,
+  AlertCircle,
 } from "lucide-react"
 import ScrollReveal from "./ScrollReveal"
 
@@ -153,27 +156,33 @@ export default function Contact() {
                         <label className="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1.5">
                           Full Name <span className="text-red-500">*</span>
                         </label>
-                        <input
-                          type="text"
-                          required
-                          placeholder="e.g. Ramesh Kumar"
-                          value={enquiryForm.name}
-                          onChange={(e) => setEnquiryForm({ ...enquiryForm, name: e.target.value })}
-                          className="w-full px-4 py-3 rounded-xl border border-slate-300 dark:border-slate-700 text-sm bg-slate-50/50 dark:bg-slate-800/80 text-slate-900 dark:text-white placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-accent-500 focus:bg-white dark:focus:bg-slate-800 transition-all"
-                        />
+                        <div className="relative">
+                          <User className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
+                          <input
+                            type="text"
+                            required
+                            placeholder="e.g. Ramesh Kumar"
+                            value={enquiryForm.name}
+                            onChange={(e) => setEnquiryForm({ ...enquiryForm, name: e.target.value })}
+                            className="w-full pl-10 pr-4 py-3.5 rounded-xl border border-slate-300 dark:border-slate-700 text-sm bg-slate-50/50 dark:bg-slate-800/80 text-slate-900 dark:text-white placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-accent-500 focus:bg-white dark:focus:bg-slate-800 transition-all"
+                          />
+                        </div>
                       </div>
                       <div>
                         <label className="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1.5">
                           Phone Number <span className="text-red-500">*</span>
                         </label>
-                        <input
-                          type="tel"
-                          required
-                          placeholder="e.g. 9876543210"
-                          value={enquiryForm.phone}
-                          onChange={(e) => setEnquiryForm({ ...enquiryForm, phone: e.target.value })}
-                          className="w-full px-4 py-3 rounded-xl border border-slate-300 dark:border-slate-700 text-sm bg-slate-50/50 dark:bg-slate-800/80 text-slate-900 dark:text-white placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-accent-500 focus:bg-white dark:focus:bg-slate-800 transition-all"
-                        />
+                        <div className="relative">
+                          <Phone className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
+                          <input
+                            type="tel"
+                            required
+                            placeholder="e.g. 9876543210"
+                            value={enquiryForm.phone}
+                            onChange={(e) => setEnquiryForm({ ...enquiryForm, phone: e.target.value })}
+                            className="w-full pl-10 pr-4 py-3.5 rounded-xl border border-slate-300 dark:border-slate-700 text-sm bg-slate-50/50 dark:bg-slate-800/80 text-slate-900 dark:text-white placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-accent-500 focus:bg-white dark:focus:bg-slate-800 transition-all"
+                          />
+                        </div>
                       </div>
                     </div>
 
@@ -182,27 +191,38 @@ export default function Contact() {
                         <label className="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1.5">
                           Email Address <span className="text-slate-400 font-normal">(Optional)</span>
                         </label>
-                        <input
-                          type="email"
-                          placeholder="name@example.com"
-                          value={enquiryForm.email}
-                          onChange={(e) => setEnquiryForm({ ...enquiryForm, email: e.target.value })}
-                          className="w-full px-4 py-3 rounded-xl border border-slate-300 dark:border-slate-700 text-sm bg-slate-50/50 dark:bg-slate-800/80 text-slate-900 dark:text-white placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-accent-500 focus:bg-white dark:focus:bg-slate-800 transition-all"
-                        />
+                        <div className="relative">
+                          <Mail className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
+                          <input
+                            type="email"
+                            placeholder="name@example.com"
+                            value={enquiryForm.email}
+                            onChange={(e) => setEnquiryForm({ ...enquiryForm, email: e.target.value })}
+                            className="w-full pl-10 pr-4 py-3.5 rounded-xl border border-slate-300 dark:border-slate-700 text-sm bg-slate-50/50 dark:bg-slate-800/80 text-slate-900 dark:text-white placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-accent-500 focus:bg-white dark:focus:bg-slate-800 transition-all"
+                          />
+                        </div>
                       </div>
                       <div>
                         <label className="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1.5">
                           Enquiry Subject
                         </label>
-                        <select
-                          value={enquiryForm.subject}
-                          onChange={(e) => setEnquiryForm({ ...enquiryForm, subject: e.target.value })}
-                          className="w-full px-4 py-3 rounded-xl border border-slate-300 dark:border-slate-700 text-sm bg-slate-50/50 dark:bg-slate-800/80 text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-accent-500 focus:bg-white dark:focus:bg-slate-800 transition-all"
-                        >
-                          {subjects.map((s) => (
-                            <option key={s} value={s}>{s}</option>
-                          ))}
-                        </select>
+                        <div className="relative">
+                          <FileText className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
+                          <select
+                            value={enquiryForm.subject}
+                            onChange={(e) => setEnquiryForm({ ...enquiryForm, subject: e.target.value })}
+                            className="w-full pl-10 pr-10 py-3.5 rounded-xl border border-slate-300 dark:border-slate-700 text-sm bg-slate-50/50 dark:bg-slate-800/80 text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-accent-500 focus:bg-white dark:focus:bg-slate-800 transition-all appearance-none"
+                          >
+                            {subjects.map((s) => (
+                              <option key={s} value={s}>{s}</option>
+                            ))}
+                          </select>
+                          <div className="absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none">
+                            <svg className="w-4 h-4 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                            </svg>
+                          </div>
+                        </div>
                       </div>
                     </div>
 
@@ -210,14 +230,17 @@ export default function Contact() {
                       <label className="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1.5">
                         Your Message / Question <span className="text-red-500">*</span>
                       </label>
-                      <textarea
-                        rows={4}
-                        required
-                        placeholder="Please describe your health query, condition, or question in detail..."
-                        value={enquiryForm.message}
-                        onChange={(e) => setEnquiryForm({ ...enquiryForm, message: e.target.value })}
-                        className="w-full px-4 py-3 rounded-xl border border-slate-300 dark:border-slate-700 text-sm bg-slate-50/50 dark:bg-slate-800/80 text-slate-900 dark:text-white placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-accent-500 focus:bg-white dark:focus:bg-slate-800 transition-all resize-none"
-                      />
+                      <div className="relative">
+                        <MessageSquare className="absolute left-3.5 top-3.5 w-4 h-4 text-slate-400" />
+                        <textarea
+                          rows={4}
+                          required
+                          placeholder="Please describe your health query, condition, or question in detail..."
+                          value={enquiryForm.message}
+                          onChange={(e) => setEnquiryForm({ ...enquiryForm, message: e.target.value })}
+                          className="w-full pl-10 pr-4 py-3.5 rounded-xl border border-slate-300 dark:border-slate-700 text-sm bg-slate-50/50 dark:bg-slate-800/80 text-slate-900 dark:text-white placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-accent-500 focus:bg-white dark:focus:bg-slate-800 transition-all resize-none"
+                        />
+                      </div>
                     </div>
 
                     <div className="pt-2">

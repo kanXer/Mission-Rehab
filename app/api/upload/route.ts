@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server"
 import { v2 as cloudinary } from "cloudinary"
-import { verifyToken, getTokenFromCookies, isAdminEmail } from "@/lib/auth"
+import { verifyToken, getTokenFromCookies, isUserAdmin } from "@/lib/auth"
 
 cloudinary.config({
   cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
@@ -11,7 +11,7 @@ cloudinary.config({
 export async function GET() {
   const tokenStr = await getTokenFromCookies()
   const payload = tokenStr ? verifyToken(tokenStr) : null
-  if (!payload || !isAdminEmail(payload.email)) {
+  if (!payload || !(await isUserAdmin(payload.id))) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
   }
 

@@ -4,7 +4,7 @@ import { useState, useEffect, useRef } from "react"
 import { useAuth } from "@/components/AuthProvider"
 import { useRouter } from "next/navigation"
 import Link from "next/link"
-import { GripVertical, Trash2, Star, Film, Loader, ArrowLeft, ChevronUp, ChevronDown, Move } from "lucide-react"
+import { GripVertical, Trash2, Star, Film, Loader, ArrowLeft, ChevronUp, ChevronDown, Move, X, Eye } from "lucide-react"
 import { useToast } from "@/components/ToastProvider"
 
 interface GalleryItem {
@@ -31,6 +31,7 @@ function GalleryList({
   onDragStart,
   onDragOver,
   onDragEnd,
+  onPreview,
   dragItemRef,
   dragOverRef,
 }: {
@@ -42,6 +43,7 @@ function GalleryList({
   onDragStart: (i: number) => void
   onDragOver: (i: number) => void
   onDragEnd: (list: GalleryItem[]) => void
+  onPreview: (item: GalleryItem) => void
   dragItemRef: React.MutableRefObject<number | null>
   dragOverRef: React.MutableRefObject<number | null>
 }) {
@@ -93,14 +95,17 @@ function GalleryList({
             >
               <GripVertical className="w-4 h-4 text-slate-300 shrink-0" />
               <span className="text-xs text-slate-400 w-5 text-right shrink-0">{idx + 1}</span>
-              <div className="w-10 h-8 rounded-lg overflow-hidden bg-slate-100 dark:bg-navy-900 shrink-0">
+              <div className="relative w-20 h-14 rounded-lg overflow-hidden bg-slate-100 dark:bg-navy-900 shrink-0 cursor-pointer ring-1 ring-slate-200 dark:ring-navy-700 hover:ring-2 hover:ring-brand-400 transition-all group/th" onClick={() => onPreview(item)}>
                 {item.type === "image" ? (
                   <img src={item.url} alt="" className="w-full h-full object-cover" />
                 ) : ytId ? (
-                  <img src={`https://img.youtube.com/vi/${ytId}/default.jpg`} alt="" className="w-full h-full object-cover" />
+                  <img src={`https://img.youtube.com/vi/${ytId}/mqdefault.jpg`} alt="" className="w-full h-full object-cover" />
                 ) : (
-                  <div className="w-full h-full flex items-center justify-center"><Film className="w-3 h-3 text-red-500" /></div>
+                  <div className="w-full h-full flex items-center justify-center"><Film className="w-4 h-4 text-red-500" /></div>
                 )}
+                <div className="absolute inset-0 bg-black/0 group-hover/th:bg-black/30 flex items-center justify-center transition-all rounded-lg">
+                  <Eye className="w-5 h-5 text-white opacity-0 group-hover/th:opacity-100 transition-opacity drop-shadow-lg" />
+                </div>
               </div>
               <div className="flex flex-col items-center gap-0.5 shrink-0">
                 <button type="button" onClick={() => onMove(list, idx, idx - 1)}
@@ -136,6 +141,7 @@ function GalleryList({
 export default function AdminGallery() {
   const [items, setItems] = useState<GalleryItem[]>([])
   const [loading, setLoading] = useState(true)
+  const [preview, setPreview] = useState<GalleryItem | null>(null)
   const dragItemRef = useRef<number | null>(null)
   const dragOverRef = useRef<number | null>(null)
   const { user, loading: authLoading } = useAuth()
@@ -246,6 +252,7 @@ export default function AdminGallery() {
               onDragStart={handleDragStart}
               onDragOver={handleDragOver}
               onDragEnd={handleDragEnd}
+              onPreview={setPreview}
               dragItemRef={dragItemRef}
               dragOverRef={dragOverRef} />
             <GalleryList list={videos} label="Videos"
@@ -255,11 +262,42 @@ export default function AdminGallery() {
               onDragStart={handleDragStart}
               onDragOver={handleDragOver}
               onDragEnd={handleDragEnd}
+              onPreview={setPreview}
               dragItemRef={dragItemRef}
               dragOverRef={dragOverRef} />
           </>
         )}
       </div>
+
+      {/* Preview Modal */}
+      {preview && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 p-4" onClick={() => setPreview(null)}>
+          <div className="relative max-w-3xl w-full max-h-[90vh] bg-white dark:bg-navy-800 rounded-2xl overflow-hidden shadow-2xl border border-slate-200 dark:border-navy-700" onClick={e => e.stopPropagation()}>
+            <div className="absolute top-2 right-2 z-10 flex items-center gap-2">
+              {preview.title && <span className="text-xs font-medium bg-white/90 dark:bg-navy-900/90 text-navy-800 dark:text-white px-3 py-1.5 rounded-lg shadow">{preview.title}</span>}
+              <button onClick={() => setPreview(null)}
+                className="p-2 rounded-xl bg-white/90 dark:bg-navy-900/90 text-slate-600 dark:text-slate-300 hover:bg-white dark:hover:bg-navy-900 transition-all shadow">
+                <X className="w-5 h-5" />
+              </button>
+            </div>
+            <div className="flex items-center justify-center p-2 bg-black/5 dark:bg-black/20 max-h-[85vh]">
+              {preview.type === "image" ? (
+                <img src={preview.url} alt={preview.title || ""} className="max-w-full max-h-[85vh] object-contain rounded-xl" />
+              ) : (
+                <div className="w-full aspect-video max-h-[85vh]">
+                  <iframe
+                    src={`https://www.youtube.com/embed/${getYtId(preview.url)}?autoplay=1`}
+                    className="w-full h-full rounded-xl"
+                    allow="autoplay; encrypted-media"
+                    allowFullScreen
+                    title={preview.title || "Video"}
+                  />
+                </div>
+              )}
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   )
 }

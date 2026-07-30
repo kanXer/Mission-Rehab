@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server"
 import { ObjectId } from "mongodb"
 import { getDb } from "@/lib/mongodb"
-import { verifyToken, isAdminEmail } from "@/lib/auth"
+import { verifyToken, isUserAdmin } from "@/lib/auth"
 
 function getToken(req: NextRequest): string | undefined {
   const cookie = req.headers.get("cookie") || ""
@@ -13,11 +13,11 @@ function getToken(req: NextRequest): string | undefined {
   return undefined
 }
 
-function isAdminRequest(req: NextRequest): boolean {
+async function isAdminRequest(req: NextRequest): Promise<boolean> {
   const tokenStr = getToken(req)
   if (!tokenStr) return false
   const payload = verifyToken(tokenStr)
-  return payload ? isAdminEmail(payload.email) : false
+  return payload ? await isUserAdmin(payload.id) : false
 }
 
 export async function GET() {
@@ -32,7 +32,7 @@ export async function GET() {
 }
 
 export async function POST(req: NextRequest) {
-  if (!isAdminRequest(req)) return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
+  if (!(await isAdminRequest(req))) return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
   try {
     const body = await req.json()
     const name = body?.name?.trim()
@@ -48,7 +48,7 @@ export async function POST(req: NextRequest) {
 }
 
 export async function PUT(req: NextRequest) {
-  if (!isAdminRequest(req)) return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
+  if (!(await isAdminRequest(req))) return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
   try {
     const body = await req.json()
     const { _id, name } = body
@@ -63,7 +63,7 @@ export async function PUT(req: NextRequest) {
 }
 
 export async function DELETE(req: NextRequest) {
-  if (!isAdminRequest(req)) return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
+  if (!(await isAdminRequest(req))) return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
   try {
     const body = await req.json()
     const { id } = body

@@ -1,12 +1,16 @@
 import { NextRequest, NextResponse } from "next/server"
 import { ObjectId } from "mongodb"
 import { getDb } from "@/lib/mongodb"
-import { verifyToken, getTokenFromCookies, isAdminEmail } from "@/lib/auth"
+import { verifyToken, getTokenFromCookies, isUserAdmin } from "@/lib/auth"
+
+async function checkAdmin(payload: { id: string } | null): Promise<boolean> {
+  return !!payload && await isUserAdmin(payload.id)
+}
 
 export async function GET() {
   const tokenStr = await getTokenFromCookies()
   const payload = tokenStr ? verifyToken(tokenStr) : null
-  if (!payload || !isAdminEmail(payload.email)) {
+  if (!await checkAdmin(payload)) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
   }
   try {
@@ -28,7 +32,7 @@ export async function GET() {
 export async function DELETE(req: NextRequest) {
   const tokenStr = await getTokenFromCookies()
   const payload = tokenStr ? verifyToken(tokenStr) : null
-  if (!payload || !isAdminEmail(payload.email)) {
+  if (!await checkAdmin(payload)) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
   }
   try {
