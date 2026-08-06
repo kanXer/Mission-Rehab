@@ -4,12 +4,14 @@ import Link from "next/link"
 import { useAuth } from "./AuthProvider"
 import { usePathname, useRouter } from "next/navigation"
 import { useState } from "react"
-import { Shield, LayoutDashboard, FileText, Calendar, Image as ImageIcon, LogOut, Menu, X, Tags, MessageSquare, Upload } from "lucide-react"
+import { Shield, LayoutDashboard, FileText, Calendar, Image as ImageIcon, LogOut, Menu, X, Tags, MessageSquare, Upload, HelpCircle, Star } from "lucide-react"
 
 const adminLinks = [
   { label: "Dashboard", href: "/admin", icon: LayoutDashboard },
   { label: "Blog", href: "/admin/blog", icon: FileText },
   { label: "Categories", href: "/admin/categories", icon: Tags },
+  { label: "FAQs", href: "/admin/faq", icon: HelpCircle },
+  { label: "Testimonials", href: "/admin/testimonials", icon: Star },
   { label: "Gallery", href: "/admin/gallery", icon: ImageIcon },
   { label: "Upload", href: "/admin/upload", icon: Upload },
   { label: "Bookings", href: "/admin/bookings", icon: Calendar },

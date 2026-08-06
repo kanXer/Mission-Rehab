@@ -82,7 +82,8 @@ export default function Testimonials() {
               <span className="text-gradient">Recovery &amp; Hope</span>
             </h2>
             <p className="text-slate-600 dark:text-slate-300 max-w-2xl mx-auto text-lg">
-              Every journey is unique. Here are real Google reviews from our patients.
+              Every journey is unique. Here are real Google reviews from patients who
+              recovered at our neuro rehab center in Gorakhpur.
             </p>
             <a
               href="https://maps.google.com/?cid=6359659575143684042"

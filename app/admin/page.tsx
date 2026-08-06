@@ -4,7 +4,7 @@ import { useAuth } from "@/components/AuthProvider"
 import { useRouter } from "next/navigation"
 import { useEffect, useState } from "react"
 import Link from "next/link"
-import { FileText, Calendar, Image as IconImage, LayoutGrid, Loader, Tags, Phone, Clock, MessageSquare, AlertCircle, ArrowRight, CheckCircle } from "lucide-react"
+import { FileText, Calendar, Image as IconImage, LayoutGrid, Loader, Tags, Phone, Clock, MessageSquare, AlertCircle, ArrowRight, CheckCircle, HelpCircle, Star } from "lucide-react"
 
 interface Booking {
   _id: string
@@ -31,6 +31,8 @@ interface Enquiry {
 const cards = [
   { icon: FileText, label: "Manage Blog Posts", desc: "Create, edit or delete blog posts", href: "/admin/blog" },
   { icon: Tags, label: "Categories", desc: "Manage blog categories", href: "/admin/categories" },
+  { icon: HelpCircle, label: "Manage FAQs", desc: "Add, edit or delete FAQ questions", href: "/admin/faq" },
+  { icon: Star, label: "Manage Testimonials", desc: "Add, edit or delete patient reviews", href: "/admin/testimonials" },
   { icon: LayoutGrid, label: "Gallery Manager", desc: "Manage photos & videos", href: "/admin/gallery" },
   { icon: IconImage, label: "Upload Images and Embedd Youtube Videos", desc: "Add new images and youtube videos to the gallery", href: "/admin/upload" },
   { icon: Calendar, label: "View Bookings", desc: "See all appointment bookings", href: "/admin/bookings" },

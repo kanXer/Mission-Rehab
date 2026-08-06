@@ -29,7 +29,8 @@ export default function GoogleProfile() {
               <span className="text-gradient">Google Maps</span>
             </h2>
             <p className="text-slate-600 dark:text-slate-300 max-w-2xl mx-auto text-lg">
-              Divyaman Hospital, Bargadwa Bypass Road, Gorakhpur
+              Divyaman Hospital, Bargadwa Bypass Road, Gorakhpur — the leading
+              neuro physiotherapy clinic in Raptinagar, Gorakhpur.
             </p>
           </div>
 

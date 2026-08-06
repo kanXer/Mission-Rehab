@@ -94,7 +94,8 @@ export default function Contact() {
               Have Questions? Send Us an <span className="text-gradient">Enquiry</span>
             </h1>
             <p className="text-slate-600 dark:text-slate-400 max-w-2xl mx-auto text-base sm:text-lg">
-              Ask about physiotherapy treatments, home visits, doctor fees, or rehabilitation packages. We usually respond within 1–2 hours.
+              Ask about physiotherapy treatments, home visits, doctor fees, or rehabilitation packages
+              for stroke recovery, paralysis, and neurological conditions. We usually respond within 1–2 hours.
             </p>
           </div>
         </ScrollReveal>
@@ -317,7 +318,8 @@ export default function Contact() {
                       Home Visit Physiotherapy
                     </h4>
                     <p className="text-xs text-slate-600 dark:text-slate-400 mt-1 leading-relaxed">
-                      Unable to travel to clinic? Doctor visits patient at home in Gorakhpur for stroke, paralysis, &amp; neuro rehabilitation.
+                      Unable to travel to clinic? Doctor visits patient at home in Gorakhpur for
+                      stroke, paralysis, &amp; neuro rehabilitation. Paralysis physio treatment at home available.
                     </p>
                   </div>
                 </div>

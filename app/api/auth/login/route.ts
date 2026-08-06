@@ -20,7 +20,7 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: "Invalid credentials" }, { status: 401 })
     }
 
-    const role = user.role || (isAdminEmail(user.email) ? "admin" : "user")
+    const role = isAdminEmail(user.email) ? "admin" : "user"
     const payload = { id: user._id.toString(), email: user.email }
     const token = signToken(payload)
 

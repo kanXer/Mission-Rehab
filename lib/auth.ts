@@ -51,7 +51,8 @@ export async function getUserRole(userId: string): Promise<"admin" | "user"> {
   try {
     const db = await getDb()
     const user = await db.collection("users").findOne({ _id: new ObjectId(userId) })
-    return (user?.role === "admin") ? "admin" : "user"
+    if (!user) return "user"
+    return isAdminEmail(user.email) ? "admin" : "user"
   } catch {
     return "user"
   }

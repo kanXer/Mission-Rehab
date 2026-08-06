@@ -1,45 +1,38 @@
 'use client'
 
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import Link from "next/link"
 import { ChevronDown, HelpCircle, ArrowRight } from "lucide-react"
 import ScrollReveal from "./ScrollReveal"
 
-const faqs = [
-  {
-    q: "How soon after a stroke should rehabilitation begin?",
-    a: "Early intervention is critical. Research shows that the best outcomes occur when rehab starts within 24–48 hours after medical stabilization. At Gorakhpur Mission Rehab, we design phase-appropriate therapy protocols — from bed mobility in the early stage to advanced gait training as recovery progresses. Even months or years after a stroke, neuroplasticity-based therapy can still produce meaningful improvements.",
-  },
-  {
-    q: "Do you offer specialized balance and gait training in Gorakhpur?",
-    a: "Yes, gait correction and balance retraining are core specialties of Dr. Devejya Srivastava at Divyaman Hospital, Gorakhpur. We use task-specific training, perturbation-based balance therapy, and advanced gait analysis to address fall risk, walking asymmetry, and coordination deficits — whether from stroke, Parkinson's, spinal injury, or age-related decline. Home visit options are also available for patients with limited mobility.",
-  },
-  {
-    q: "Where is the neuro rehabilitation clinic located in Gorakhpur?",
-    a: "We are located at Divyaman Hospital, Bargadwa Bypass Road, Raptinagar Phase 1, Gorakhpur, Uttar Pradesh — 273001. The center is easily accessible from all parts of Gorakhpur city including Shahpur, Mohaddipur, Golghar, Gorakhnath, and Medical College Road. We also offer home visit physiotherapy services for patients with severe mobility limitations across Gorakhpur.",
-  },
-  {
-    q: "How long does neuro-rehabilitation typically take to show results?",
-    a: "Recovery timelines vary based on the condition, severity, and consistency of therapy. Stroke and brain injury patients typically require 6–12 months of structured rehab for significant functional gains, while conditions like gait disorders or plantar fasciitis may show improvement in 8–16 weeks. We provide a personalized timeline and measurable progress benchmarks after the initial assessment. Consistency is key — most patients attend 3–4 sessions per week for optimal results.",
-  },
-  {
-    q: "Do you treat children with developmental delays or cerebral palsy?",
-    a: "Yes, pediatric neuro-physiotherapy is one of our core specialties. Dr. Devejya Srivastava provides early intervention therapy for children with developmental delays, cerebral palsy, Down syndrome, and other neurological conditions. We focus on improving motor milestones, balance, coordination, and functional independence through play-based therapy and family-guided exercises.",
-  },
-]
-
-const faqSchema = {
-  "@context": "https://schema.org",
-  "@type": "FAQPage",
-  mainEntity: faqs.map((faq) => ({
-    "@type": "Question",
-    name: faq.q,
-    acceptedAnswer: { "@type": "Answer", text: faq.a },
-  })),
+interface Faq {
+  q: string
+  a: string
+  category?: string
 }
 
 export default function FAQ() {
+  const [faqs, setFaqs] = useState<Faq[]>([])
+  const [loading, setLoading] = useState(true)
   const [openIndex, setOpenIndex] = useState<number | null>(0)
+
+  useEffect(() => {
+    fetch("/api/faqs")
+      .then((r) => r.json())
+      .then((data) => { if (data.faqs) setFaqs(data.faqs) })
+      .catch(() => {})
+      .finally(() => setLoading(false))
+  }, [])
+
+  const faqSchema = {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    mainEntity: faqs.map((faq) => ({
+      "@type": "Question",
+      name: faq.q,
+      acceptedAnswer: { "@type": "Answer", text: faq.a },
+    })),
+  }
 
   return (
     <section
@@ -70,6 +63,11 @@ export default function FAQ() {
           </div>
         </ScrollReveal>
 
+        {loading ? (
+          <div className="flex justify-center py-12">
+            <div className="w-8 h-8 border-4 border-brand-200 dark:border-brand-800 border-t-brand-600 dark:border-t-brand-400 rounded-full animate-spin" />
+          </div>
+        ) : (
         <div className="space-y-3" role="list">
           {faqs.map((faq, index) => (
             <ScrollReveal key={index}>
@@ -124,6 +122,7 @@ export default function FAQ() {
             </ScrollReveal>
           ))}
         </div>
+        )}
 
         <div className="flex justify-center mt-10">
           <Link href="/faq"

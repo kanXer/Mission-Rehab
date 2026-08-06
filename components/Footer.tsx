@@ -111,8 +111,10 @@ export default function Footer() {
               <li className="hover:text-slate-200 dark:hover:text-slate-300 transition-colors">Spinal Cord Injury Rehab</li>
               <li className="hover:text-slate-200 dark:hover:text-slate-300 transition-colors">Gait &amp; Balance Training</li>
               <li className="hover:text-slate-200 dark:hover:text-slate-300 transition-colors">Pediatric Neuro-Physiotherapy</li>
+              <li className="hover:text-slate-200 dark:hover:text-slate-300 transition-colors">Neuroplasticity Therapy</li>
+              <li className="hover:text-slate-200 dark:hover:text-slate-300 transition-colors">Facial Palsy &amp; Parkinson&apos;s Rehab</li>
               <li className="hover:text-slate-200 dark:hover:text-slate-300 transition-colors">Plantar Fasciitis &amp; Foot Biomechanics</li>
-              <li className="hover:text-slate-200 dark:hover:text-slate-300 transition-colors">Spasticity &amp; Mobility Management</li>
+              <li className="hover:text-slate-200 dark:hover:text-slate-300 transition-colors">Home Visit Physiotherapy</li>
             </ul>
           </div>
 

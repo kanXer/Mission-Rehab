@@ -25,11 +25,11 @@ export async function GET() {
   try {
     await ensureContent()
     const db = await getDb()
-    const docs = await db.collection("reviews").find({}).sort({ order: 1 }).toArray()
-    const reviews = docs.map(({ _id, ...r }) => ({ ...r, _id: _id.toString() }))
-    return NextResponse.json({ reviews })
+    const docs = await db.collection("faqs").find({}).sort({ order: 1 }).toArray()
+    const faqs = docs.map(({ _id, ...r }) => ({ ...r, _id: _id.toString() }))
+    return NextResponse.json({ faqs })
   } catch {
-    return NextResponse.json({ reviews: [] })
+    return NextResponse.json({ faqs: [] })
   }
 }
 
@@ -37,15 +37,15 @@ export async function POST(req: NextRequest) {
   if (!(await isAdminRequest(req))) return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
   try {
     const body = await req.json()
-    const name = body?.name?.trim()
-    const content = body?.content?.trim()
-    if (!name || !content) return NextResponse.json({ error: "Name and review text are required" }, { status: 400 })
+    const q = body?.q?.trim()
+    const a = body?.a?.trim()
+    if (!q || !a) return NextResponse.json({ error: "Question and answer are required" }, { status: 400 })
 
-    const rating = Number(body?.rating) || 5
+    const category = body?.category?.trim() || "General"
     const db = await getDb()
-    const order = await db.collection("reviews").countDocuments()
-    const result = await db.collection("reviews").insertOne({ name, content, rating, order })
-    return NextResponse.json({ review: { _id: result.insertedId.toString(), name, content, rating, order } })
+    const order = await db.collection("faqs").countDocuments()
+    const result = await db.collection("faqs").insertOne({ q, a, category, order })
+    return NextResponse.json({ faq: { _id: result.insertedId.toString(), q, a, category, order } })
   } catch {
     return NextResponse.json({ error: "Something went wrong" }, { status: 500 })
   }
@@ -55,14 +55,14 @@ export async function PUT(req: NextRequest) {
   if (!(await isAdminRequest(req))) return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
   try {
     const body = await req.json()
-    const { _id, name, content } = body
-    if (!_id || !name?.trim() || !content?.trim()) {
-      return NextResponse.json({ error: "id, name and review text are required" }, { status: 400 })
+    const { _id, q, a } = body
+    if (!_id || !q?.trim() || !a?.trim()) {
+      return NextResponse.json({ error: "id, question and answer are required" }, { status: 400 })
     }
 
-    const rating = Number(body?.rating) || 5
+    const category = body?.category?.trim() || "General"
     const db = await getDb()
-    await db.collection("reviews").updateOne({ _id: new ObjectId(_id) }, { $set: { name: name.trim(), content: content.trim(), rating } })
+    await db.collection("faqs").updateOne({ _id: new ObjectId(_id) }, { $set: { q: q.trim(), a: a.trim(), category } })
     return NextResponse.json({ success: true })
   } catch {
     return NextResponse.json({ error: "Something went wrong" }, { status: 500 })
@@ -77,7 +77,7 @@ export async function DELETE(req: NextRequest) {
     if (!id) return NextResponse.json({ error: "id is required" }, { status: 400 })
 
     const db = await getDb()
-    await db.collection("reviews").deleteOne({ _id: new ObjectId(id) })
+    await db.collection("faqs").deleteOne({ _id: new ObjectId(id) })
     return NextResponse.json({ success: true })
   } catch {
     return NextResponse.json({ error: "Something went wrong" }, { status: 500 })

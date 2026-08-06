@@ -158,7 +158,7 @@ export default function ServicesPageClient() {
                   <span className="text-gradient">Services</span>
                 </h1>
                 <p className="text-slate-600 dark:text-slate-300 max-w-3xl mx-auto text-lg">
-                  Every condition is unique — we design personalized therapy plans targeting the root cause of neurological and movement disorders. All services are directed by Dr. Devejya Srivastava (PT).
+                  Every condition is unique — we design personalized therapy plans targeting the root cause of neurological and movement disorders. All services are directed by Dr. Devejya Srivastava (PT), one of the top neurological physiotherapists in India.
                 </p>
               </div>
             </ScrollReveal>
@@ -219,6 +219,48 @@ export default function ServicesPageClient() {
                 })}
               </div>
             )}
+
+            <ScrollReveal>
+              <div className="mt-20 grid grid-cols-1 lg:grid-cols-2 gap-8">
+                <div className="bg-white dark:bg-navy-800 rounded-3xl p-8 border border-slate-200 dark:border-navy-700 shadow-xl">
+                  <h2 className="text-2xl font-bold text-navy-800 dark:text-white mb-2">Conditions We Treat</h2>
+                  <p className="text-sm text-slate-600 dark:text-slate-300 mb-5">
+                    Beyond the services above, our neuro rehabilitation specialists routinely manage:
+                  </p>
+                  <ul className="grid grid-cols-1 sm:grid-cols-2 gap-x-6 gap-y-2.5 text-sm text-slate-700 dark:text-slate-200">
+                    <li className="flex items-start gap-2"><CheckCircle className="w-4 h-4 text-brand-600 dark:text-brand-400 shrink-0 mt-0.5" />Paralysis physiotherapy treatment</li>
+                    <li className="flex items-start gap-2"><CheckCircle className="w-4 h-4 text-brand-600 dark:text-brand-400 shrink-0 mt-0.5" />Stroke recovery physiotherapy &amp; post-stroke physio exercises</li>
+                    <li className="flex items-start gap-2"><CheckCircle className="w-4 h-4 text-brand-600 dark:text-brand-400 shrink-0 mt-0.5" />Paraplegia physiotherapy center care</li>
+                    <li className="flex items-start gap-2"><CheckCircle className="w-4 h-4 text-brand-600 dark:text-brand-400 shrink-0 mt-0.5" />Quadriplegia rehab therapy</li>
+                    <li className="flex items-start gap-2"><CheckCircle className="w-4 h-4 text-brand-600 dark:text-brand-400 shrink-0 mt-0.5" />Ataxia balance therapy</li>
+                    <li className="flex items-start gap-2"><CheckCircle className="w-4 h-4 text-brand-600 dark:text-brand-400 shrink-0 mt-0.5" />Neuropathy physiotherapy treatment</li>
+                    <li className="flex items-start gap-2"><CheckCircle className="w-4 h-4 text-brand-600 dark:text-brand-400 shrink-0 mt-0.5" />Multiple sclerosis physiotherapy</li>
+                    <li className="flex items-start gap-2"><CheckCircle className="w-4 h-4 text-brand-600 dark:text-brand-400 shrink-0 mt-0.5" />ALS physical therapy rehabilitation</li>
+                    <li className="flex items-start gap-2"><CheckCircle className="w-4 h-4 text-brand-600 dark:text-brand-400 shrink-0 mt-0.5" />Sciatica &amp; nerve compression physio</li>
+                    <li className="flex items-start gap-2"><CheckCircle className="w-4 h-4 text-brand-600 dark:text-brand-400 shrink-0 mt-0.5" />Brachial plexus injury rehabilitation</li>
+                    <li className="flex items-start gap-2"><CheckCircle className="w-4 h-4 text-brand-600 dark:text-brand-400 shrink-0 mt-0.5" />Parkinson&apos;s rehab center programs</li>
+                    <li className="flex items-start gap-2"><CheckCircle className="w-4 h-4 text-brand-600 dark:text-brand-400 shrink-0 mt-0.5" />Muscle spasticity therapy &amp; mobility management</li>
+                    <li className="flex items-start gap-2"><CheckCircle className="w-4 h-4 text-brand-600 dark:text-brand-400 shrink-0 mt-0.5" />Developmental delay physio for children</li>
+                    <li className="flex items-start gap-2"><CheckCircle className="w-4 h-4 text-brand-600 dark:text-brand-400 shrink-0 mt-0.5" />Plantar fasciitis physiotherapy treatment</li>
+                  </ul>
+                </div>
+
+                <div className="bg-gradient-to-br from-brand-50 to-accent-50 dark:from-navy-800 dark:to-navy-800 rounded-3xl p-8 border border-brand-100 dark:border-navy-700 shadow-xl">
+                  <h2 className="text-2xl font-bold text-navy-800 dark:text-white mb-2">Advanced Therapy Techniques</h2>
+                  <p className="text-sm text-slate-600 dark:text-slate-300 mb-5">
+                    Science-backed methods used by our senior neuro physiotherapists:
+                  </p>
+                  <ul className="space-y-2.5 text-sm text-slate-700 dark:text-slate-200">
+                    <li className="flex items-start gap-2"><CheckCircle className="w-4 h-4 text-brand-600 dark:text-brand-400 shrink-0 mt-0.5" />Neurodevelopmental therapy (NDT) &amp; Bobath neuro physiotherapy</li>
+                    <li className="flex items-start gap-2"><CheckCircle className="w-4 h-4 text-brand-600 dark:text-brand-400 shrink-0 mt-0.5" />Constraint induced movement therapy (CIMT)</li>
+                    <li className="flex items-start gap-2"><CheckCircle className="w-4 h-4 text-brand-600 dark:text-brand-400 shrink-0 mt-0.5" />Proprioceptive neuromuscular facilitation (PNF)</li>
+                    <li className="flex items-start gap-2"><CheckCircle className="w-4 h-4 text-brand-600 dark:text-brand-400 shrink-0 mt-0.5" />Functional electrical stimulation (FES) for paralysis</li>
+                    <li className="flex items-start gap-2"><CheckCircle className="w-4 h-4 text-brand-600 dark:text-brand-400 shrink-0 mt-0.5" />Robotic gait training rehabilitation &amp; balance and coordination rehab</li>
+                    <li className="flex items-start gap-2"><CheckCircle className="w-4 h-4 text-brand-600 dark:text-brand-400 shrink-0 mt-0.5" />Science-backed neuroplasticity rehabilitation</li>
+                  </ul>
+                </div>
+              </div>
+            </ScrollReveal>
 
             <ScrollReveal>
               <div className="text-center mt-16 bg-gradient-to-r from-navy-800 to-navy-700 rounded-3xl p-10 shadow-2xl dark:shadow-2xl dark:shadow-black/10">

@@ -1,72 +1,34 @@
 'use client'
 
-import type { Metadata } from "next"
-import { useState } from "react"
+import { useState, useEffect, useMemo } from "react"
 import { ChevronDown, HelpCircle, Phone, MessageSquare, Search } from "lucide-react"
 import Link from "next/link"
 import Header from "@/components/Header"
 import Footer from "@/components/Footer"
 import ScrollReveal from "@/components/ScrollReveal"
 
-const faqs = [
-  {
-    q: "How soon after a stroke should rehabilitation begin?",
-    a: "Early intervention is critical. Research shows that the best outcomes occur when rehab starts within 24–48 hours after medical stabilization. At Gorakhpur Mission Rehab, we design phase-appropriate therapy protocols — from bed mobility in the early stage to advanced gait training as recovery progresses. Even months or years after a stroke, neuroplasticity-based therapy can still produce meaningful improvements.",
-    category: "Stroke & Paralysis",
-  },
-  {
-    q: "Do you offer specialized balance and gait training in Gorakhpur?",
-    a: "Yes, gait correction and balance retraining are core specialties of Dr. Devejya Srivastava at Divyaman Hospital, Gorakhpur. We use task-specific training, perturbation-based balance therapy, and advanced gait analysis to address fall risk, walking asymmetry, and coordination deficits — whether from stroke, Parkinson's, spinal injury, or age-related decline. Home visit options are also available for patients with limited mobility.",
-    category: "Gait & Balance",
-  },
-  {
-    q: "Where is the neuro rehabilitation clinic located in Gorakhpur?",
-    a: "We are located at Divyaman Hospital, Bargadwa Bypass Road, Raptinagar Phase 1, Gorakhpur, Uttar Pradesh — 273001. The center is easily accessible from all parts of Gorakhpur city including Shahpur, Mohaddipur, Golghar, Gorakhnath, and Medical College Road. We also offer home visit physiotherapy services for patients with severe mobility limitations across Gorakhpur.",
-    category: "Clinic Info",
-  },
-  {
-    q: "How long does neuro-rehabilitation typically take to show results?",
-    a: "Recovery timelines vary based on the condition, severity, and consistency of therapy. Stroke and brain injury patients typically require 6–12 months of structured rehab for significant functional gains, while conditions like gait disorders or plantar fasciitis may show improvement in 8–16 weeks. We provide a personalized timeline and measurable progress benchmarks after the initial assessment. Consistency is key — most patients attend 3–4 sessions per week for optimal results.",
-    category: "Treatment",
-  },
-  {
-    q: "Do you treat children with developmental delays or cerebral palsy?",
-    a: "Yes, pediatric neuro-physiotherapy is one of our core specialties. Dr. Devejya Srivastava provides early intervention therapy for children with developmental delays, cerebral palsy, Down syndrome, and other neurological conditions. We focus on improving motor milestones, balance, coordination, and functional independence through play-based therapy and family-guided exercises.",
-    category: "Pediatric",
-  },
-  {
-    q: "What conditions do you treat at Gorakhpur Mission Rehab?",
-    a: "We treat a wide range of neurological and movement disorders including: Stroke & Paralysis, Spinal Cord Injury, Gait & Balance Disorders, Parkinson's Disease, Pediatric Developmental Delays, Cerebral Palsy, Plantar Fasciitis & Heel Pain, Sports Injuries, Post-Surgical Rehabilitation, Back & Neck Pain, Knee & Joint Pain, and Spasticity Management. Each patient receives a personalized treatment plan based on their specific condition and goals.",
-    category: "Treatment",
-  },
-  {
-    q: "Do you offer home visit physiotherapy in Gorakhpur?",
-    a: "Yes, we offer home visit physiotherapy services for patients with severe mobility limitations across Gorakhpur city and surrounding areas. Our home visit program includes assessment, therapeutic exercises, family training, and progress monitoring. This is especially beneficial for stroke patients, elderly individuals, and post-surgical cases who cannot travel to the clinic.",
-    category: "Clinic Info",
-  },
-  {
-    q: "How do I book an appointment?",
-    a: "You can book an appointment online through our website, by calling +91 9616962072, or through WhatsApp. Simply choose your preferred date and time, share your details, and Dr. Devejya Srivastava's team will confirm your appointment within 24 hours. We are open Monday to Saturday, 10:00 AM to 8:00 PM. Sunday is a holiday.",
-    category: "Treatment",
-  },
-]
-
-const categories = Array.from(new Set(faqs.map((f) => f.category)))
-
-const faqSchema = {
-  "@context": "https://schema.org",
-  "@type": "FAQPage",
-  mainEntity: faqs.map((faq) => ({
-    "@type": "Question",
-    name: faq.q,
-    acceptedAnswer: { "@type": "Answer", text: faq.a },
-  })),
+interface Faq {
+  q: string
+  a: string
+  category: string
 }
 
 export default function FAQPage() {
+  const [faqs, setFaqs] = useState<Faq[]>([])
+  const [loading, setLoading] = useState(true)
   const [openIndex, setOpenIndex] = useState<number | null>(0)
   const [search, setSearch] = useState("")
   const [activeCategory, setActiveCategory] = useState<string | null>(null)
+
+  useEffect(() => {
+    fetch("/api/faqs")
+      .then((r) => r.json())
+      .then((data) => { if (data.faqs) setFaqs(data.faqs) })
+      .catch(() => {})
+      .finally(() => setLoading(false))
+  }, [])
+
+  const categories = useMemo(() => Array.from(new Set(faqs.map((f) => f.category))), [faqs])
 
   const filtered = faqs.filter((faq) => {
     const matchesSearch = search === "" ||
@@ -75,6 +37,16 @@ export default function FAQPage() {
     const matchesCategory = activeCategory === null || faq.category === activeCategory
     return matchesSearch && matchesCategory
   })
+
+  const faqSchema = {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    mainEntity: faqs.map((faq) => ({
+      "@type": "Question",
+      name: faq.q,
+      acceptedAnswer: { "@type": "Answer", text: faq.a },
+    })),
+  }
 
   return (
     <>
@@ -139,56 +111,62 @@ export default function FAQPage() {
               </div>
             </ScrollReveal>
 
-            <div className="space-y-3">
-              {filtered.length === 0 && (
-                <div className="text-center py-12 bg-slate-50 dark:bg-navy-800 rounded-2xl border border-slate-200 dark:border-navy-700">
-                  <HelpCircle className="w-12 h-12 text-slate-300 dark:text-slate-600 mx-auto mb-3" />
-                  <p className="text-slate-500 dark:text-slate-400 font-medium">No matching questions found</p>
-                  <p className="text-slate-400 dark:text-slate-500 text-sm">Try a different search term or category</p>
-                </div>
-              )}
-              {filtered.map((faq, index) => (
-                <ScrollReveal key={index}>
-                  <div
-                    className={`relative rounded-xl transition-all duration-300 ${
-                      openIndex === index
-                        ? "bg-white dark:bg-navy-800 border border-brand-200 dark:border-brand-800 shadow-lg dark:shadow-lg dark:shadow-black/10 shadow-brand-100/20 dark:shadow-brand-900/20"
-                        : "bg-slate-50 dark:bg-navy-800 border border-slate-200 dark:border-navy-700 hover:border-brand-200 dark:hover:border-brand-800"
-                    }`}
-                  >
-                    {openIndex === index && (
-                      <div className="absolute -inset-[1px] bg-gradient-to-r from-brand-400/10 dark:from-brand-600/10 via-accent-400/10 dark:via-accent-600/10 to-brand-400/10 dark:to-brand-600/10 rounded-xl opacity-50 pointer-events-none" />
-                    )}
-                    <div className="flex items-center gap-2 px-5 pt-3 pb-0">
-                      <span className="text-[10px] font-medium text-brand-600 dark:text-brand-400 bg-brand-50 dark:bg-brand-900/30 px-2 py-0.5 rounded-full">{faq.category}</span>
-                    </div>
-                    <button
-                      onClick={() => setOpenIndex(openIndex === index ? null : index)}
-                      className="w-full flex items-center justify-between px-5 py-3 text-left relative z-10"
-                      aria-expanded={openIndex === index}
-                    >
-                      <span className="text-sm font-semibold text-navy-800 dark:text-white pr-4 flex items-center gap-2" itemProp="name">
-                        {faq.q}
-                      </span>
-                      <ChevronDown
-                        className={`w-5 h-5 shrink-0 transition-all duration-300 ${
-                          openIndex === index ? "rotate-180 text-brand-600 dark:text-brand-400" : "text-slate-400 dark:text-slate-500"
-                        }`}
-                      />
-                    </button>
+            {loading ? (
+              <div className="flex justify-center py-20">
+                <div className="w-8 h-8 border-4 border-brand-200 dark:border-brand-800 border-t-brand-600 dark:border-t-brand-400 rounded-full animate-spin" />
+              </div>
+            ) : (
+              <div className="space-y-3">
+                {filtered.length === 0 && (
+                  <div className="text-center py-12 bg-slate-50 dark:bg-navy-800 rounded-2xl border border-slate-200 dark:border-navy-700">
+                    <HelpCircle className="w-12 h-12 text-slate-300 dark:text-slate-600 mx-auto mb-3" />
+                    <p className="text-slate-500 dark:text-slate-400 font-medium">No matching questions found</p>
+                    <p className="text-slate-400 dark:text-slate-500 text-sm">Try a different search term or category</p>
+                  </div>
+                )}
+                {filtered.map((faq, index) => (
+                  <ScrollReveal key={index}>
                     <div
-                      className={`overflow-hidden transition-all duration-300 ease-in-out ${
-                        openIndex === index ? "max-h-96" : "max-h-0"
+                      className={`relative rounded-xl transition-all duration-300 ${
+                        openIndex === index
+                          ? "bg-white dark:bg-navy-800 border border-brand-200 dark:border-brand-800 shadow-lg dark:shadow-lg dark:shadow-black/10 shadow-brand-100/20 dark:shadow-brand-900/20"
+                          : "bg-slate-50 dark:bg-navy-800 border border-slate-200 dark:border-navy-700 hover:border-brand-200 dark:hover:border-brand-800"
                       }`}
                     >
-                      <p className="px-5 pb-4 text-sm text-slate-600 dark:text-slate-300 leading-relaxed relative z-10">
-                        {faq.a}
-                      </p>
+                      {openIndex === index && (
+                        <div className="absolute -inset-[1px] bg-gradient-to-r from-brand-400/10 dark:from-brand-600/10 via-accent-400/10 dark:via-accent-600/10 to-brand-400/10 dark:to-brand-600/10 rounded-xl opacity-50 pointer-events-none" />
+                      )}
+                      <div className="flex items-center gap-2 px-5 pt-3 pb-0">
+                        <span className="text-[10px] font-medium text-brand-600 dark:text-brand-400 bg-brand-50 dark:bg-brand-900/30 px-2 py-0.5 rounded-full">{faq.category}</span>
+                      </div>
+                      <button
+                        onClick={() => setOpenIndex(openIndex === index ? null : index)}
+                        className="w-full flex items-center justify-between px-5 py-3 text-left relative z-10"
+                        aria-expanded={openIndex === index}
+                      >
+                        <span className="text-sm font-semibold text-navy-800 dark:text-white pr-4 flex items-center gap-2" itemProp="name">
+                          {faq.q}
+                        </span>
+                        <ChevronDown
+                          className={`w-5 h-5 shrink-0 transition-all duration-300 ${
+                            openIndex === index ? "rotate-180 text-brand-600 dark:text-brand-400" : "text-slate-400 dark:text-slate-500"
+                          }`}
+                        />
+                      </button>
+                      <div
+                        className={`overflow-hidden transition-all duration-300 ease-in-out ${
+                          openIndex === index ? "max-h-96" : "max-h-0"
+                        }`}
+                      >
+                        <p className="px-5 pb-4 text-sm text-slate-600 dark:text-slate-300 leading-relaxed relative z-10">
+                          {faq.a}
+                        </p>
+                      </div>
                     </div>
-                  </div>
-                </ScrollReveal>
-              ))}
-            </div>
+                  </ScrollReveal>
+                ))}
+              </div>
+            )}
 
             <ScrollReveal>
               <div className="text-center mt-12 bg-gradient-to-r from-navy-800 to-navy-700 rounded-3xl p-8 shadow-2xl dark:shadow-2xl dark:shadow-black/10">

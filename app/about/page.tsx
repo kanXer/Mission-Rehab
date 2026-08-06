@@ -9,7 +9,18 @@ import ScrollReveal from "@/components/ScrollReveal"
 export const metadata: Metadata = {
   title: "About Dr. Devejya Srivastava — Neuro Rehab Specialist Gorakhpur",
   description:
-    "Meet Dr. Devejya Srivastava (PT), Consultant Neuro Rehab Physiotherapist at Divyaman Hospital, Gorakhpur. 10+ years of experience in stroke recovery, gait correction, spinal cord rehab, and pediatric neuro-physiotherapy.",
+    "Meet Dr. Devejya Srivastava (PT), Consultant Neuro Rehab Physiotherapist at Divyaman Hospital, Gorakhpur. 10+ years of experience in stroke recovery, gait correction, spinal cord rehab, and pediatric neuro-physiotherapy. One of the best neuro therapists in Gorakhpur.",
+  keywords: [
+    "dr devejya srivastava physiotherapist",
+    "dr devejya srivastava gorakhpur",
+    "neurological rehabilitation doctor near me",
+    "senior neuro physiotherapist",
+    "best doctor for paralysis in eastern uttar pradesh",
+    "top neuro physiotherapist in eastern up",
+    "top neurological physiotherapist in india",
+    "neuro physiotherapist at divyaman hospital gorakhpur",
+    "best neuro physiotherapist near medical college road gorakhpur",
+  ],
   openGraph: {
     title: "Dr. Devejya Srivastava (PT) — Neuro Rehabilitation Specialist | Gorakhpur Mission Rehab",
     description: "Learn about Dr. Devejya Srivastava's expertise, qualifications, and approach to neuro-rehabilitation at Divyaman Hospital, Gorakhpur.",
@@ -124,7 +135,7 @@ export default function AboutPage() {
                   </p>
 
                   <p className="text-slate-600 dark:text-slate-300 leading-relaxed">
-                    Yet our journey is far from over. We envision <strong>Gorakhpur Mission Rehab</strong> as a centre of excellence in Neuro Rehabilitation — where advanced therapy, patient education, clinical research and professional training converge to elevate neurological care across Eastern Uttar Pradesh and beyond.
+                    Yet our journey is far from over. We envision <strong>Gorakhpur Mission Rehab</strong> as a centre of excellence in Neuro Rehabilitation — where advanced therapy, patient education, clinical research and professional training converge to elevate neurological care across Eastern Uttar Pradesh and beyond. Today we are recognized as a leading neuro rehabilitation center in Uttar Pradesh, serving patients from Gorakhpur, Deoria, Kushinagar, Maharajganj, and Basti who were earlier forced to travel to Lucknow or Delhi for specialized care. With advanced neuroplasticity therapy and robotic gait training, we are now counted among the best neuro rehabilitation centers in India — while remaining an affordable neuro rehabilitation center for families across Eastern Uttar Pradesh.
                   </p>
 
                   <div className="bg-gradient-to-r from-brand-600/10 via-accent-600/10 to-brand-600/10 rounded-2xl p-6 border border-brand-200 dark:border-brand-800 text-center">

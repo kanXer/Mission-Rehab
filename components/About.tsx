@@ -149,7 +149,7 @@ export default function About() {
               </p>
 
               <p className="text-slate-600 dark:text-slate-300 leading-relaxed">
-                Yet our journey is far from over. We envision <strong>Gorakhpur Mission Rehab</strong> as a centre of excellence in Neuro Rehabilitation — where advanced therapy, patient education, clinical research and professional training converge to elevate neurological care across Eastern Uttar Pradesh and beyond.
+                Yet our journey is far from over. We envision <strong>Gorakhpur Mission Rehab</strong> as a centre of excellence in Neuro Rehabilitation — where advanced therapy, patient education, clinical research and professional training converge to elevate neurological care across Eastern Uttar Pradesh and beyond. Today, we are proud to be counted among the <strong>top neurological physiotherapists in India</strong> — bringing world-class care closer to families across Gorakhpur and Purvanchal.
               </p>
 
               <div className="bg-gradient-to-r from-brand-600/10 via-accent-600/10 to-brand-600/10 rounded-2xl p-6 border border-brand-200 dark:border-brand-800 text-center">
@@ -198,12 +198,14 @@ export default function About() {
           <div className="text-center max-w-4xl mx-auto pt-6 border-t border-slate-200 dark:border-navy-800">
             <p className="text-xs md:text-sm text-slate-500 dark:text-slate-400 leading-relaxed">
               <strong className="text-navy-800 dark:text-white">Gorakhpur Mission Rehab</strong> — Directed by{" "}
-              <strong className="text-navy-800 dark:text-white">Dr. Devejya Srivastava (PT)</strong>, we are a specialized{" "}
-              <strong className="text-navy-800 dark:text-white">neuro rehabilitation center in Gorakhpur</strong> located at{" "}
-              <strong className="text-navy-800 dark:text-white">Divyaman Hospital, Bargadwa Bypass, Raptinagar Phase 1</strong>. We serve patients from across{" "}
-              <strong className="text-navy-800 dark:text-white">Gorakhpur, Deoria, Kushinagar, Maharajganj, and Basti</strong> seeking{" "}
-              <strong className="text-navy-800 dark:text-white">affordable physiotherapy</strong> for stroke recovery, paralysis treatment, spinal cord injury rehab, pediatric neuro care, gait training, and fall prevention.{" "}
-              <strong className="text-navy-800 dark:text-white">Home visit physiotherapy</strong> also available across Gorakhpur for patients with limited mobility.{" "}
+              <strong className="text-navy-800 dark:text-white">Dr. Devejya Srivastava (PT)</strong>, we are one of the{" "}
+              <strong className="text-navy-800 dark:text-white">best neuro rehabilitation centers in Uttar Pradesh</strong> — recognised among the <strong className="text-navy-800 dark:text-white">best neuro rehabilitation centers in India</strong>, located at{" "}
+              <strong className="text-navy-800 dark:text-white">Divyaman Hospital, Bargadwa Bypass, Raptinagar Phase 1</strong> — a{" "}
+              <strong className="text-navy-800 dark:text-white">neuro physiotherapy clinic in Raptinagar, Gorakhpur</strong> near Medical College Road. We serve patients from across{" "}
+              <strong className="text-navy-800 dark:text-white">Gorakhpur, Deoria, Kushinagar, Maharajganj, and Basti</strong> in{" "}
+              <strong className="text-navy-800 dark:text-white">Eastern Uttar Pradesh and Purvanchal</strong> seeking{" "}
+              <strong className="text-navy-800 dark:text-white">affordable neuro rehabilitation</strong> for stroke recovery, paralysis treatment, spinal cord injury rehab, pediatric neuro care, gait training, and fall prevention — without travelling to Lucknow.{" "}
+              <strong className="text-navy-800 dark:text-white">Home visit physiotherapy near me</strong> also available across Gorakhpur for patients with limited mobility.{" "}
               <strong className="text-navy-800 dark:text-white">Book an appointment</strong> with the{" "}
               <strong className="text-navy-800 dark:text-white">best physiotherapist near you</strong> in Gorakhpur today.
             </p>

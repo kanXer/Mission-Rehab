@@ -1,4 +1,4 @@
-import { Phone, MessageSquare, MapPin, Clock, Mail, ShieldCheck } from "lucide-react"
+import { Phone, MessageSquare, MapPin, Clock, Mail, ShieldCheck, IndianRupee } from "lucide-react"
 import ScrollReveal from "./ScrollReveal"
 import BookingFormEnhanced from "./BookingFormEnhanced"
 
@@ -20,8 +20,9 @@ export default function Appointment() {
               <span className="text-gradient">Journey Today</span>
             </h2>
             <p className="text-slate-600 dark:text-slate-300 max-w-2xl mx-auto text-lg">
-              Book a consultation with Dr. Devejya Srivastava at Divyaman Hospital, Gorakhpur.
-              We&apos;ll confirm your appointment within 1 hour.
+              Book a consultation with Dr. Devejya Srivastava at Divyaman Hospital, Gorakhpur —
+              the trusted choice for stroke rehabilitation, paralysis treatment, and
+              home visit physiotherapy near you. We&apos;ll confirm your appointment within 1 hour.
             </p>
           </div>
         </ScrollReveal>
@@ -78,6 +79,24 @@ export default function Appointment() {
                     <p className="text-xs text-slate-600 dark:text-slate-400">Can&apos;t travel? Physiotherapy at your home in Gorakhpur.</p>
                   </div>
                 </div>
+              </div>
+            </ScrollReveal>
+
+            <ScrollReveal>
+              <div className="bg-gradient-to-r from-brand-600 to-accent-600 rounded-2xl p-6 shadow-xl text-white">
+                <div className="flex items-center gap-3 mb-2">
+                  <div className="w-10 h-10 bg-white/15 rounded-xl flex items-center justify-center shrink-0">
+                    <IndianRupee className="w-5 h-5" />
+                  </div>
+                  <div>
+                    <p className="text-sm font-semibold text-white/90">Consultation / Session Fee</p>
+                    <p className="text-2xl font-extrabold">
+                      ₹{process.env.NEXT_PUBLIC_SESSION_PRICE || "500-600"}
+                      <span className="text-xs font-medium text-white/70 ml-1">/ session</span>
+                    </p>
+                  </div>
+                </div>
+                <p className="text-xs text-white/75">Charges depend on your condition and therapy plan. Call us for a personalised quote.</p>
               </div>
             </ScrollReveal>
 

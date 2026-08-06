@@ -74,7 +74,10 @@ export default function Services() {
             </h2>
             <p className="text-slate-600 dark:text-slate-300 max-w-2xl mx-auto text-lg">
               Every condition is unique — we design personalized therapy plans targeting
-              the root cause of neurological and movement disorders.
+              the root cause of neurological and movement disorders. From stroke recovery
+              and hemiplegia physiotherapy to pediatric neuro rehabilitation and
+              Parkinson's care, our team works as your neuro rehabilitation specialist
+              in Gorakhpur.
             </p>
           </div>
         </ScrollReveal>
