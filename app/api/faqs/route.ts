@@ -2,7 +2,6 @@ import { NextRequest, NextResponse } from "next/server"
 import { ObjectId } from "mongodb"
 import { getDb } from "@/lib/mongodb"
 import { verifyToken, isUserAdmin } from "@/lib/auth"
-import { ensureContent } from "@/lib/seed"
 
 function getToken(req: NextRequest): string | undefined {
   const cookie = req.headers.get("cookie") || ""
@@ -23,7 +22,6 @@ async function isAdminRequest(req: NextRequest): Promise<boolean> {
 
 export async function GET() {
   try {
-    await ensureContent()
     const db = await getDb()
     const docs = await db.collection("faqs").find({}).sort({ order: 1 }).toArray()
     const faqs = docs.map(({ _id, ...r }) => ({ ...r, _id: _id.toString() }))
