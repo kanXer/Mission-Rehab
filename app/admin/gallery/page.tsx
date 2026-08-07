@@ -97,9 +97,9 @@ function GalleryList({
               <span className="text-xs text-slate-400 w-5 text-right shrink-0">{idx + 1}</span>
               <div className="relative w-20 h-14 rounded-lg overflow-hidden bg-slate-100 dark:bg-navy-900 shrink-0 cursor-pointer ring-1 ring-slate-200 dark:ring-navy-700 hover:ring-2 hover:ring-brand-400 transition-all group/th" onClick={() => onPreview(item)}>
                 {item.type === "image" ? (
-                  <img src={item.url} alt="" className="w-full h-full object-cover" />
+                  <img src={item.url} alt="" loading="lazy" className="w-full h-full object-cover" />
                 ) : ytId ? (
-                  <img src={`https://img.youtube.com/vi/${ytId}/mqdefault.jpg`} alt="" className="w-full h-full object-cover" />
+                  <img src={`https://img.youtube.com/vi/${ytId}/mqdefault.jpg`} alt="" loading="lazy" className="w-full h-full object-cover" />
                 ) : (
                   <div className="w-full h-full flex items-center justify-center"><Film className="w-4 h-4 text-red-500" /></div>
                 )}

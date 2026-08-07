@@ -1,5 +1,6 @@
 import jwt from "jsonwebtoken"
 import bcrypt from "bcryptjs"
+import crypto from "crypto"
 import { cookies } from "next/headers"
 import { getDb } from "./mongodb"
 import { ObjectId } from "mongodb"
@@ -60,4 +61,25 @@ export async function getUserRole(userId: string): Promise<"admin" | "user"> {
 
 export async function isUserAdmin(userId: string): Promise<boolean> {
   return (await getUserRole(userId)) === "admin"
+}
+
+/**
+ * Creates a server-signed HMAC proof that the given userId is admin.
+ * This prevents response-interception attacks where someone flips isAdmin to true
+ * via a proxy — without the matching proof, the client won't grant admin UI access.
+ */
+export function signAdminProof(userId: string): string {
+  const hmac = crypto.createHmac("sha256", JWT_SECRET)
+  hmac.update(`admin:${userId}`)
+  return hmac.digest("hex")
+}
+
+/**
+ * Verifies that the admin proof matches the given userId.
+ */
+export function verifyAdminProof(userId: string, proof: string): boolean {
+  const expected = signAdminProof(userId)
+  // Timing-safe comparison to prevent timing attacks
+  if (expected.length !== proof.length) return false
+  return crypto.timingSafeEqual(Buffer.from(expected), Buffer.from(proof))
 }

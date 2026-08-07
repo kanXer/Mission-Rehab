@@ -108,7 +108,7 @@ export default function Gallery() {
 
               <div className="relative rounded-[1.8rem] overflow-hidden bg-black aspect-[9/16]">
                 {photos.map((p, i) => (
-                  <img key={p._id} src={p.url} alt={p.title || ""}
+                  <img key={p._id} src={p.url} alt={p.title || ""} loading="lazy"
                     className={`absolute inset-0 w-full h-full object-cover transition-all duration-500 ${
                       i === idx ? "opacity-100 scale-100" : "opacity-0 scale-105"
                     }`}

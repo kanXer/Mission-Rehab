@@ -31,7 +31,7 @@ export default function Footer() {
                 alt="Gorakhpur Mission Rehab Logo"
                 width={200}
                 height={200}
-                quality={100}
+                quality={80}
                 className="h-24 w-auto object-contain"
               />
             </div>

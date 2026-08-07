@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server"
-import { getAuth, isAdminEmail } from "@/lib/auth"
+import { getAuth, isAdminEmail, signAdminProof } from "@/lib/auth"
 import { getDb } from "@/lib/mongodb"
 import { ObjectId } from "mongodb"
 
@@ -11,7 +11,17 @@ export async function GET() {
   const user = await db.collection("users").findOne({ _id: new ObjectId(payload.id) })
   if (!user) return NextResponse.json({ user: null })
 
-  const role = isAdminEmail(user.email) ? "admin" : "user"
+  const isAdmin = isAdminEmail(user.email)
 
-  return NextResponse.json({ user: { id: user._id.toString(), email: user.email, name: user.name, isAdmin: role === "admin" } })
+  return NextResponse.json({
+    user: {
+      id: user._id.toString(),
+      email: user.email,
+      name: user.name,
+      isAdmin,
+      // Server-signed HMAC proof — only sent for real admins.
+      // Client verifies this to prevent response-interception attacks.
+      ...(isAdmin ? { adminProof: signAdminProof(user._id.toString()) } : {}),
+    },
+  })
 }

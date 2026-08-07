@@ -23,7 +23,7 @@ export const metadata: Metadata = {
     template: `%s | ${siteName}`,
   },
   description:
-    `${doctorName} — Specialized Neuro Rehabilitation in Gorakhpur at Divyaman Hospital. Expert treatment for Stroke & Paralysis Recovery, Spinal Cord Injury Rehab, Gait & Balance Training, Parkinson's, Pediatric Neuro-Physiotherapy, and Home Visit Physiotherapy. Book appointment: ${phone}.`,
+    `Best Neuro Physiotherapy Clinic in Gorakhpur. Stroke & Paralysis Recovery, Gait Training & Home Visit Physiotherapy by ${doctorName}. Book: ${phone}.`,
   keywords: [
     "neuro rehabilitation Gorakhpur",
     "best neuro physiotherapist in Gorakhpur",
@@ -126,7 +126,7 @@ export const metadata: Metadata = {
   openGraph: {
     title: `${siteName} | Neuro Rehabilitation Gorakhpur | ${doctorName}`,
     description:
-      `From Disability to Ability — Specialized Neuro Rehabilitation in Gorakhpur by ${doctorName}. Stroke, Paralysis, Gait Training & Spinal Cord Rehab at Divyaman Hospital.`,
+      `Specialized Neuro Rehabilitation in Gorakhpur by ${doctorName} — Stroke, Paralysis & Gait Training at Divyaman Hospital.`,
     type: "website",
     locale: "en_IN",
     siteName,
@@ -143,6 +143,13 @@ export const metadata: Metadata = {
   icons: {
     icon: "/favicon.ico",
     shortcut: "/favicon.ico",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: `${siteName} | Neuro Rehabilitation Gorakhpur | ${doctorName}`,
+    description:
+      `Best Neuro Physiotherapy Clinic in Gorakhpur. Stroke & Paralysis Recovery, Gait Training & Home Visit Physiotherapy by ${doctorName}.`,
+    images: [`${siteUrl}/og-image.jpg`],
   },
 }
 
@@ -198,7 +205,7 @@ const medicalSchema = {
         "@type": "OfferCatalog",
         name: "Neuro Rehabilitation Services",
         itemListElement: [
-          { "@type": "Offer", name: "Stroke & Paralysis Recovery", url: `${siteUrl}/#services` },
+          { "@type": "Offer", name: "Stroke & Paralysis Recovery center", url: `${siteUrl}/#services` },
           { "@type": "Offer", name: "Spinal Cord Injury Rehabilitation", url: `${siteUrl}/#services` },
           { "@type": "Offer", name: "Gait & Balance Training", url: `${siteUrl}/#services` },
           { "@type": "Offer", name: "Pediatric Neuro-Physiotherapy", url: `${siteUrl}/#services` },

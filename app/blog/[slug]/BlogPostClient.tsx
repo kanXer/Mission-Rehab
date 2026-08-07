@@ -140,6 +140,7 @@ export default function BlogPostClient({ slug }: { slug: string }) {
                           <img
                             src="/doctor.jpg"
                             alt={post.author}
+                            loading="lazy"
                             className="w-5 h-5 rounded-full object-cover ring-2 ring-white/30"
                           />
                           <span className="font-medium">{post.author}</span>
@@ -179,6 +180,7 @@ export default function BlogPostClient({ slug }: { slug: string }) {
                       <img
                         src="/doctor.jpg"
                         alt={post.author}
+                        loading="lazy"
                         className="w-5 h-5 rounded-full object-cover ring-2 ring-white dark:ring-navy-600"
                       />
                       <span className="font-medium">{post.author}</span>
@@ -236,6 +238,7 @@ export default function BlogPostClient({ slug }: { slug: string }) {
                     <img
                       src="/doctor.jpg"
                       alt={post.author}
+                      loading="lazy"
                       className="w-16 h-16 sm:w-20 sm:h-20 rounded-full object-cover ring-4 ring-white dark:ring-navy-700 shadow-xl"
                     />
                     <div>

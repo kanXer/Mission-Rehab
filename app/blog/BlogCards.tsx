@@ -166,6 +166,7 @@ export default function BlogCards() {
                         <img
                           src={post.image}
                           alt={post.title}
+                          loading="lazy"
                           className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"
                         />
                       </div>
@@ -193,6 +194,7 @@ export default function BlogCards() {
                               <img
                                 src="/doctor.jpg"
                                 alt={post.author}
+                                loading="lazy"
                                 className="w-6 h-6 rounded-full object-cover"
                               />
                               <span className="text-xs text-slate-500 dark:text-slate-400 font-medium">

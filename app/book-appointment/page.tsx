@@ -9,7 +9,7 @@ import BookingFormEnhanced from "@/components/BookingFormEnhanced"
 export const metadata: Metadata = {
   title: "Book Appointment — Neuro Rehab Consultation | Gorakhpur Mission Rehab",
   description:
-    "Book an appointment with Dr. Devejya Srivastava (PT) at Divyaman Hospital, Gorakhpur. Choose your preferred date and time for neuro rehabilitation, stroke recovery, gait training, or pediatric physiotherapy. Online booking with instant confirmation.",
+    "Book an appointment with Dr. Devejya Srivastava (PT) in Gorakhpur for neuro rehab, stroke recovery or gait training with instant confirmation.",
   keywords: [
     "book appointment Gorakhpur",
     "neuro rehab consultation",

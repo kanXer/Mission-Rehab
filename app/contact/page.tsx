@@ -6,7 +6,7 @@ import Contact from "@/components/Contact"
 export const metadata: Metadata = {
   title: "Contact Us & General Enquiry — Gorakhpur Mission Rehab",
   description:
-    "Contact Dr. Devejya Srivastava at Divyaman Hospital, Gorakhpur. Book a consultation or send a general enquiry for stroke recovery, paralysis treatment, neuro rehabilitation, or home visit physiotherapy near you.",
+    "Contact Dr. Devejya Srivastava at Divyaman Hospital, Gorakhpur. Book a consultation or enquiry for neuro rehab & home visit physiotherapy.",
   keywords: [
     "neuro physiotherapist for home visit near me",
     "paralysis physio treatment at home",

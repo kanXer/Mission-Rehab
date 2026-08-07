@@ -39,9 +39,8 @@ export default function Header() {
               alt="Gorakhpur Mission Rehab Logo"
               width={180}
               height={180}
-              quality={100}
+              quality={80}
               className="hidden sm:block h-14 w-auto object-contain transition-transform group-hover:scale-105 brightness-75"
-              priority
             />
             <div className="">
               <span className="text-base md:text-lg font-bold text-navy-800 dark:text-white tracking-tight block leading-tight">

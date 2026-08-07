@@ -4,7 +4,7 @@ import ServicesPageClient from "./ServicesPageClient"
 export const metadata: Metadata = {
   title: "Services — Neuro Rehabilitation | Stroke, Gait, Pediatric & More",
   description:
-    "Specialized neuro rehabilitation services in Gorakhpur: Stroke & Paralysis Recovery, Hemiplegia Physiotherapy, Spinal Cord Injury Rehab, Gait & Balance Training, Pediatric Neuro-Physiotherapy, Cerebral Palsy, Parkinson's Disease, Facial Palsy, Plantar Fasciitis & Foot Biomechanics by Dr. Devejya Srivastava (PT).",
+    "Neuro rehab services in Gorakhpur — Stroke & Paralysis Recovery, Gait Training, Pediatric Neuro-Physiotherapy by Dr. Devejya Srivastava (PT).",
   keywords: [
     "neuro rehabilitation center in India",
     "neuro physiotherapist in Gorakhpur",

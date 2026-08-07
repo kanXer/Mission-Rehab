@@ -75,8 +75,8 @@ export default function About() {
                   alt="Dr. Devejya Srivastava (PT) — Consultant Neuro Rehab Physiotherapist"
                   width={600}
                   height={700}
+                  sizes="(max-width: 768px) 100vw, 50vw"
                   className="w-full h-auto object-cover object-top"
-                  priority
                 />
                 <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-navy-900/90 dark:from-black/90 to-transparent p-6">
                   <p className="text-white text-lg font-bold">Dr. Devejya Srivastava (PT)</p>

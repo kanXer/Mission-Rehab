@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server"
 import { getDb } from "@/lib/mongodb"
-import { verifyPassword, signToken, isAdminEmail } from "@/lib/auth"
+import { verifyPassword, signToken, isAdminEmail, signAdminProof } from "@/lib/auth"
 
 export async function POST(req: NextRequest) {
   try {
@@ -20,11 +20,19 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: "Invalid credentials" }, { status: 401 })
     }
 
-    const role = isAdminEmail(user.email) ? "admin" : "user"
+    const isAdmin = isAdminEmail(user.email)
     const payload = { id: user._id.toString(), email: user.email }
     const token = signToken(payload)
 
-    const res = NextResponse.json({ user: { id: payload.id, email: user.email, name: user.name, isAdmin: role === "admin" } })
+    const res = NextResponse.json({
+      user: {
+        id: payload.id,
+        email: user.email,
+        name: user.name,
+        isAdmin,
+        ...(isAdmin ? { adminProof: signAdminProof(payload.id) } : {}),
+      },
+    })
     res.cookies.set("token", token, { httpOnly: true, secure: process.env.NODE_ENV === "production", sameSite: "lax", path: "/", maxAge: 7 * 86400 })
     return res
   } catch (e) {

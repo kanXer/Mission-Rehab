@@ -9,7 +9,7 @@ import ScrollReveal from "@/components/ScrollReveal"
 export const metadata: Metadata = {
   title: "About Dr. Devejya Srivastava — Neuro Rehab Specialist Gorakhpur",
   description:
-    "Meet Dr. Devejya Srivastava (PT), Consultant Neuro Rehab Physiotherapist at Divyaman Hospital, Gorakhpur. 10+ years of experience in stroke recovery, gait correction, spinal cord rehab, and pediatric neuro-physiotherapy. One of the best neuro therapists in Gorakhpur.",
+    "Dr. Devejya Srivastava (PT) — Consultant Neuro Rehab Physiotherapist in Gorakhpur. 10+ years of experience in stroke recovery & pediatric neuro care.",
   keywords: [
     "dr devejya srivastava physiotherapist",
     "dr devejya srivastava gorakhpur",
@@ -24,6 +24,14 @@ export const metadata: Metadata = {
   openGraph: {
     title: "Dr. Devejya Srivastava (PT) — Neuro Rehabilitation Specialist | Gorakhpur Mission Rehab",
     description: "Learn about Dr. Devejya Srivastava's expertise, qualifications, and approach to neuro-rehabilitation at Divyaman Hospital, Gorakhpur.",
+    images: [
+      {
+        url: "https://gorakhpurmission.in/doctor-og.jpg",
+        width: 1200,
+        height: 630,
+        alt: "Dr. Devejya Srivastava (PT) — Gorakhpur Mission Rehab, Neuro Rehabilitation Specialist",
+      },
+    ],
   },
 }
 

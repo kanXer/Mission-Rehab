@@ -66,7 +66,7 @@ export default function VideoThumbnail({ src }: { src: string }) {
         </>
       )}
       {thumb ? (
-        <img src={thumb} alt="" className="w-full h-full object-cover" />
+        <img src={thumb} alt="" loading="lazy" className="w-full h-full object-cover" />
       ) : (
         <div className="w-full h-full bg-gradient-to-br from-navy-800 to-navy-900 flex items-center justify-center">
           <div className="w-6 h-6 rounded-full border-2 border-white/30 border-t-white/80 animate-spin" />
