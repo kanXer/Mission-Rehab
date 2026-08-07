@@ -167,7 +167,7 @@ export default function Footer() {
             <Heart className="w-3.5 h-3.5 text-red-500 fill-red-500/20 inline-block" aria-hidden="true" />
             <span>by</span>
             <a
-              href="https://nexus-d-marketing.vercel.app/"
+              href="https://nexusdigitalmarketing.shop/"
               target="_blank"
               rel="noopener noreferrer"
               className="text-brand-400 hover:text-brand-300 dark:text-brand-400 dark:hover:text-brand-300 transition-colors font-semibold underline underline-offset-2 decoration-brand-600/30"
