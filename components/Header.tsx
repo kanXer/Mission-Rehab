@@ -4,7 +4,7 @@ import { useState } from "react"
 import Link from "next/link"
 import Image from "next/image"
 import { usePathname } from "next/navigation"
-import { Menu, X, Calendar, Phone, HelpCircle } from "lucide-react"
+import { Menu, X, Calendar, Phone, HelpCircle, User, ShieldCheck } from "lucide-react"
 import { useAuth } from "./AuthProvider"
 import ThemeToggle from "./ThemeToggle"
 import AdminHeader from "./AdminHeader"
@@ -65,14 +65,6 @@ export default function Header() {
                 {link.label}
               </Link>
             ))}
-            <Link href={user?.isAdmin ? "/admin" : "/admin/login"}
-              className={`text-sm font-medium transition-colors whitespace-nowrap ${isActive("/admin") || isActive("/admin/login")
-                ? "text-brand-600 dark:text-brand-400"
-                : "text-navy-600 dark:text-navy-200 hover:text-brand-600 dark:hover:text-brand-400"
-                }`}
-            >
-              {user?.isAdmin ? "Dashboard" : "Login"}
-            </Link>
           </nav>
 
           <div className="flex items-center gap-1.5">
@@ -90,6 +82,17 @@ export default function Header() {
             >
               <Calendar className="w-3.5 h-3.5" />
               <span>Book Appointment</span>
+            </Link>
+            <Link
+              href={user?.isAdmin ? "/admin" : "/admin/login"}
+              className={`p-2 rounded-lg transition-colors ${isActive("/admin")
+                ? "text-brand-600 dark:text-brand-400 bg-brand-50 dark:bg-navy-800"
+                : "text-navy-600 dark:text-navy-300 hover:text-brand-600 dark:hover:text-brand-400 hover:bg-navy-50 dark:hover:bg-navy-800"
+                }`}
+              aria-label={user?.isAdmin ? "Admin Dashboard" : "Admin Login"}
+              title={user?.isAdmin ? "Admin Dashboard" : "Admin Login"}
+            >
+              {user?.isAdmin ? <ShieldCheck className="w-5 h-5" /> : <User className="w-5 h-5" />}
             </Link>
             <button
               className="lgg:hidden p-2 text-navy-600 dark:text-navy-300 hover:text-brand-600 dark:hover:text-brand-400"
@@ -119,16 +122,6 @@ export default function Header() {
                 {link.label}
               </Link>
             ))}
-            <Link
-              href={user?.isAdmin ? "/admin" : "/admin/login"}
-              onClick={() => setOpen(false)}
-              className={`block text-sm font-medium py-2.5 px-3 rounded-lg transition-colors ${isActive("/admin") || isActive("/admin/login")
-                ? "text-brand-600 dark:text-brand-400 bg-brand-50 dark:bg-navy-800"
-                : "text-navy-700 dark:text-navy-200 hover:text-brand-600 dark:hover:text-brand-400 hover:bg-navy-50 dark:hover:bg-navy-800"
-                }`}
-            >
-              {user?.isAdmin ? "Dashboard" : "Login"}
-            </Link>
             <div className="pt-3 flex gap-2">
               <Link
                 href="/book-appointment"
