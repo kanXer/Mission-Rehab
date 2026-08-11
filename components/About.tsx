@@ -113,7 +113,7 @@ export default function About() {
                   <Star className="w-3 h-3 fill-yellow-400 text-yellow-400" /> 10+ Years Experience
                 </span>
                 <span className="inline-flex items-center gap-1 bg-brand-50 dark:bg-brand-900/30 text-brand-700 dark:text-brand-300 text-xs font-semibold px-3 py-1.5 rounded-full border border-brand-200 dark:border-brand-800">
-                  <GraduationCap className="w-3 h-3" /> BPT, MPT (Neuro)
+                  <GraduationCap className="w-3 h-3" /> BPT (Neuro)
                 </span>
                 <span className="inline-flex items-center gap-1 bg-accent-50 dark:bg-accent-900/30 text-accent-700 dark:text-accent-300 text-xs font-semibold px-3 py-1.5 rounded-full border border-accent-200 dark:border-accent-800">
                   <Heart className="w-3 h-3" /> 500+ Patients Treated
