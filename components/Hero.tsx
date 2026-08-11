@@ -22,7 +22,7 @@ const trendingKeywords = [
   { keyword: "Brain Retraining Therapy", volume: "Rising" },
 ]
 const heroDescription = `
-Best Neuro Physiotherapy Clinic in Gorakhpur — Dr. Devejya Srivastava (PT) is the top-rated neuro physiotherapist in Gorakhpur, specializing in brain retraining therapy after stroke, paralysis treatment, gait training, spinal cord injury rehab, and pediatric neuro care. From disability to ability — we rebuild lives through neuroplasticity-based recovery at Divyaman Hospital, Gorakhpur. Search "best neuro physiotherapy near me" — you'll find Gorakhpur Mission Rehab.
+Best Neuro Rehabilitation Center in Gorakhpur — Dr. Devejya Srivastava (PT) is the best neuro physiotherapist in Gorakhpur, specializing in brain retraining therapy after stroke, paralysis treatment, gait training, spinal cord injury rehab, and pediatric neuro care. From disability to ability — we rebuild lives through neuroplasticity-based recovery at Divyaman Hospital, Gorakhpur. Search "best neuro physiotherapy near me" — you'll find Gorakhpur Mission Rehab.
 `;
 
 export default function Hero() {
