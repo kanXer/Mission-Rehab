@@ -101,10 +101,10 @@ export default function BlogPostClient({ slug }: { slug: string }) {
     <>
       <Header />
       <main id="main-content" className="pt-0 min-h-screen">
-        <article className="bg-slate-50 dark:bg-navy-900 overflow-hidden relative pb-12">
-          {/* Hero section with title overlay on image - Reduced overall height for early viewport visibility */}
+        <div className="bg-slate-50 dark:bg-navy-900 overflow-hidden relative pb-6">
+          {/* Hero section with title overlay on image */}
           {post.image ? (
-            <div className="relative h-[32vh] min-h-[260px] max-h-[380px] overflow-hidden">
+            <div className="relative h-[25vh] min-h-[220px] max-h-[300px] overflow-hidden">
               <img
                 src={post.image}
                 alt={post.title}
@@ -112,23 +112,23 @@ export default function BlogPostClient({ slug }: { slug: string }) {
               />
               <div className="absolute inset-0 bg-gradient-to-t from-slate-900/90 via-slate-900/40 to-transparent" />
               <div className="absolute bottom-0 left-0 right-0 z-10">
-                <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 pb-4 sm:pb-6">
+                <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 pb-3 sm:pb-4">
                   <ScrollReveal>
                     <Link
                       href="/blog"
-                      className="inline-flex items-center gap-1.5 text-xs sm:text-sm text-white/80 hover:text-white transition-colors mb-2 sm:mb-3 px-3 py-1 sm:px-4 sm:py-1.5 rounded-full bg-white/10 backdrop-blur-sm"
+                      className="inline-flex items-center gap-1.5 text-xs text-white/80 hover:text-white transition-colors mb-2 px-3 py-1 rounded-full bg-white/10 backdrop-blur-sm"
                     >
-                      <ArrowLeft className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
+                      <ArrowLeft className="w-3.5 h-3.5" />
                       Back to all posts
                     </Link>
                   </ScrollReveal>
                   <ScrollReveal>
-                    <h1 className="text-2xl sm:text-3xl lg:text-4xl font-extrabold text-white leading-tight mb-2 drop-shadow-lg">
+                    <h1 className="text-xl sm:text-2xl lg:text-3xl font-extrabold text-white leading-tight mb-2 drop-shadow-lg">
                       {post.title}
                     </h1>
-                    <div className="flex flex-wrap items-center justify-between gap-2 text-xs sm:text-sm text-white/70">
+                    <div className="flex flex-wrap items-center justify-between gap-2 text-xs text-white/70">
                       <span className="flex items-center gap-1.5">
-                        <Calendar className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
+                        <Calendar className="w-3.5 h-3.5" />
                         {new Date(post.createdAt).toLocaleDateString("en-IN", {
                           day: "numeric",
                           month: "long",
@@ -136,12 +136,12 @@ export default function BlogPostClient({ slug }: { slug: string }) {
                         })}
                       </span>
                       {post.author && (
-                        <span className="flex items-center gap-2 bg-white/10 backdrop-blur-sm px-2.5 py-1 rounded-full">
+                        <span className="flex items-center gap-1.5 bg-white/10 backdrop-blur-sm px-2.5 py-0.5 rounded-full">
                           <img
                             src="/doctor.jpg"
                             alt={post.author}
                             loading="lazy"
-                            className="w-4 h-4 sm:w-5 sm:h-5 rounded-full object-cover ring-2 ring-white/30"
+                            className="w-4 h-4 rounded-full object-cover ring-2 ring-white/30"
                           />
                           <span className="font-medium">{post.author}</span>
                         </span>
@@ -152,21 +152,21 @@ export default function BlogPostClient({ slug }: { slug: string }) {
               </div>
             </div>
           ) : (
-            <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 pt-20 md:pt-24">
+            <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 pt-16 md:pt-20">
               <ScrollReveal>
                 <Link
                   href="/blog"
-                  className="inline-flex items-center gap-1.5 text-sm text-slate-500 dark:text-slate-400 hover:text-brand-600 dark:hover:text-brand-400 transition-colors mb-4 px-4 py-2 rounded-full bg-slate-200/50 dark:bg-navy-700/50"
+                  className="inline-flex items-center gap-1.5 text-sm text-slate-500 dark:text-slate-400 hover:text-brand-600 dark:hover:text-brand-400 transition-colors mb-3 px-4 py-1.5 rounded-full bg-slate-200/50 dark:bg-navy-700/50"
                 >
                   <ArrowLeft className="w-4 h-4" />
                   Back to all posts
                 </Link>
               </ScrollReveal>
               <ScrollReveal>
-                <h1 className="text-2xl sm:text-3xl lg:text-4xl font-extrabold text-navy-800 dark:text-white leading-tight mb-3">
+                <h1 className="text-2xl sm:text-3xl font-extrabold text-navy-800 dark:text-white leading-tight mb-2">
                   {post.title}
                 </h1>
-                <div className="flex flex-wrap items-center justify-between gap-3 text-sm text-slate-500 dark:text-slate-400 mb-4">
+                <div className="flex flex-wrap items-center justify-between gap-2 text-xs sm:text-sm text-slate-500 dark:text-slate-400 mb-3">
                   <span className="flex items-center gap-1.5">
                     <Calendar className="w-4 h-4" />
                     {new Date(post.createdAt).toLocaleDateString("en-IN", {
@@ -176,12 +176,12 @@ export default function BlogPostClient({ slug }: { slug: string }) {
                     })}
                   </span>
                   {post.author && (
-                    <span className="flex items-center gap-2 bg-brand-50 dark:bg-navy-700 px-3 py-1.5 rounded-full">
+                    <span className="flex items-center gap-2 bg-brand-50 dark:bg-navy-700 px-3 py-1 rounded-full">
                       <img
                         src="/doctor.jpg"
                         alt={post.author}
                         loading="lazy"
-                        className="w-5 h-5 rounded-full object-cover ring-2 ring-white dark:ring-navy-600"
+                        className="w-4 h-4 rounded-full object-cover ring-2 ring-white dark:ring-navy-600"
                       />
                       <span className="font-medium">{post.author}</span>
                     </span>
@@ -193,13 +193,13 @@ export default function BlogPostClient({ slug }: { slug: string }) {
 
           <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
 
-            {/* Decorative divider - Reduced top/bottom margin */}
-            <div className="relative mb-5 mt-4">
+            {/* Decorative divider */}
+            <div className="relative mb-4 mt-3">
               <div className="absolute inset-0 flex items-center">
                 <div className="w-full border-t border-slate-200 dark:border-navy-700" />
               </div>
               <div className="relative flex justify-center">
-                <span className="bg-slate-50 dark:bg-navy-900 px-4 text-xs uppercase tracking-[0.25em] text-slate-400 dark:text-slate-500 font-semibold">
+                <span className="bg-slate-50 dark:bg-navy-900 px-3 text-[10px] uppercase tracking-[0.2em] text-slate-400 dark:text-slate-500 font-semibold">
                   Article
                 </span>
               </div>
@@ -207,11 +207,11 @@ export default function BlogPostClient({ slug }: { slug: string }) {
 
             {/* Main Content Card */}
             <ScrollReveal>
-              <div className="bg-white dark:bg-navy-800 rounded-3xl border border-slate-200 dark:border-navy-700 shadow-xl p-6 sm:p-10 lg:p-12 mb-12">
+              <div className="bg-white dark:bg-navy-800 rounded-3xl border border-slate-200 dark:border-navy-700 shadow-xl p-5 sm:p-8 lg:p-10 mb-6">
                 
-                {/* YouTube Video - Card ke andarr, text se theek pehle */}
+                {/* YouTube Video - Card ke andar */}
                 {youtubeId ? (
-                  <div className="mb-8 w-full aspect-video rounded-2xl overflow-hidden shadow-lg bg-black relative border border-slate-100 dark:border-navy-700">
+                  <div className="mb-6 w-full aspect-video rounded-2xl overflow-hidden shadow-lg bg-black relative border border-slate-100 dark:border-navy-700">
                     <iframe
                       className="w-full h-full border-0 relative z-10"
                       src={`https://www.youtube.com/embed/${youtubeId}?rel=0`}
@@ -230,25 +230,25 @@ export default function BlogPostClient({ slug }: { slug: string }) {
               </div>
             </ScrollReveal>
 
-            {/* Author card at bottom */}
+            {/* Author card at bottom - Load directly with content */}
             {post.author && (
               <ScrollReveal>
-                <div className="bg-gradient-to-br from-brand-50 to-accent-50 dark:from-navy-800 dark:to-navy-800 rounded-3xl border border-slate-200 dark:border-navy-700 shadow-lg p-6 sm:p-8 mb-12">
-                  <div className="flex items-center gap-4 sm:gap-6">
+                <div className="bg-gradient-to-br from-brand-50 to-accent-50 dark:from-navy-800 dark:to-navy-800 rounded-3xl border border-slate-200 dark:border-navy-700 shadow-lg p-5 sm:p-6 mb-6">
+                  <div className="flex items-center gap-4">
                     <img
                       src="/doctor.jpg"
                       alt={post.author}
                       loading="lazy"
-                      className="w-16 h-16 sm:w-20 sm:h-20 rounded-full object-cover ring-4 ring-white dark:ring-navy-700 shadow-xl"
+                      className="w-14 h-14 sm:w-16 sm:h-16 rounded-full object-cover ring-4 ring-white dark:ring-navy-700 shadow-md"
                     />
                     <div>
-                      <p className="text-xs uppercase tracking-[0.2em] text-brand-600 dark:text-brand-400 font-semibold mb-1">
+                      <p className="text-[10px] uppercase tracking-[0.2em] text-brand-600 dark:text-brand-400 font-semibold mb-0.5">
                         Written by
                       </p>
-                      <h3 className="text-xl font-bold text-navy-800 dark:text-white">
+                      <h3 className="text-lg font-bold text-navy-800 dark:text-white">
                         {post.author}
                       </h3>
-                      <p className="text-sm text-slate-500 dark:text-slate-400 mt-1">
+                      <p className="text-xs sm:text-sm text-slate-500 dark:text-slate-400 mt-0.5">
                         Expert in Neuro Rehabilitation & Physiotherapy
                       </p>
                     </div>
@@ -257,7 +257,7 @@ export default function BlogPostClient({ slug }: { slug: string }) {
               </ScrollReveal>
             )}
           </div>
-        </article>
+        </div>
       </main>
       <Footer />
     </>
