@@ -103,16 +103,16 @@ export default function BlogPostClient({ slug }: { slug: string }) {
         {/* Outer Container with Desktop Left/Right Margins */}
         <div className="max-w-6xl mx-auto px-4 sm:px-8 lg:px-16 xl:px-24 pb-8">
           
-          {/* Hero section card */}
+          {/* Hero section card with adjusted height to fix image crop */}
           {post.image ? (
-            <div className="relative h-[20vh] min-h-[180px] max-h-[220px] rounded-2xl sm:rounded-3xl overflow-hidden shadow-lg my-2">
+            <div className="relative h-[32vh] sm:h-[40vh] min-h-[260px] max-h-[380px] rounded-2xl sm:rounded-3xl overflow-hidden shadow-lg my-2">
               <img
                 src={post.image}
                 alt={post.title}
-                className="w-full h-full object-cover"
+                className="w-full h-full object-cover object-center"
               />
               <div className="absolute inset-0 bg-gradient-to-t from-slate-900/90 via-slate-900/40 to-transparent" />
-              <div className="absolute bottom-0 left-0 right-0 z-10 p-4 sm:p-6">
+              <div className="absolute bottom-0 left-0 right-0 z-10 p-4 sm:p-6 lg:p-8">
                 <Link
                   href="/blog"
                   className="inline-flex items-center gap-1.5 text-xs text-white/80 hover:text-white transition-colors mb-2 px-3 py-1 rounded-full bg-white/10 backdrop-blur-sm"
@@ -120,7 +120,7 @@ export default function BlogPostClient({ slug }: { slug: string }) {
                   <ArrowLeft className="w-3.5 h-3.5" />
                   Back to all posts
                 </Link>
-                <h1 className="text-lg sm:text-2xl lg:text-3xl font-extrabold text-white leading-tight mb-1.5 drop-shadow-lg">
+                <h1 className="text-lg sm:text-2xl lg:text-3xl font-extrabold text-white leading-tight mb-2 drop-shadow-lg">
                   {post.title}
                 </h1>
                 <div className="flex flex-wrap items-center justify-between gap-2 text-xs text-white/70">
@@ -194,7 +194,7 @@ export default function BlogPostClient({ slug }: { slug: string }) {
             </div>
           </div>
 
-          {/* Main Content Card - Directly Visible without Scroll Trigger */}
+          {/* Main Content Card */}
           <div className="bg-white dark:bg-navy-800 rounded-3xl border border-slate-200 dark:border-navy-700 shadow-xl p-5 sm:p-8 lg:p-10 mb-4">
             
             {/* YouTube Video */}
