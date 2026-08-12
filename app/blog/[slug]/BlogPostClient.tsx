@@ -100,111 +100,163 @@ export default function BlogPostClient({ slug }: { slug: string }) {
   return (
     <>
       <Header />
-      <main id="main-content" className="pt-20 md:pt-24 bg-slate-50 dark:bg-navy-900 min-h-screen">
-        <article className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 pb-12">
-          
-          {/* Back Button */}
-          <div className="pt-4 pb-2">
-            <Link
-              href="/blog"
-              className="inline-flex items-center gap-1.5 text-sm text-slate-600 dark:text-slate-300 hover:text-brand-600 dark:hover:text-brand-400 transition-colors px-3 py-1.5 rounded-full bg-slate-200/60 dark:bg-navy-800"
-            >
-              <ArrowLeft className="w-4 h-4" />
-              Back to all posts
-            </Link>
-          </div>
-
-          {/* Header Info */}
-          <header className="my-4">
-            <h1 className="text-2xl sm:text-3xl lg:text-4xl font-extrabold text-navy-800 dark:text-white leading-tight mb-3">
-              {post.title}
-            </h1>
-            <div className="flex flex-wrap items-center gap-4 text-sm text-slate-500 dark:text-slate-400">
-              <span className="flex items-center gap-1.5">
-                <Calendar className="w-4 h-4" />
-                {new Date(post.createdAt).toLocaleDateString("en-IN", {
-                  day: "numeric",
-                  month: "long",
-                  year: "numeric",
-                })}
-              </span>
-              {post.author && (
-                <span className="flex items-center gap-2 bg-slate-200/50 dark:bg-navy-800 px-3 py-1 rounded-full text-xs font-medium">
-                  <img
-                    src="/doctor.jpg"
-                    alt={post.author}
-                    loading="lazy"
-                    className="w-4 h-4 rounded-full object-cover"
-                  />
-                  <span>{post.author}</span>
-                </span>
-              )}
-            </div>
-          </header>
-
-          {/* Main Card containing Featured Image, Video & Body Content */}
-          <ScrollReveal>
-            <div className="bg-white dark:bg-navy-800 rounded-3xl border border-slate-200 dark:border-navy-700 shadow-xl p-5 sm:p-8 lg:p-10 my-6">
-              
-              {/* Featured Image (Reduced Height) */}
-              {post.image && (
-                <div className="mb-6 w-full max-h-[300px] rounded-2xl overflow-hidden">
-                  <img
-                    src={post.image}
-                    alt={post.title}
-                    className="w-full h-[250px] sm:h-[300px] object-cover rounded-2xl"
-                  />
-                </div>
-              )}
-
-              {/* YouTube Video */}
-              {youtubeId && (
-                <div className="mb-8 w-full aspect-video rounded-2xl overflow-hidden shadow-lg bg-black relative border border-slate-100 dark:border-navy-700">
-                  <iframe
-                    className="w-full h-full border-0 relative z-10"
-                    src={`https://www.youtube.com/embed/${youtubeId}?rel=0`}
-                    title={post.title}
-                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-                    allowFullScreen
-                  />
-                </div>
-              )}
-
-              {/* Article Content */}
-              <div
-                className="prose prose-lg max-w-none dark:prose-invert prose-headings:text-navy-800 dark:prose-headings:text-white prose-a:text-brand-600 dark:prose-a:text-brand-400 prose-img:rounded-2xl prose-img:shadow-xl prose-blockquote:border-l-brand-500 prose-blockquote:bg-brand-50/50 dark:prose-blockquote:bg-brand-900/20 prose-blockquote:py-2 prose-blockquote:px-6 prose-blockquote:rounded-r-2xl prose-code:text-brand-700 dark:prose-code:text-brand-300 prose-code:bg-slate-100 dark:prose-code:bg-navy-700 prose-code:px-1.5 prose-code:py-0.5 prose-code:rounded-lg prose-code:text-sm"
-                dangerouslySetInnerHTML={{ __html: post.content }}
+      <main id="main-content" className="pt-0 min-h-screen">
+        <article className="bg-slate-50 dark:bg-navy-900 overflow-hidden relative pb-12">
+          {/* Hero section with title overlay on image - Reduced overall height for early viewport visibility */}
+          {post.image ? (
+            <div className="relative h-[32vh] min-h-[260px] max-h-[380px] overflow-hidden">
+              <img
+                src={post.image}
+                alt={post.title}
+                className="w-full h-full object-cover"
               />
-            </div>
-          </ScrollReveal>
-
-          {/* Author Card at bottom */}
-          {post.author && (
-            <ScrollReveal>
-              <div className="bg-gradient-to-br from-brand-50 to-accent-50 dark:from-navy-800 dark:to-navy-800 rounded-3xl border border-slate-200 dark:border-navy-700 shadow-lg p-6 sm:p-8 my-8">
-                <div className="flex items-center gap-4 sm:gap-6">
-                  <img
-                    src="/doctor.jpg"
-                    alt={post.author}
-                    loading="lazy"
-                    className="w-16 h-16 sm:w-20 sm:h-20 rounded-full object-cover ring-4 ring-white dark:ring-navy-700 shadow-xl"
-                  />
-                  <div>
-                    <p className="text-xs uppercase tracking-[0.2em] text-brand-600 dark:text-brand-400 font-semibold mb-1">
-                      Written by
-                    </p>
-                    <h3 className="text-xl font-bold text-navy-800 dark:text-white">
-                      {post.author}
-                    </h3>
-                    <p className="text-sm text-slate-500 dark:text-slate-400 mt-1">
-                      Expert in Neuro Rehabilitation &amp; Physiotherapy
-                    </p>
-                  </div>
+              <div className="absolute inset-0 bg-gradient-to-t from-slate-900/90 via-slate-900/40 to-transparent" />
+              <div className="absolute bottom-0 left-0 right-0 z-10">
+                <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 pb-4 sm:pb-6">
+                  <ScrollReveal>
+                    <Link
+                      href="/blog"
+                      className="inline-flex items-center gap-1.5 text-xs sm:text-sm text-white/80 hover:text-white transition-colors mb-2 sm:mb-3 px-3 py-1 sm:px-4 sm:py-1.5 rounded-full bg-white/10 backdrop-blur-sm"
+                    >
+                      <ArrowLeft className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
+                      Back to all posts
+                    </Link>
+                  </ScrollReveal>
+                  <ScrollReveal>
+                    <h1 className="text-2xl sm:text-3xl lg:text-4xl font-extrabold text-white leading-tight mb-2 drop-shadow-lg">
+                      {post.title}
+                    </h1>
+                    <div className="flex flex-wrap items-center justify-between gap-2 text-xs sm:text-sm text-white/70">
+                      <span className="flex items-center gap-1.5">
+                        <Calendar className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
+                        {new Date(post.createdAt).toLocaleDateString("en-IN", {
+                          day: "numeric",
+                          month: "long",
+                          year: "numeric",
+                        })}
+                      </span>
+                      {post.author && (
+                        <span className="flex items-center gap-2 bg-white/10 backdrop-blur-sm px-2.5 py-1 rounded-full">
+                          <img
+                            src="/doctor.jpg"
+                            alt={post.author}
+                            loading="lazy"
+                            className="w-4 h-4 sm:w-5 sm:h-5 rounded-full object-cover ring-2 ring-white/30"
+                          />
+                          <span className="font-medium">{post.author}</span>
+                        </span>
+                      )}
+                    </div>
+                  </ScrollReveal>
                 </div>
               </div>
-            </ScrollReveal>
+            </div>
+          ) : (
+            <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 pt-20 md:pt-24">
+              <ScrollReveal>
+                <Link
+                  href="/blog"
+                  className="inline-flex items-center gap-1.5 text-sm text-slate-500 dark:text-slate-400 hover:text-brand-600 dark:hover:text-brand-400 transition-colors mb-4 px-4 py-2 rounded-full bg-slate-200/50 dark:bg-navy-700/50"
+                >
+                  <ArrowLeft className="w-4 h-4" />
+                  Back to all posts
+                </Link>
+              </ScrollReveal>
+              <ScrollReveal>
+                <h1 className="text-2xl sm:text-3xl lg:text-4xl font-extrabold text-navy-800 dark:text-white leading-tight mb-3">
+                  {post.title}
+                </h1>
+                <div className="flex flex-wrap items-center justify-between gap-3 text-sm text-slate-500 dark:text-slate-400 mb-4">
+                  <span className="flex items-center gap-1.5">
+                    <Calendar className="w-4 h-4" />
+                    {new Date(post.createdAt).toLocaleDateString("en-IN", {
+                      day: "numeric",
+                      month: "long",
+                      year: "numeric",
+                    })}
+                  </span>
+                  {post.author && (
+                    <span className="flex items-center gap-2 bg-brand-50 dark:bg-navy-700 px-3 py-1.5 rounded-full">
+                      <img
+                        src="/doctor.jpg"
+                        alt={post.author}
+                        loading="lazy"
+                        className="w-5 h-5 rounded-full object-cover ring-2 ring-white dark:ring-navy-600"
+                      />
+                      <span className="font-medium">{post.author}</span>
+                    </span>
+                  )}
+                </div>
+              </ScrollReveal>
+            </div>
           )}
 
+          <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+
+            {/* Decorative divider - Reduced top/bottom margin */}
+            <div className="relative mb-5 mt-4">
+              <div className="absolute inset-0 flex items-center">
+                <div className="w-full border-t border-slate-200 dark:border-navy-700" />
+              </div>
+              <div className="relative flex justify-center">
+                <span className="bg-slate-50 dark:bg-navy-900 px-4 text-xs uppercase tracking-[0.25em] text-slate-400 dark:text-slate-500 font-semibold">
+                  Article
+                </span>
+              </div>
+            </div>
+
+            {/* Main Content Card */}
+            <ScrollReveal>
+              <div className="bg-white dark:bg-navy-800 rounded-3xl border border-slate-200 dark:border-navy-700 shadow-xl p-6 sm:p-10 lg:p-12 mb-12">
+                
+                {/* YouTube Video - Card ke andarr, text se theek pehle */}
+                {youtubeId ? (
+                  <div className="mb-8 w-full aspect-video rounded-2xl overflow-hidden shadow-lg bg-black relative border border-slate-100 dark:border-navy-700">
+                    <iframe
+                      className="w-full h-full border-0 relative z-10"
+                      src={`https://www.youtube.com/embed/${youtubeId}?rel=0`}
+                      title={post.title}
+                      allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                      allowFullScreen
+                    />
+                  </div>
+                ) : null}
+
+                {/* Article Prose Content */}
+                <div
+                  className="prose prose-lg max-w-none dark:prose-invert prose-headings:text-navy-800 dark:prose-headings:text-white prose-a:text-brand-600 dark:prose-a:text-brand-400 prose-img:rounded-2xl prose-img:shadow-xl prose-blockquote:border-l-brand-500 prose-blockquote:bg-brand-50/50 dark:prose-blockquote:bg-brand-900/20 prose-blockquote:py-2 prose-blockquote:px-6 prose-blockquote:rounded-r-2xl prose-code:text-brand-700 dark:prose-code:text-brand-300 prose-code:bg-slate-100 dark:prose-code:bg-navy-700 prose-code:px-1.5 prose-code:py-0.5 prose-code:rounded-lg prose-code:text-sm"
+                  dangerouslySetInnerHTML={{ __html: post.content }}
+                />
+              </div>
+            </ScrollReveal>
+
+            {/* Author card at bottom */}
+            {post.author && (
+              <ScrollReveal>
+                <div className="bg-gradient-to-br from-brand-50 to-accent-50 dark:from-navy-800 dark:to-navy-800 rounded-3xl border border-slate-200 dark:border-navy-700 shadow-lg p-6 sm:p-8 mb-12">
+                  <div className="flex items-center gap-4 sm:gap-6">
+                    <img
+                      src="/doctor.jpg"
+                      alt={post.author}
+                      loading="lazy"
+                      className="w-16 h-16 sm:w-20 sm:h-20 rounded-full object-cover ring-4 ring-white dark:ring-navy-700 shadow-xl"
+                    />
+                    <div>
+                      <p className="text-xs uppercase tracking-[0.2em] text-brand-600 dark:text-brand-400 font-semibold mb-1">
+                        Written by
+                      </p>
+                      <h3 className="text-xl font-bold text-navy-800 dark:text-white">
+                        {post.author}
+                      </h3>
+                      <p className="text-sm text-slate-500 dark:text-slate-400 mt-1">
+                        Expert in Neuro Rehabilitation & Physiotherapy
+                      </p>
+                    </div>
+                  </div>
+                </div>
+              </ScrollReveal>
+            )}
+          </div>
         </article>
       </main>
       <Footer />
