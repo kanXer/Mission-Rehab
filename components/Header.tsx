@@ -39,7 +39,7 @@ export default function Header() {
               alt="Gorakhpur Mission Rehab Logo"
               width={180}
               height={180}
-              quality={100}
+              quality={90}
               className="h-11 sm:h-13 w-auto object-contain transition-transform group-hover:scale-105"
               priority
             />

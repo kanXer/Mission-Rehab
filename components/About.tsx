@@ -79,7 +79,6 @@ export default function About() {
                       alt="Dr. Devejya Srivastava (PT) — Consultant Neuro Rehab Physiotherapist"
                       fill
                       className="object-cover object-top"
-                      priority
                       sizes="(max-width: 1024px) 100vw, 450px"
                     />
                     <div className="absolute inset-0 bg-gradient-to-t from-navy-950/90 via-navy-950/30 to-transparent" />
