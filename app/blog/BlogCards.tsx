@@ -21,10 +21,15 @@ interface Post {
 
 type SortMode = "newest" | "oldest" | "az" | "za"
 
-export default function BlogCards() {
-  const [posts, setPosts] = useState<Post[]>([])
-  const [categories, setCategories] = useState<string[]>([])
-  const [loading, setLoading] = useState(true)
+interface BlogCardsProps {
+  initialPosts?: Post[]
+  initialCategories?: string[]
+}
+
+export default function BlogCards({ initialPosts = [], initialCategories = [] }: BlogCardsProps) {
+  const [posts, setPosts] = useState<Post[]>(initialPosts)
+  const [categories, setCategories] = useState<string[]>(initialCategories)
+  const [loading, setLoading] = useState<boolean>(initialPosts.length === 0)
   const [search, setSearch] = useState("")
   const [selectedCat, setSelectedCat] = useState("")
   const [sort, setSort] = useState<SortMode>("newest")
@@ -35,9 +40,13 @@ export default function BlogCards() {
       fetch("/api/categories").then(r => r.json()),
     ])
       .then(([blogData, catData]) => {
-        if (blogData.posts) setPosts(blogData.posts)
-        const catNames = (catData.categories || []).map((c: { name: string }) => c.name)
-        setCategories(catNames)
+        if (blogData.posts && Array.isArray(blogData.posts) && blogData.posts.length > 0) {
+          setPosts(blogData.posts)
+        }
+        if (catData.categories && Array.isArray(catData.categories) && catData.categories.length > 0) {
+          const catNames = catData.categories.map((c: { name: string }) => c.name)
+          setCategories(catNames)
+        }
       })
       .catch(() => {})
       .finally(() => setLoading(false))

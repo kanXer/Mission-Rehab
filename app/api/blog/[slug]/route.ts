@@ -42,8 +42,13 @@ export async function GET(_: Request, { params }: { params: Promise<{ slug: stri
     const { slug } = await params
     const decodedSlug = decodeURIComponent(slug)
     const db = await getDb()
+    const escaped = decodedSlug.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")
     const post = await db.collection("blog").findOne({
-      $or: [{ slug: decodedSlug }, { slug }]
+      $or: [
+        { slug: decodedSlug },
+        { slug },
+        { slug: { $regex: new RegExp(`^${escaped}$`, "i") } }
+      ]
     })
 
     if (!post) {

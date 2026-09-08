@@ -75,12 +75,12 @@ function getYoutubeId(url?: string): string | null {
   return null
 }
 
-export default function BlogPostClient({ slug }: { slug: string }) {
-  const [post, setPost] = useState<Post | null>(null)
+export default function BlogPostClient({ slug, initialPost }: { slug: string; initialPost?: Post | null }) {
+  const [post, setPost] = useState<Post | null>(initialPost || null)
   const [relatedPosts, setRelatedPosts] = useState<Post[]>([])
-  const [loading, setLoading] = useState(true)
-  const [likes, setLikes] = useState<string[]>([])
-  const [comments, setComments] = useState<Comment[]>([])
+  const [loading, setLoading] = useState(!initialPost)
+  const [likes, setLikes] = useState<string[]>(Array.isArray(initialPost?.likes) ? initialPost.likes : [])
+  const [comments, setComments] = useState<Comment[]>(Array.isArray(initialPost?.comments) ? initialPost.comments : [])
   const [commentInput, setCommentInput] = useState("")
   const [submittingComment, setSubmittingComment] = useState(false)
   const [deletingCommentId, setDeletingCommentId] = useState<string | null>(null)
@@ -99,7 +99,9 @@ export default function BlogPostClient({ slug }: { slug: string }) {
   // Fetch Current Article & Related Posts
   useEffect(() => {
     let isMounted = true
-    setLoading(true)
+    if (!initialPost) {
+      setLoading(true)
+    }
 
     fetch(`/api/blog/${slug}`)
       .then((r) => r.json())
@@ -400,7 +402,13 @@ export default function BlogPostClient({ slug }: { slug: string }) {
   }
 
   const youtubeId = getYoutubeId(post.youtubeUrl)
-  const currentUrl = typeof window !== "undefined" ? window.location.href : `https://gorakhpurmission.in/blog/${post.slug}`
+  const [currentUrl, setCurrentUrl] = useState(`https://gorakhpurmission.in/blog/${post.slug}`)
+
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      setCurrentUrl(window.location.href)
+    }
+  }, [])
 
   return (
     <>
