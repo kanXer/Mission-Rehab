@@ -53,34 +53,36 @@ export default function Hero() {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full">
 
         {/* ═══════════════════════════════════════════
-            MOBILE ONLY — Logo + Brand block at top
-            Hidden on lg+ (navbar already shows logo)
+            Hero top — logo + brand block (all screen sizes)
+            Mobile is stacked & centered; desktop is compact & left-aligned
             ═══════════════════════════════════════════ */}
-        <div className="lg:hidden flex flex-col items-center text-center mb-7 pt-1">
+        <div className="flex flex-col items-center text-center lg:flex-row lg:items-center lg:justify-start lg:text-left gap-3 lg:gap-5 mb-10 lg:mb-8 pt-1 lg:pt-2">
           <div className="relative inline-block">
-            <div className="absolute -inset-4 bg-gradient-to-br from-brand-400/25 to-accent-400/25 rounded-full blur-2xl" />
+            <div className="absolute -inset-3 lg:-inset-2 bg-gradient-to-br from-brand-400/25 to-accent-400/25 rounded-full blur-2xl" />
             <Image
               src="/GMRLogo.png"
-              alt="Gorakhpur Mission Rehab"
+              alt="Gorakhpur Mission Rehab Logo"
               width={88}
               height={88}
               quality={90}
-              className="relative h-20 w-20 sm:h-24 sm:w-24 object-contain drop-shadow-xl"
+              className="relative h-16 w-16 sm:h-20 sm:w-20 lg:h-14 lg:w-14 xl:h-16 xl:w-16 object-contain drop-shadow-xl"
               priority
             />
           </div>
-          <h2 className="mt-4 text-xl sm:text-2xl font-extrabold text-navy-900 dark:text-white tracking-tight">
-            Gorakhpur{" "}
-            <span className="bg-gradient-to-r from-brand-600 to-accent-600 bg-clip-text text-transparent">
-              Mission Rehab
-            </span>
-          </h2>
-          <p className="text-xs text-slate-500 dark:text-slate-400 mt-1">
-            Dr. Devejya Srivastava (PT) · Divyaman Hospital
-          </p>
-          <div className="mt-3 inline-flex items-center gap-1.5 bg-emerald-50 dark:bg-emerald-950/50 text-emerald-700 dark:text-emerald-400 text-[11px] font-semibold px-3.5 py-1.5 rounded-full border border-emerald-200 dark:border-emerald-800">
-            <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse flex-shrink-0" />
-            Clinic Open: Mon – Sat · 10 AM – 8 PM
+          <div className="flex flex-col items-center lg:items-start">
+            <h2 className="text-xl sm:text-2xl lg:text-2xl xl:text-3xl font-extrabold text-navy-900 dark:text-white tracking-tight leading-tight">
+              Gorakhpur{" "}
+              <span className="bg-gradient-to-r from-brand-600 to-accent-600 bg-clip-text text-transparent">
+                Mission Rehab
+              </span>
+            </h2>
+            <p className="text-xs sm:text-sm text-slate-500 dark:text-slate-400 mt-1">
+              Dr. Devejya Srivastava (PT) · Divyaman Hospital
+            </p>
+            <div className="mt-2.5 inline-flex items-center gap-1.5 bg-emerald-50 dark:bg-emerald-950/50 text-emerald-700 dark:text-emerald-400 text-[11px] font-semibold px-3.5 py-1.5 rounded-full border border-emerald-200 dark:border-emerald-800">
+              <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse flex-shrink-0" />
+              Clinic Open: Mon – Sat · 10 AM – 8 PM
+            </div>
           </div>
         </div>
 
@@ -112,8 +114,8 @@ export default function Hero() {
             ════════════════════════════ */}
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-center">
 
-          {/* Left — Text */}
-          <div className="lg:col-span-7 space-y-5">
+          {/* Left — Text (order-2 on mobile = below portrait) */}
+          <div className="lg:col-span-7 space-y-5 order-2 lg:order-1">
 
             <ScrollReveal>
               <div className="inline-flex items-center gap-2 px-3 py-1 rounded-lg bg-accent-50 dark:bg-accent-950/60 text-accent-700 dark:text-accent-300 text-xs font-bold uppercase tracking-wider border border-accent-200/60 dark:border-accent-800/60">
@@ -123,23 +125,23 @@ export default function Hero() {
             </ScrollReveal>
 
             <ScrollReveal>
-              <h1 className="text-2xl sm:text-3xl md:text-4xl lg:text-[2.85rem] font-extrabold text-navy-900 dark:text-white leading-[1.14] tracking-tight">
+              <h1 className="text-3xl sm:text-4xl md:text-4xl lg:text-[2.85rem] font-extrabold text-navy-900 dark:text-white leading-[1.14] tracking-tight">
                 From Disability to <span className="text-gradient">Ability</span>
-                <span className="block text-lg sm:text-2xl lg:text-3xl font-bold text-slate-700 dark:text-slate-200 mt-2">
+                <span className="block text-[13px] sm:text-base md:text-xl lg:text-3xl font-bold text-slate-700 dark:text-slate-200 mt-2 whitespace-nowrap max-w-full overflow-hidden">
                   Specialized in{" "}
                   <TypewriterText
                     words={[
-                      "Stroke & Paralysis Recovery",
-                      "Brain Retraining Therapy",
-                      "Gait & Balance Correction",
-                      "Spinal Cord Injury Rehab",
-                      "Pediatric Neuro Physiotherapy",
+                      "Stroke & Paralysis",
+                      "Brain Retraining",
+                      "Gait & Balance",
+                      "Spinal Cord Rehab",
+                      "Pediatric Neuro Care",
                     ]}
                     className="text-brand-600 dark:text-brand-400 font-extrabold"
                     cursorColor="text-brand-600 dark:text-brand-400"
                   />
                 </span>
-                <span className="block text-base sm:text-xl font-bold text-slate-600 dark:text-slate-300 mt-2">
+                <span className="block text-[13px] sm:text-xl font-bold text-slate-600 dark:text-slate-300 mt-2">
                   Dr. Devejya Srivastava{" "}
                   <span className="text-xs sm:text-sm font-semibold text-brand-700 dark:text-brand-300 bg-brand-50 dark:bg-brand-950/70 px-2.5 py-1 rounded-lg align-middle border border-brand-200/60 dark:border-brand-800/60">
                     BPT (Physiotherapy)
@@ -249,8 +251,8 @@ export default function Hero() {
             </ScrollReveal>
           </div>
 
-          {/* Right — Doctor portrait */}
-          <div className="lg:col-span-5">
+          {/* Right — Doctor portrait (order-1 on mobile = above heading) */}
+          <div className="lg:col-span-5 order-1 lg:order-2">
             <ScrollReveal>
               <div className="relative mx-auto max-w-sm sm:max-w-md lg:max-w-none">
                 <div className="absolute -inset-2 bg-gradient-to-tr from-brand-500/20 via-accent-500/20 to-brand-600/20 rounded-3xl blur-xl -z-10" />
