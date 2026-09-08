@@ -125,28 +125,25 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   console.log("[AUTH] AuthProvider render, user:", user?.email || "null", "loading:", loading)
 
   useEffect(() => {
-    console.log("[AUTH] useEffect START, auth:", auth ? "OK" : "NULL")
+    let isMounted = true
+    let unsubToken: (() => void) | null = null
+
     if (!auth) {
-      console.log("[AUTH] auth is NULL, stopping")
       setLoading(false)
       return
     }
     const currentAuth = auth
 
-    let unsubToken: (() => void) | null = null
-
     // Step 1: consume pending redirect result
-    console.log("[AUTH] Step 1: getRedirectResultFirebase() calling...")
     getRedirectResultFirebase()
       .then(async (result) => {
-        console.log("[AUTH] getRedirectResult resolved:", result ? "HAS RESULT (user=" + result.user.email + ")" : "NULL (no pending redirect)")
+        if (!isMounted) return
         if (result) {
           try {
             const token = await result.user.getIdToken(true)
-            console.log("[AUTH] Redirect result token obtained, length:", token.length, "first50:", token.substring(0, 50))
             setTokenCookie(token)
-            } catch (e: unknown) {
-              console.log("[AUTH] Redirect result token FAILED:", String(e))
+          } catch (e: unknown) {
+            console.log("[AUTH] Redirect result token FAILED:", String(e))
           }
         }
       })
@@ -154,15 +151,14 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         console.log("[AUTH] getRedirectResult ERROR:", String(e))
       })
       .finally(() => {
+        if (!isMounted) return
         // Step 2: subscribe to token changes
-        console.log("[AUTH] Step 2: onIdTokenChanged subscribing...")
         unsubToken = onIdTokenChanged(currentAuth, async (fbUser) => {
-          console.log("[AUTH] onIdTokenChanged:", fbUser ? `user=${fbUser.email}` : "NULL")
+          if (!isMounted) return
           let idToken: string | undefined
           if (fbUser) {
             try {
               const token = await fbUser.getIdToken(true)
-              console.log("[AUTH] onIdTokenChanged token, length:", token.length, "first50:", token.substring(0, 50))
               setTokenCookie(token)
               idToken = token
             } catch (e: unknown) {
@@ -170,13 +166,12 @@ export function AuthProvider({ children }: { children: ReactNode }) {
             }
           }
           await refresh(setUser, idToken)
-          setLoading(false)
-          console.log("[AUTH] loading set to false")
+          if (isMounted) setLoading(false)
         })
       })
 
     return () => {
-      console.log("[AUTH] useEffect CLEANUP")
+      isMounted = false
       unsubToken?.()
     }
   }, [])

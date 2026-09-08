@@ -53,24 +53,23 @@ export default function Hero() {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full">
 
         {/* ═══════════════════════════════════════════
-            Hero top — logo + brand block (all screen sizes)
-            Mobile is stacked & centered; desktop is compact & left-aligned
+            Hero top — logo + brand block (Desktop lg+ only; on mobile doctor photo is at top)
             ═══════════════════════════════════════════ */}
-        <div className="flex flex-col items-center text-center lg:flex-row lg:items-center lg:justify-start lg:text-left gap-3 lg:gap-5 mb-10 lg:mb-8 pt-1 lg:pt-2">
+        <div className="hidden lg:flex items-center justify-start text-left gap-5 mb-8 pt-2">
           <div className="relative inline-block">
-            <div className="absolute -inset-3 lg:-inset-2 bg-gradient-to-br from-brand-400/25 to-accent-400/25 rounded-full blur-2xl" />
+            <div className="absolute -inset-2 bg-gradient-to-br from-brand-400/25 to-accent-400/25 rounded-full blur-2xl" />
             <Image
               src="/GMRLogo.png"
               alt="Gorakhpur Mission Rehab Logo"
               width={88}
               height={88}
               quality={90}
-              className="relative h-16 w-16 sm:h-20 sm:w-20 lg:h-14 lg:w-14 xl:h-16 xl:w-16 object-contain drop-shadow-xl"
+              className="relative h-14 w-14 xl:h-16 xl:w-16 object-contain drop-shadow-xl"
               priority
             />
           </div>
-          <div className="flex flex-col items-center lg:items-start">
-            <h2 className="text-xl sm:text-2xl lg:text-2xl xl:text-3xl font-extrabold text-navy-900 dark:text-white tracking-tight leading-tight">
+          <div className="flex flex-col items-start">
+            <h2 className="text-2xl xl:text-3xl font-extrabold text-navy-900 dark:text-white tracking-tight leading-tight">
               Gorakhpur{" "}
               <span className="bg-gradient-to-r from-brand-600 to-accent-600 bg-clip-text text-transparent">
                 Mission Rehab
@@ -258,12 +257,19 @@ export default function Hero() {
                 <div className="absolute -inset-2 bg-gradient-to-tr from-brand-500/20 via-accent-500/20 to-brand-600/20 rounded-3xl blur-xl -z-10" />
 
                 <div className="bg-white dark:bg-navy-800 rounded-3xl p-3 sm:p-4 border-2 border-slate-200/80 dark:border-navy-700 shadow-2xl overflow-hidden relative">
-                  <div className="absolute top-6 left-6 z-10 bg-white/95 dark:bg-navy-900/95 backdrop-blur-md px-3 py-1.5 rounded-xl border border-slate-200 dark:border-navy-700 shadow-md flex items-center gap-1.5 text-xs font-bold text-navy-900 dark:text-white">
+                  {/* Verified badge top-left */}
+                  <div className="absolute top-5 left-5 sm:top-6 sm:left-6 z-10 bg-white/95 dark:bg-navy-900/95 backdrop-blur-md px-3 py-1.5 rounded-xl border border-slate-200 dark:border-navy-700 shadow-md flex items-center gap-1.5 text-xs font-bold text-navy-900 dark:text-white">
                     <Award className="w-4 h-4 text-brand-600 dark:text-brand-400" />
                     <span>Verified Specialist</span>
                   </div>
 
-                  <div className="relative w-full h-60 sm:h-80 md:h-[26rem] rounded-2xl overflow-hidden bg-slate-100 dark:bg-navy-900">
+                  {/* Clinic Open badge top-right on mobile */}
+                  <div className="lg:hidden absolute top-5 right-5 z-10 bg-emerald-600/95 text-white backdrop-blur-md px-2.5 py-1 rounded-xl shadow-md flex items-center gap-1.5 text-[10.5px] font-bold">
+                    <span className="w-1.5 h-1.5 rounded-full bg-white animate-pulse" />
+                    <span>Clinic Open</span>
+                  </div>
+
+                  <div className="relative w-full h-64 sm:h-80 md:h-[26rem] rounded-2xl overflow-hidden bg-slate-100 dark:bg-navy-900">
                     <Image
                       src="/doctor.jpg"
                       alt="Dr. Devejya Srivastava (PT) — Consultant Neuro Rehab Physiotherapist at Divyaman Hospital Gorakhpur"
@@ -273,8 +279,8 @@ export default function Hero() {
                       priority
                       fetchPriority="high"
                     />
-                    <div className="absolute inset-0 bg-gradient-to-t from-navy-950/80 via-transparent to-transparent" />
-                    <div className="absolute bottom-4 left-4 right-4 text-white">
+                    <div className="absolute inset-0 bg-gradient-to-t from-navy-950/85 via-navy-950/20 to-transparent" />
+                    <div className="absolute bottom-3 left-3 right-3 sm:bottom-4 sm:left-4 sm:right-4 text-white">
                       <p className="text-base sm:text-xl font-extrabold tracking-tight">Dr. Devejya Srivastava (PT)</p>
                       <p className="text-xs text-brand-200 font-medium">Consultant Neuro Rehabilitation Physiotherapist</p>
                       <p className="text-[11px] text-slate-300 mt-1 flex items-center gap-1">
