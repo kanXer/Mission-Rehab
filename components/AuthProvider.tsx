@@ -58,12 +58,62 @@ async function refresh(setUser: (u: User | null) => void, idToken?: string) {
     }
     console.log("[AUTH] refresh() calling /api/auth/me, hasToken:", !!token, "tokenLen:", token?.length ?? 0, "currentUser:", auth?.currentUser?.email ?? "null")
     const res = await fetch("/api/auth/me", { credentials: "same-origin", headers })
-    const data = await res.json()
-    console.log("[AUTH] /me response:", data.user ? `user=${data.user.email} admin=${data.user.isAdmin}` : "NULL")
-    setUser(data.user ?? null)
-    if (!data.user) clearTokenCookie()
+    const contentType = res.headers.get("content-type") || ""
+
+    if (res.ok && contentType.includes("application/json")) {
+      const data = await res.json()
+      console.log("[AUTH] /me response:", data.user ? `user=${data.user.email} admin=${data.user.isAdmin}` : "NULL")
+      if (data.user) {
+        setUser(data.user)
+        return
+      }
+    } else {
+      console.warn("[AUTH] /me returned non-JSON or status", res.status)
+    }
+
+    // Client-side fallback if Firebase client is already authenticated
+    if (auth?.currentUser) {
+      const fbUser = auth.currentUser
+      const email = fbUser.email?.toLowerCase() || ""
+      const adminList = (process.env.NEXT_PUBLIC_ADMIN_EMAIL || "nexusdigital.gkp@gmail.com,sahilsks001@gmail.com,user.kanxer@gmail.com")
+        .toLowerCase()
+        .split(",")
+        .map((e) => e.trim())
+      const isSuper = adminList.includes(email)
+      console.log("[AUTH] Fallback to Firebase client user:", email, "isAdmin:", isSuper)
+      setUser({
+        id: fbUser.uid,
+        email: fbUser.email || "",
+        name: fbUser.displayName || fbUser.email?.split("@")[0] || "User",
+        photo: fbUser.photoURL || undefined,
+        isAdmin: isSuper,
+        isSuperAdmin: isSuper,
+      })
+      return
+    }
+
+    setUser(null)
+    clearTokenCookie()
   } catch (e) {
     console.log("[AUTH] /me FAILED:", e)
+    if (auth?.currentUser) {
+      const fbUser = auth.currentUser
+      const email = fbUser.email?.toLowerCase() || ""
+      const adminList = (process.env.NEXT_PUBLIC_ADMIN_EMAIL || "nexusdigital.gkp@gmail.com,sahilsks001@gmail.com,user.kanxer@gmail.com")
+        .toLowerCase()
+        .split(",")
+        .map((e) => e.trim())
+      const isSuper = adminList.includes(email)
+      setUser({
+        id: fbUser.uid,
+        email: fbUser.email || "",
+        name: fbUser.displayName || fbUser.email?.split("@")[0] || "User",
+        photo: fbUser.photoURL || undefined,
+        isAdmin: isSuper,
+        isSuperAdmin: isSuper,
+      })
+      return
+    }
     setUser(null)
   }
 }

@@ -9,6 +9,7 @@ export default function ThemeToggle() {
   return (
     <button
       onClick={toggleTheme}
+      suppressHydrationWarning
       className="p-2 rounded-full text-slate-500 hover:text-brand-600 hover:bg-slate-100 dark:text-slate-400 dark:hover:text-yellow-400 dark:hover:bg-navy-700 transition-colors"
       aria-label={theme === "light" ? "Enable dark mode" : "Enable light mode"}
     >
