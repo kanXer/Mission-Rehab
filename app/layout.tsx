@@ -186,14 +186,18 @@ export default function RootLayout({
         <link rel="preconnect" href="https://images.unsplash.com" crossOrigin="anonymous" />
         <link rel="dns-prefetch" href="https://images.unsplash.com" />
         <script
-          dangerouslySetInnerHTML={{
-            __html: `(function(){try{var t=localStorage.getItem("theme");if(t==="dark"||(!t&&window.matchMedia("(prefers-color-scheme: dark)").matches)){document.documentElement.classList.add("dark")}else{document.documentElement.classList.remove("dark")}}catch(e){}})()`,
-          }}
-        />
-        <script
+          id="medical-schema"
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: JSON.stringify(medicalSchema) }}
         />
+        {process.env.NODE_ENV === "production" && (
+          <script
+            id="theme-init"
+            dangerouslySetInnerHTML={{
+              __html: `(function(){try{var t=localStorage.getItem("theme");if(t==="dark"||(!t&&window.matchMedia("(prefers-color-scheme: dark)").matches)){document.documentElement.classList.add("dark")}else{document.documentElement.classList.remove("dark")}}catch(e){}})()`,
+            }}
+          />
+        )}
       </head>
       <body
         className={`${inter.className} antialiased bg-white dark:bg-navy-900 text-navy-800 dark:text-slate-100 transition-colors duration-300 overflow-x-clip min-h-screen w-full relative`}
