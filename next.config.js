@@ -7,14 +7,13 @@ const nextConfig = {
     useTypeScriptCli: true,
   },
   images: {
+    qualities: [75, 100],
     remotePatterns: [
       {
         protocol: "https",
         hostname: "images.unsplash.com",
       },
     ],
-    formats: ["image/avif", "image/webp"],
-    minimumCacheTTL: 31536000,
   },
 }
 module.exports = nextConfig
