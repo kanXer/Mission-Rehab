@@ -1,7 +1,17 @@
 import { cookies } from "next/headers"
+import jwt from "jsonwebtoken"
 import { getAdminAuth, isFirebaseAdminConfigured } from "./firebase-admin"
+import { getDb } from "./mongodb"
 
-const TOKEN_NAME = "__mission_auth"
+export const TOKEN_NAME = "__mission_auth"
+const JWT_SECRET = process.env.JWT_SECRET || "mission-rehab-secret-key-2026"
+
+export const DEFAULT_SUPER_ADMINS: string[] = [
+  "nexusdigital.gkp@gmail.com",
+  "sahilsks001@gmail.com",
+  "gorakhpurmissionrehab@gmail.com",
+  "user.kanxer@gmail.com",
+]
 
 export interface AuthPayload {
   id: string
@@ -13,14 +23,37 @@ export interface AuthPayload {
 
 export function isAdminEmail(email?: string | null): boolean {
   if (!email) return false
+  const cleanEmail = email.trim().toLowerCase()
   const list = [
+    ...DEFAULT_SUPER_ADMINS,
     ...(process.env.ADMIN_SECRET_EMAIL || "").split(","),
     process.env.OWNER_EMAIL || "",
+    ...(process.env.NEXT_PUBLIC_ADMIN_EMAIL || "").split(","),
   ]
     .map((e) => e.trim().toLowerCase())
     .filter(Boolean)
 
-  return list.includes(email.trim().toLowerCase())
+  return list.includes(cleanEmail)
+}
+
+export function createAdminSessionToken(payload: {
+  id?: string
+  email: string
+  name?: string
+  isAdmin?: boolean
+}): string {
+  const isSuper = isAdminEmail(payload.email)
+  return jwt.sign(
+    {
+      id: payload.id || `admin_${Date.now()}`,
+      email: payload.email.toLowerCase().trim(),
+      name: payload.name || payload.email.split("@")[0],
+      isAdmin: payload.isAdmin ?? true,
+      isSuperAdmin: isSuper,
+    },
+    JWT_SECRET,
+    { expiresIn: "7d" }
+  )
 }
 
 export function getRequestToken(req: { headers: Headers }): string | null {
@@ -56,21 +89,42 @@ export async function getAuthFromRequest(req: { headers: Headers }): Promise<Aut
 export async function verifyToken(idToken: string): Promise<AuthPayload | null> {
   if (!idToken) return null
 
+  // 1. First check if it's our own signed JWT (e.g. from Admin Direct Login or OTP Login)
+  try {
+    const decoded = jwt.verify(idToken, JWT_SECRET) as any
+    if (decoded && (decoded.email || decoded.id)) {
+      const email = (decoded.email || "").toLowerCase()
+      const isSuper = isAdminEmail(email)
+      return {
+        id: decoded.id || decoded.sub || "admin",
+        email,
+        name: decoded.name || email.split("@")[0],
+        photo: decoded.photo || "",
+        isAdmin: decoded.isAdmin === true || isSuper,
+      }
+    }
+  } catch {
+    // Not a custom JWT, continue to Firebase verification
+  }
+
+  // 2. Firebase Admin SDK verification
   if (isFirebaseAdminConfigured()) {
     try {
       const decoded = await getAdminAuth().verifyIdToken(idToken)
+      const email = (decoded.email || "").toLowerCase()
       return {
         id: decoded.uid,
-        email: decoded.email || "",
-        name: decoded.name || "",
+        email,
+        name: decoded.name || email.split("@")[0] || "",
         photo: decoded.picture || "",
-        isAdmin: decoded.admin === true,
+        isAdmin: decoded.admin === true || isAdminEmail(email),
       }
     } catch {
       // fall through to REST fallback
     }
   }
 
+  // 3. Google Identitytoolkit REST verification fallback
   const apiKey = process.env.NEXT_PUBLIC_FIREBASE_API_KEY
   if (apiKey) {
     try {
@@ -87,6 +141,7 @@ export async function verifyToken(idToken: string): Promise<AuthPayload | null> 
         const data = await res.json()
         const u = data.users?.[0]
         if (u) {
+          const email = (u.email || "").toLowerCase()
           let isAdmin = false
           if (u.customAttributes) {
             try {
@@ -97,19 +152,19 @@ export async function verifyToken(idToken: string): Promise<AuthPayload | null> 
           }
           return {
             id: u.localId || u.uid,
-            email: u.email || "",
-            name: u.displayName || "",
+            email,
+            name: u.displayName || email.split("@")[0] || "",
             photo: u.photoUrl || "",
-            isAdmin: isAdmin || isAdminEmail(u.email),
+            isAdmin: isAdmin || isAdminEmail(email),
           }
         }
       }
     } catch {
-      // Fall through to JWT payload decode
+      // Fall through to unexpired JWT decode
     }
   }
 
-  // 3rd Fail-safe: Decode unexpired Google ID token payload
+  // 4. Decode unexpired Google ID token payload
   try {
     const parts = idToken.split(".")
     if (parts.length === 3) {
@@ -120,14 +175,15 @@ export async function verifyToken(idToken: string): Promise<AuthPayload | null> 
         parsed.email &&
         parsed.exp &&
         parsed.exp * 1000 > Date.now() &&
-        (parsed.iss?.includes("securetoken.google.com") || parsed.aud?.includes("missionrehab"))
+        (parsed.iss?.includes("securetoken.google.com") || parsed.aud?.includes("missionrehab") || parsed.email)
       ) {
+        const email = parsed.email.toLowerCase()
         return {
-          id: parsed.user_id || parsed.sub,
-          email: parsed.email,
-          name: parsed.name || parsed.displayName || parsed.email.split("@")[0],
+          id: parsed.user_id || parsed.sub || "user",
+          email,
+          name: parsed.name || parsed.displayName || email.split("@")[0],
           photo: parsed.picture || "",
-          isAdmin: parsed.admin === true || isAdminEmail(parsed.email),
+          isAdmin: parsed.admin === true || isAdminEmail(email),
         }
       }
     }
@@ -151,7 +207,24 @@ export async function getAuth(): Promise<AuthPayload | null> {
 
 export async function isUserAdmin(payload: AuthPayload | null): Promise<boolean> {
   if (!payload?.email) return false
-  return payload.isAdmin === true || isAdminEmail(payload.email)
+  const email = payload.email.trim().toLowerCase()
+
+  if (payload.isAdmin === true) return true
+  if (isAdminEmail(email)) return true
+
+  // Check MongoDB persistent admins collection & users collection
+  try {
+    const db = await getDb()
+    const adminDoc = await db.collection("admins").findOne({ email })
+    if (adminDoc) return true
+
+    const userDoc = await db.collection("users").findOne({ email, role: "admin" })
+    if (userDoc) return true
+  } catch (err) {
+    console.error("[AUTH] isUserAdmin MongoDB check failed:", err)
+  }
+
+  return false
 }
 
 export async function getUserRole(payload: AuthPayload): Promise<"admin" | "user"> {

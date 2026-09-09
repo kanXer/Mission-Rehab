@@ -23,6 +23,9 @@ interface AuthContextType {
   user: User | null
   loading: boolean
   signInWithGoogle: () => Promise<string | null>
+  loginWithCredentials: (email: string, password: string) => Promise<{ success: boolean; error?: string }>
+  sendOtp: (email: string) => Promise<{ success: boolean; error?: string; message?: string }>
+  loginWithOtp: (email: string, otp: string) => Promise<{ success: boolean; error?: string }>
   logout: () => Promise<void>
   getIdToken: () => Promise<string | null>
 }
@@ -30,57 +33,62 @@ interface AuthContextType {
 const AuthContext = createContext<AuthContextType>(null!)
 
 function setTokenCookie(token: string) {
-  console.log("[AUTH] setTokenCookie called, length:", token.length, "first50:", token.substring(0, 50))
-  const secure = window.location.protocol === "https:" ? "; Secure" : ""
-  document.cookie = `__mission_auth=${token}; Path=/; Max-Age=3600; SameSite=Lax${secure}`
+  const secure = typeof window !== "undefined" && window.location.protocol === "https:" ? "; Secure" : ""
+  document.cookie = `__mission_auth=${token}; Path=/; Max-Age=${60 * 60 * 24 * 7}; SameSite=Lax${secure}`
   document.cookie = `token=; Path=/; Max-Age=0`
-  console.log("[AUTH] Cookie after set:", document.cookie)
 }
 
 function clearTokenCookie() {
   document.cookie = "__mission_auth=; path=/; max-age=0"
-  console.log("[AUTH] Cookie CLEARED")
+  document.cookie = "token=; path=/; max-age=0"
 }
 
 async function refresh(setUser: (u: User | null) => void, idToken?: string) {
   try {
     let token = idToken
+    if (!token && typeof document !== "undefined") {
+      const match = document.cookie.match(/__mission_auth=([^;]+)/)
+      if (match) token = decodeURIComponent(match[1])
+    }
     if (!token && auth?.currentUser) {
       try {
         token = await auth.currentUser.getIdToken(true)
       } catch (e) {
-        console.log("[AUTH] refresh: currentUser.getIdToken FAILED:", e)
+        console.warn("[AUTH] refresh: currentUser.getIdToken warning:", e)
       }
     }
     const headers: Record<string, string> = {}
     if (token) {
       headers["Authorization"] = `Bearer ${token}`
     }
-    console.log("[AUTH] refresh() calling /api/auth/me, hasToken:", !!token, "tokenLen:", token?.length ?? 0, "currentUser:", auth?.currentUser?.email ?? "null")
     const res = await fetch("/api/auth/me", { credentials: "same-origin", headers })
     const contentType = res.headers.get("content-type") || ""
 
     if (res.ok && contentType.includes("application/json")) {
       const data = await res.json()
-      console.log("[AUTH] /me response:", data.user ? `user=${data.user.email} admin=${data.user.isAdmin}` : "NULL")
       if (data.user) {
         setUser(data.user)
         return
       }
-    } else {
-      console.warn("[AUTH] /me returned non-JSON or status", res.status)
     }
 
     // Client-side fallback if Firebase client is already authenticated
     if (auth?.currentUser) {
       const fbUser = auth.currentUser
       const email = fbUser.email?.toLowerCase() || ""
-      const adminList = (process.env.NEXT_PUBLIC_ADMIN_EMAIL || "nexusdigital.gkp@gmail.com,sahilsks001@gmail.com,user.kanxer@gmail.com")
+      const defaultAdmins = [
+        "nexusdigital.gkp@gmail.com",
+        "sahilsks001@gmail.com",
+        "gorakhpurmissionrehab@gmail.com",
+        "user.kanxer@gmail.com",
+      ]
+      const adminList = (process.env.NEXT_PUBLIC_ADMIN_EMAIL || "")
         .toLowerCase()
         .split(",")
         .map((e) => e.trim())
+        .concat(defaultAdmins)
+
       const isSuper = adminList.includes(email)
-      console.log("[AUTH] Fallback to Firebase client user:", email, "isAdmin:", isSuper)
       setUser({
         id: fbUser.uid,
         email: fbUser.email || "",
@@ -95,15 +103,17 @@ async function refresh(setUser: (u: User | null) => void, idToken?: string) {
     setUser(null)
     clearTokenCookie()
   } catch (e) {
-    console.log("[AUTH] /me FAILED:", e)
+    console.error("[AUTH] /me error:", e)
     if (auth?.currentUser) {
       const fbUser = auth.currentUser
       const email = fbUser.email?.toLowerCase() || ""
-      const adminList = (process.env.NEXT_PUBLIC_ADMIN_EMAIL || "nexusdigital.gkp@gmail.com,sahilsks001@gmail.com,user.kanxer@gmail.com")
-        .toLowerCase()
-        .split(",")
-        .map((e) => e.trim())
-      const isSuper = adminList.includes(email)
+      const defaultAdmins = [
+        "nexusdigital.gkp@gmail.com",
+        "sahilsks001@gmail.com",
+        "gorakhpurmissionrehab@gmail.com",
+        "user.kanxer@gmail.com",
+      ]
+      const isSuper = defaultAdmins.includes(email)
       setUser({
         id: fbUser.uid,
         email: fbUser.email || "",
@@ -122,14 +132,21 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const [user, setUser] = useState<User | null>(null)
   const [loading, setLoading] = useState(true)
 
-  console.log("[AUTH] AuthProvider render, user:", user?.email || "null", "loading:", loading)
-
   useEffect(() => {
     let isMounted = true
     let unsubToken: (() => void) | null = null
 
+    // Check if we have an existing JWT cookie
+    const hasCookie = typeof document !== "undefined" && document.cookie.includes("__mission_auth")
+
     if (!auth) {
-      setLoading(false)
+      if (hasCookie) {
+        refresh(setUser).finally(() => {
+          if (isMounted) setLoading(false)
+        })
+      } else {
+        setLoading(false)
+      }
       return
     }
     const currentAuth = auth
@@ -143,12 +160,12 @@ export function AuthProvider({ children }: { children: ReactNode }) {
             const token = await result.user.getIdToken(true)
             setTokenCookie(token)
           } catch (e: unknown) {
-            console.log("[AUTH] Redirect result token FAILED:", String(e))
+            console.warn("[AUTH] Redirect result token error:", String(e))
           }
         }
       })
       .catch((e: unknown) => {
-        console.log("[AUTH] getRedirectResult ERROR:", String(e))
+        console.warn("[AUTH] getRedirectResult error:", String(e))
       })
       .finally(() => {
         if (!isMounted) return
@@ -162,12 +179,19 @@ export function AuthProvider({ children }: { children: ReactNode }) {
               setTokenCookie(token)
               idToken = token
             } catch (e: unknown) {
-              console.log("[AUTH] getIdToken FAILED:", String(e))
+              console.warn("[AUTH] getIdToken error:", String(e))
             }
           }
           await refresh(setUser, idToken)
           if (isMounted) setLoading(false)
         })
+
+        // Also check if custom cookie session is already present
+        if (hasCookie) {
+          refresh(setUser).finally(() => {
+            if (isMounted) setLoading(false)
+          })
+        }
       })
 
     return () => {
@@ -177,13 +201,10 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   }, [])
 
   async function googleSignIn(): Promise<string | null> {
-    console.log("[AUTH] googleSignIn CLICKED")
     if (!auth) {
-      console.log("[AUTH] auth is NULL, returning error")
-      return "Firebase is not configured."
+      return "Firebase is not configured in this environment. Kripya Admin Credentials se login karein."
     }
     try {
-      console.log("[AUTH] signInWithGoogle() calling...")
       const result = await signInWithGoogle()
       if (result && "user" in result) {
         try {
@@ -191,27 +212,94 @@ export function AuthProvider({ children }: { children: ReactNode }) {
           setTokenCookie(token)
           await refresh(setUser, token)
         } catch (e) {
-          console.log("[AUTH] token fetch error:", e)
+          console.warn("[AUTH] token fetch error:", e)
         }
       }
       return null
     } catch (e: unknown) {
-      console.log("[AUTH] signInWithGoogle ERROR:", String(e))
       const code = (e as { code?: string })?.code || ""
+      const currentHost = typeof window !== "undefined" ? window.location.hostname : "your domain"
+      if (code === "auth/unauthorized-domain") {
+        return `Firebase Unauthorized Domain: Please add '${currentHost}' to Firebase Console > Authentication > Settings > Authorized domains. Aap neeche 'Admin Password / OTP' tab se turant login kar sakte hain.`
+      }
       if (code === "auth/popup-closed-by-user") return "Sign-in window band kar di gayi."
+      if (code === "auth/popup-blocked") return "Browser ne popup block kar diya. Popups allow karein ya Admin Password se login karein."
       if (code === "auth/network-request-failed") return "Internet/Network error."
-      return "Google sign-in fail ho gaya. Kripya punah prayas karein."
+      if (code === "auth/account-exists-with-different-credential") return "Is email ka account pehle se bana hua hai. Kripya Email/Password login use karein."
+      return (e as Error)?.message || "Google sign-in fail ho gaya. Kripya punah prayas karein ya Admin Password use karein."
+    }
+  }
+
+  async function loginWithCredentials(email: string, password: string): Promise<{ success: boolean; error?: string }> {
+    try {
+      const res = await fetch("/api/auth/admin-login", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email, password }),
+      })
+      const data = await res.json()
+      if (!res.ok) {
+        return { success: false, error: data.error || "Login failed" }
+      }
+      if (data.token) {
+        setTokenCookie(data.token)
+        await refresh(setUser, data.token)
+      }
+      return { success: true }
+    } catch (err: any) {
+      return { success: false, error: err?.message || "Server connection error" }
+    }
+  }
+
+  async function sendOtp(email: string): Promise<{ success: boolean; error?: string; message?: string }> {
+    try {
+      const res = await fetch("/api/auth/email-otp", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ action: "send", email }),
+      })
+      const data = await res.json()
+      if (!res.ok) {
+        return { success: false, error: data.error || "Failed to send OTP" }
+      }
+      return { success: true, message: data.message }
+    } catch (err: any) {
+      return { success: false, error: err?.message || "Failed to send OTP" }
+    }
+  }
+
+  async function loginWithOtp(email: string, otp: string): Promise<{ success: boolean; error?: string }> {
+    try {
+      const res = await fetch("/api/auth/email-otp", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ action: "verify", email, otp }),
+      })
+      const data = await res.json()
+      if (!res.ok) {
+        return { success: false, error: data.error || "Invalid OTP" }
+      }
+      if (data.token) {
+        setTokenCookie(data.token)
+        await refresh(setUser, data.token)
+      }
+      return { success: true }
+    } catch (err: any) {
+      return { success: false, error: err?.message || "Failed to verify OTP" }
     }
   }
 
   async function logout() {
-    console.log("[AUTH] logout called")
     clearTokenCookie()
     await signOutUser()
     setUser(null)
   }
 
   async function getIdToken(): Promise<string | null> {
+    if (typeof document !== "undefined") {
+      const match = document.cookie.match(/__mission_auth=([^;]+)/)
+      if (match) return decodeURIComponent(match[1])
+    }
     if (auth?.currentUser) {
       try {
         return await auth.currentUser.getIdToken()
@@ -219,13 +307,21 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         return null
       }
     }
-    const match = document.cookie.match(/__mission_auth=([^;]+)/)
-    return match ? match[1] : null
+    return null
   }
 
   return (
     <AuthContext.Provider
-      value={{ user, loading, signInWithGoogle: googleSignIn, logout, getIdToken }}
+      value={{
+        user,
+        loading,
+        signInWithGoogle: googleSignIn,
+        loginWithCredentials,
+        sendOtp,
+        loginWithOtp,
+        logout,
+        getIdToken,
+      }}
     >
       {children}
     </AuthContext.Provider>
