@@ -10,6 +10,7 @@ import { useToast } from "@/components/ToastProvider"
 interface Admin {
   _id: string
   email: string
+  name?: string
   addedBy?: string
   createdAt?: string
 }
@@ -17,9 +18,11 @@ interface Admin {
 export default function AdminAdmins() {
   const [admins, setAdmins] = useState<Admin[]>([])
   const [superAdminEmail, setSuperAdminEmail] = useState("")
+  const [superAdminEmails, setSuperAdminEmails] = useState<string[]>([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState("")
   const [newEmail, setNewEmail] = useState("")
+  const [newName, setNewName] = useState("")
   const [adding, setAdding] = useState(false)
   const { user, loading: authLoading, getIdToken } = useAuth()
   const router = useRouter()
@@ -42,6 +45,7 @@ export default function AdminAdmins() {
       }
       if (d.admins) setAdmins(d.admins)
       if (d.superAdminEmail) setSuperAdminEmail(d.superAdminEmail)
+      if (d.superAdminEmails) setSuperAdminEmails(d.superAdminEmails)
     } catch {
       setError("Failed to load admins")
     } finally {
@@ -64,7 +68,7 @@ export default function AdminAdmins() {
       const res = await fetch("/api/admins", {
         method: "POST",
         headers,
-        body: JSON.stringify({ email: newEmail.trim() }),
+        body: JSON.stringify({ email: newEmail.trim(), name: newName.trim() }),
       })
       const data = await res.json()
       if (!res.ok) {
@@ -73,6 +77,7 @@ export default function AdminAdmins() {
         return
       }
       setNewEmail("")
+      setNewName("")
       toast("Admin added successfully")
       fetchAdmins()
     } catch {
@@ -98,7 +103,7 @@ export default function AdminAdmins() {
         setError(data.error || "Failed to remove admin")
         return
       }
-      toast("Admin removed")
+      toast("Admin removed successfully")
       fetchAdmins()
     } catch {
       setError("Network error — could not reach server")
@@ -108,81 +113,129 @@ export default function AdminAdmins() {
   if (authLoading) return <div className="min-h-screen bg-slate-50 dark:bg-navy-900 flex items-center justify-center"><Loader className="w-8 h-8 animate-spin text-brand-600" /></div>
   if (!user || !user.isAdmin) return null
 
+  const displaySuperAdmins = superAdminEmails.length > 0 ? superAdminEmails : superAdminEmail ? [superAdminEmail] : []
+
   return (
-    <div className="min-h-screen bg-slate-50 dark:bg-navy-900 py-10 px-4">
-      <div className="max-w-2xl mx-auto">
+    <div className="min-h-screen bg-slate-50 dark:bg-navy-950 py-10 px-4">
+      <div className="max-w-3xl mx-auto">
         <Link href="/admin" className="inline-flex items-center gap-1.5 text-sm text-slate-500 dark:text-slate-400 hover:text-brand-600 dark:hover:text-brand-400 mb-4 transition-colors">
-          <ArrowLeft className="w-4 h-4" /> Back
+          <ArrowLeft className="w-4 h-4" /> Back to Dashboard
         </Link>
-        <div className="flex items-center gap-2 mb-6">
-          <Shield className="w-6 h-6 text-brand-600" />
-          <h1 className="text-2xl font-bold text-navy-800 dark:text-white">Manage Admins</h1>
+        <div className="flex items-center justify-between gap-2 mb-6">
+          <div className="flex items-center gap-2.5">
+            <div className="w-10 h-10 rounded-xl bg-brand-500/10 dark:bg-brand-500/20 text-brand-600 dark:text-brand-400 flex items-center justify-center">
+              <Shield className="w-5 h-5" />
+            </div>
+            <div>
+              <h1 className="text-2xl font-bold text-navy-950 dark:text-white">Manage Administrators</h1>
+              <p className="text-xs text-slate-500 dark:text-slate-400">Control who can access and edit clinic records</p>
+            </div>
+          </div>
+          <span className="text-xs font-semibold px-3 py-1 rounded-full bg-slate-100 dark:bg-navy-800 text-slate-600 dark:text-slate-300">
+            Total: {displaySuperAdmins.length + admins.length}
+          </span>
         </div>
 
         {!isSuperAdmin && (
-          <div className="mb-4 px-4 py-3 rounded-xl bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 text-sm text-blue-700 dark:text-blue-300">
+          <div className="mb-4 px-4 py-3 rounded-2xl bg-blue-50 dark:bg-blue-950/40 border border-blue-200 dark:border-blue-900 text-xs sm:text-sm text-blue-700 dark:text-blue-300">
             Aap admin hain. Naye admins sirf super admin (owner) add/remove kar sakta hai.
           </div>
         )}
 
         {error && (
-          <div className="mb-4 px-4 py-3 rounded-xl bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 text-sm text-red-700 dark:text-red-400">
+          <div className="mb-4 px-4 py-3 rounded-2xl bg-red-50 dark:bg-red-950/40 border border-red-200 dark:border-red-900 text-xs sm:text-sm text-red-700 dark:text-red-400">
             {error}
           </div>
         )}
 
         {isSuperAdmin && (
-          <div className="bg-white dark:bg-navy-800 rounded-2xl border border-slate-200 dark:border-navy-700 shadow-sm mb-6 p-5">
-            <h2 className="font-semibold text-navy-800 dark:text-white text-sm mb-4">Add Admin Account</h2>
-            <div className="flex flex-col sm:flex-row gap-3">
-              <input type="email" placeholder="admin@example.com" value={newEmail} onChange={(e) => setNewEmail(e.target.value)}
-                className="flex-1 px-4 py-2 rounded-xl border border-slate-300 dark:border-navy-600 bg-white dark:bg-navy-800 text-navy-800 dark:text-white text-sm focus:outline-none focus:ring-2 focus:ring-brand-500" />
-              <button type="button" onClick={addAdmin} disabled={adding || !newEmail.trim()}
-                className="flex items-center justify-center gap-2 bg-gradient-to-r from-brand-600 to-accent-600 text-white font-semibold text-sm px-5 py-2 rounded-xl shadow-lg hover:shadow-xl transition-all disabled:opacity-60">
+          <div className="bg-white dark:bg-navy-900 rounded-3xl border border-slate-200/80 dark:border-navy-800 shadow-sm mb-6 p-5 sm:p-6">
+            <h2 className="font-bold text-navy-950 dark:text-white text-sm mb-3">Add New Admin Account</h2>
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 mb-3">
+              <input
+                type="text"
+                placeholder="Doctor / Admin Name (e.g. Dr. Devejya)"
+                value={newName}
+                onChange={(e) => setNewName(e.target.value)}
+                className="px-4 py-2.5 rounded-xl border border-slate-200 dark:border-navy-700 bg-slate-50 dark:bg-navy-950 text-navy-950 dark:text-white text-xs focus:outline-none focus:ring-2 focus:ring-brand-500"
+              />
+              <input
+                type="email"
+                required
+                placeholder="admin@example.com"
+                value={newEmail}
+                onChange={(e) => setNewEmail(e.target.value)}
+                className="px-4 py-2.5 rounded-xl border border-slate-200 dark:border-navy-700 bg-slate-50 dark:bg-navy-950 text-navy-950 dark:text-white text-xs focus:outline-none focus:ring-2 focus:ring-brand-500"
+              />
+            </div>
+            <div className="flex flex-col sm:flex-row items-center justify-between gap-3 pt-1">
+              <p className="text-[11px] text-slate-400 dark:text-slate-500">
+                Admin add hote hi turant active ho jayega aur Google Sign-In ya Password login use kar sakega.
+              </p>
+              <button
+                type="button"
+                onClick={addAdmin}
+                disabled={adding || !newEmail.trim()}
+                className="w-full sm:w-auto flex items-center justify-center gap-2 bg-gradient-to-r from-brand-600 to-accent-600 text-white font-semibold text-xs px-6 py-2.5 rounded-xl shadow-md hover:shadow-lg transition-all disabled:opacity-60 shrink-0 cursor-pointer"
+              >
                 {adding ? <Loader className="w-4 h-4 animate-spin" /> : <Plus className="w-4 h-4" />}
                 Add Admin
               </button>
             </div>
-            <p className="text-xs text-slate-400 dark:text-slate-500 mt-3">
-              Ye email Firebase account se login karega. Admin ko pehle account bana kar sign-in karna hoga.
-            </p>
           </div>
         )}
 
         {loading ? (
-          <div className="flex justify-center py-10"><Loader className="w-6 h-6 animate-spin text-brand-600" /></div>
+          <div className="flex justify-center py-12"><Loader className="w-6 h-6 animate-spin text-brand-600" /></div>
         ) : (
-          <div className="bg-white dark:bg-navy-800 rounded-2xl border border-slate-200 dark:border-navy-700 shadow-sm overflow-hidden">
-            <div className="divide-y divide-slate-100 dark:divide-navy-700">
-              {superAdminEmail && (
-                <div className="flex items-center gap-3 px-5 py-4 bg-amber-50/60 dark:bg-amber-900/10">
-                  <div className="w-9 h-9 rounded-xl bg-gradient-to-br from-amber-400 to-amber-600 flex items-center justify-center shrink-0">
+          <div className="bg-white dark:bg-navy-900 rounded-3xl border border-slate-200/80 dark:border-navy-800 shadow-sm overflow-hidden">
+            <div className="divide-y divide-slate-100 dark:divide-navy-800">
+              {/* Super Admins */}
+              {displaySuperAdmins.map((email) => (
+                <div key={email} className="flex items-center gap-3.5 px-5 py-4 bg-amber-50/50 dark:bg-amber-950/20">
+                  <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-amber-400 to-amber-600 flex items-center justify-center shrink-0 shadow-sm">
                     <Crown className="w-5 h-5 text-white" />
                   </div>
                   <div className="min-w-0 flex-1">
-                    <p className="text-sm font-semibold text-navy-800 dark:text-white truncate">{superAdminEmail}</p>
-                    <p className="text-xs text-amber-600 dark:text-amber-400 font-medium">Super Admin (Owner) â€” .env mein set</p>
+                    <p className="text-sm font-bold text-navy-950 dark:text-white truncate">{email}</p>
+                    <p className="text-xs text-amber-600 dark:text-amber-400 font-medium">Super Admin (Permanent Owner)</p>
                   </div>
                   <ShieldCheck className="w-5 h-5 text-amber-500 shrink-0" />
                 </div>
-              )}
+              ))}
+
+              {/* Additional Admins */}
               {admins.length === 0 ? (
-                <p className="text-sm text-slate-400 text-center py-10">No additional admins yet.</p>
+                <div className="text-center py-10 text-slate-400 text-xs">
+                  Koi additional admin added nahi hai. Upar se add kar sakte hain.
+                </div>
               ) : (
                 admins.map((admin) => (
-                  <div key={admin._id} className="flex items-center gap-3 px-5 py-4">
-                    <div className="w-9 h-9 rounded-xl bg-brand-50 dark:bg-brand-900/30 flex items-center justify-center shrink-0">
+                  <div key={admin._id || admin.email} className="flex items-center gap-3.5 px-5 py-4 hover:bg-slate-50/50 dark:hover:bg-navy-800/50 transition-colors">
+                    <div className="w-10 h-10 rounded-xl bg-brand-50 dark:bg-brand-950/50 border border-brand-200/60 dark:border-brand-800 flex items-center justify-center shrink-0">
                       <HelpCircle className="w-5 h-5 text-brand-600 dark:text-brand-400" />
                     </div>
                     <div className="min-w-0 flex-1">
-                      <p className="text-sm font-semibold text-navy-800 dark:text-white truncate">{admin.email}</p>
-                      <p className="text-xs text-slate-400 dark:text-slate-500">
+                      <div className="flex items-center gap-2">
+                        <p className="text-sm font-bold text-navy-950 dark:text-white truncate">
+                          {admin.name ? `${admin.name} (${admin.email})` : admin.email}
+                        </p>
+                        <span className="text-[10px] font-semibold px-2 py-0.5 rounded-full bg-emerald-50 dark:bg-emerald-950/50 text-emerald-600 dark:text-emerald-400 border border-emerald-200 dark:border-emerald-800">
+                          Active Admin
+                        </span>
+                      </div>
+                      <p className="text-xs text-slate-400 dark:text-slate-500 mt-0.5">
                         {admin.createdAt ? `Added ${new Date(admin.createdAt).toLocaleDateString("en-IN")}` : "Admin"}
+                        {admin.addedBy && ` • Added by ${admin.addedBy}`}
                       </p>
                     </div>
                     {isSuperAdmin && (
-                      <button type="button" onClick={() => removeAdmin(admin.email)}
-                        className="p-2 rounded-lg text-slate-400 hover:text-red-600 hover:bg-red-50 dark:hover:bg-red-900/20 transition-colors">
+                      <button
+                        type="button"
+                        onClick={() => removeAdmin(admin.email)}
+                        className="p-2 rounded-xl text-slate-400 hover:text-red-600 hover:bg-red-50 dark:hover:bg-red-950/50 transition-colors"
+                        title={`Remove ${admin.email}`}
+                      >
                         <Trash2 className="w-4 h-4" />
                       </button>
                     )}
