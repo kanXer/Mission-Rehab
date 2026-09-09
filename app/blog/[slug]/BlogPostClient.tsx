@@ -824,7 +824,7 @@ export default function BlogPostClient({ slug, initialPost }: { slug: string; in
                   </p>
                   <div className="pt-2">
                     <Link
-                      href="/login"
+                      href={`/login?redirect=${encodeURIComponent(`/blog/${slug}`)}`}
                       className="inline-flex items-center gap-1.5 px-5 py-2 rounded-full bg-brand-600 hover:bg-brand-700 text-white text-xs font-bold shadow-md shadow-brand-600/20"
                     >
                       <UserIcon className="w-3.5 h-3.5" />

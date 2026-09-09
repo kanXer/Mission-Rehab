@@ -13,20 +13,18 @@ import {
 } from "firebase/auth"
 
 const firebaseConfig = {
-  apiKey: process.env.NEXT_PUBLIC_FIREBASE_API_KEY,
-  authDomain: process.env.NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN,
-  projectId: process.env.NEXT_PUBLIC_FIREBASE_PROJECT_ID,
-  storageBucket: process.env.NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET,
-  messagingSenderId: process.env.NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID,
-  appId: process.env.NEXT_PUBLIC_FIREBASE_APP_ID,
+  apiKey: process.env.NEXT_PUBLIC_FIREBASE_API_KEY || "AIzaSyB_aR4Of_BEaGJ4xnheVNa_wVdPlb80p7s",
+  authDomain: process.env.NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN || "missionrehab-81613.firebaseapp.com",
+  projectId: process.env.NEXT_PUBLIC_FIREBASE_PROJECT_ID || "missionrehab-81613",
+  storageBucket: process.env.NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET || "missionrehab-81613.firebasestorage.app",
+  messagingSenderId: process.env.NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID || "2207802468",
+  appId: process.env.NEXT_PUBLIC_FIREBASE_APP_ID || "1:2207802468:web:88823d9312b3140aa32b71",
 }
 
 export const firebaseConfigured: boolean =
   !!firebaseConfig.apiKey &&
-  !!firebaseConfig.authDomain &&
-  !!firebaseConfig.projectId &&
-  !firebaseConfig.projectId.includes("your-project") &&
-  !firebaseConfig.apiKey.includes("DEMO")
+  !firebaseConfig.apiKey.includes("DEMO") &&
+  !firebaseConfig.projectId.includes("your-project")
 
 export const auth: Auth | null = firebaseConfigured
   ? getAuth(getApps().length === 0 ? initializeApp(firebaseConfig) : getApp())

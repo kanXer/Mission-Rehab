@@ -836,9 +836,11 @@ export default function AdminDashboard() {
           </div>
 
           <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-5">
-            {adminNavCards.map((card) => (
-              <Link
-                key={card.href}
+            {adminNavCards
+              .filter((card) => card.href !== "/admin/admins" || user?.isSuperAdmin)
+              .map((card) => (
+                <Link
+                  key={card.href}
                 href={card.href}
                 className="group relative backdrop-blur-xl bg-white/70 dark:bg-navy-900/40 border border-slate-200/80 dark:border-white/10 rounded-2xl sm:rounded-3xl p-4 sm:p-6 shadow-sm hover:shadow-2xl hover:-translate-y-1.5 transition-all duration-300 overflow-hidden"
               >

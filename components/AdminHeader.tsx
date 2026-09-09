@@ -26,6 +26,10 @@ export default function AdminHeader() {
 
   if (!user?.isAdmin) return null
 
+  const visibleLinks = adminLinks.filter(
+    (link) => link.href !== "/admin/admins" || user.isSuperAdmin === true
+  )
+
   async function handleLogout() {
     await logout()
     router.push("/")
@@ -43,7 +47,7 @@ export default function AdminHeader() {
           </div>
 
           <nav className="hidden sm:flex items-center gap-1 ml-2">
-            {adminLinks.map((link) => {
+            {visibleLinks.map((link) => {
               const active = pathname === link.href || pathname.startsWith(link.href + "/")
               return (
                 <Link
@@ -63,27 +67,32 @@ export default function AdminHeader() {
           </nav>
 
           <div className="ml-auto shrink-0 flex items-center gap-2 sm:gap-3">
-            <button
-              onClick={() => setMenuOpen(!menuOpen)}
-              className="sm:hidden p-1.5 rounded-lg text-navy-300 hover:text-amber-300 hover:bg-amber-500/10"
+            <Link
+              href="/"
+              className="text-xs text-navy-300 hover:text-white px-2.5 py-1.5 rounded-lg border border-navy-700/60 hover:border-navy-600 transition-colors"
             >
-              {menuOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
-            </button>
-            <Link href="/"
-              className="text-xs sm:text-sm text-navy-300 hover:text-amber-300 transition-colors font-medium">
               View Site
             </Link>
-            <button onClick={handleLogout}
-              className="flex items-center gap-1 px-3 py-1.5 sm:py-2 rounded-lg text-red-400 hover:text-red-300 hover:bg-red-900/20 transition-all font-medium text-xs sm:text-sm">
-              <LogOut className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
-              <span className="hidden sm:inline">Logout</span>
+            <button
+              onClick={handleLogout}
+              className="flex items-center gap-1 text-xs text-red-400 hover:text-red-300 px-2.5 py-1.5 rounded-lg border border-red-500/20 hover:bg-red-500/10 transition-colors"
+            >
+              <LogOut className="w-3.5 h-3.5" />
+              <span>Logout</span>
+            </button>
+            <button
+              onClick={() => setMenuOpen(!menuOpen)}
+              className="sm:hidden p-1.5 rounded-lg text-navy-300 hover:text-white hover:bg-navy-700/50 transition-colors"
+              aria-label="Toggle menu"
+            >
+              {menuOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
             </button>
           </div>
         </div>
 
         {menuOpen && (
           <div className="sm:hidden pb-3 border-t border-navy-700/50 pt-2 space-y-1">
-            {adminLinks.map((link) => {
+            {visibleLinks.map((link) => {
               const active = pathname === link.href || pathname.startsWith(link.href + "/")
               return (
                 <Link

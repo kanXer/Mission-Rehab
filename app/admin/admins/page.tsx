@@ -29,7 +29,13 @@ export default function AdminAdmins() {
   const { toast } = useToast()
 
   useEffect(() => {
-    if (!authLoading && (!user || !user.isAdmin)) router.push("/login")
+    if (!authLoading) {
+      if (!user || !user.isAdmin) {
+        router.push("/login")
+      } else if (!user.isSuperAdmin) {
+        router.push("/admin")
+      }
+    }
   }, [user, authLoading, router])
 
   async function fetchAdmins() {
@@ -53,7 +59,9 @@ export default function AdminAdmins() {
     }
   }
 
-  useEffect(() => { if (user?.isAdmin) fetchAdmins() }, [user])
+  useEffect(() => {
+    if (user?.isAdmin && user?.isSuperAdmin) fetchAdmins()
+  }, [user])
 
   const isSuperAdmin = user?.isSuperAdmin === true
 
@@ -111,7 +119,7 @@ export default function AdminAdmins() {
   }
 
   if (authLoading) return <div className="min-h-screen bg-slate-50 dark:bg-navy-900 flex items-center justify-center"><Loader className="w-8 h-8 animate-spin text-brand-600" /></div>
-  if (!user || !user.isAdmin) return null
+  if (!user || !user.isAdmin || !user.isSuperAdmin) return null
 
   const displaySuperAdmins = superAdminEmails.length > 0 ? superAdminEmails : superAdminEmail ? [superAdminEmail] : []
 
@@ -136,45 +144,38 @@ export default function AdminAdmins() {
           </span>
         </div>
 
-        {!isSuperAdmin && (
-          <div className="mb-4 px-4 py-3 rounded-2xl bg-blue-50 dark:bg-blue-950/40 border border-blue-200 dark:border-blue-900 text-xs sm:text-sm text-blue-700 dark:text-blue-300">
-            Aap admin hain. Naye admins sirf super admin (owner) add/remove kar sakta hai.
-          </div>
-        )}
-
         {error && (
           <div className="mb-4 px-4 py-3 rounded-2xl bg-red-50 dark:bg-red-950/40 border border-red-200 dark:border-red-900 text-xs sm:text-sm text-red-700 dark:text-red-400">
             {error}
           </div>
         )}
 
-        {isSuperAdmin && (
-          <div className="bg-white dark:bg-navy-900 rounded-3xl border border-slate-200/80 dark:border-navy-800 shadow-sm mb-6 p-5 sm:p-6">
-            <h2 className="font-bold text-navy-950 dark:text-white text-sm mb-3">Add New Admin Account</h2>
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 mb-3">
-              <input
-                type="text"
-                placeholder="Doctor / Admin Name (e.g. Dr. Devejya)"
-                value={newName}
-                onChange={(e) => setNewName(e.target.value)}
-                className="px-4 py-2.5 rounded-xl border border-slate-200 dark:border-navy-700 bg-slate-50 dark:bg-navy-950 text-navy-950 dark:text-white text-xs focus:outline-none focus:ring-2 focus:ring-brand-500"
-              />
-              <input
-                type="email"
-                required
-                placeholder="admin@example.com"
-                value={newEmail}
-                onChange={(e) => setNewEmail(e.target.value)}
-                className="px-4 py-2.5 rounded-xl border border-slate-200 dark:border-navy-700 bg-slate-50 dark:bg-navy-950 text-navy-950 dark:text-white text-xs focus:outline-none focus:ring-2 focus:ring-brand-500"
-              />
-            </div>
-            <div className="flex flex-col sm:flex-row items-center justify-between gap-3 pt-1">
-              <p className="text-[11px] text-slate-400 dark:text-slate-500">
-                Admin add hote hi turant active ho jayega aur Google Sign-In ya Password login use kar sakega.
-              </p>
-              <button
-                type="button"
-                onClick={addAdmin}
+        <div className="bg-white dark:bg-navy-900 rounded-3xl border border-slate-200/80 dark:border-navy-800 shadow-sm mb-6 p-5 sm:p-6">
+          <h2 className="font-bold text-navy-950 dark:text-white text-sm mb-3">Add New Admin Account</h2>
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 mb-3">
+            <input
+              type="text"
+              placeholder="Doctor / Admin Name (e.g. Dr. Devejya)"
+              value={newName}
+              onChange={(e) => setNewName(e.target.value)}
+              className="px-4 py-2.5 rounded-xl border border-slate-200 dark:border-navy-700 bg-slate-50 dark:bg-navy-950 text-navy-950 dark:text-white text-xs focus:outline-none focus:ring-2 focus:ring-brand-500"
+            />
+            <input
+              type="email"
+              required
+              placeholder="admin@example.com"
+              value={newEmail}
+              onChange={(e) => setNewEmail(e.target.value)}
+              className="px-4 py-2.5 rounded-xl border border-slate-200 dark:border-navy-700 bg-slate-50 dark:bg-navy-950 text-navy-950 dark:text-white text-xs focus:outline-none focus:ring-2 focus:ring-brand-500"
+            />
+          </div>
+          <div className="flex flex-col sm:flex-row items-center justify-between gap-3 pt-1">
+            <p className="text-[11px] text-slate-400 dark:text-slate-500">
+              Admin add hote hi turant active ho jayega aur Google Sign-In se admin panel access kar sakega.
+            </p>
+            <button
+              type="button"
+              onClick={addAdmin}
                 disabled={adding || !newEmail.trim()}
                 className="w-full sm:w-auto flex items-center justify-center gap-2 bg-gradient-to-r from-brand-600 to-accent-600 text-white font-semibold text-xs px-6 py-2.5 rounded-xl shadow-md hover:shadow-lg transition-all disabled:opacity-60 shrink-0 cursor-pointer"
               >
@@ -183,7 +184,6 @@ export default function AdminAdmins() {
               </button>
             </div>
           </div>
-        )}
 
         {loading ? (
           <div className="flex justify-center py-12"><Loader className="w-6 h-6 animate-spin text-brand-600" /></div>

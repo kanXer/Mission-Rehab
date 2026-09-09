@@ -5,8 +5,8 @@ import { getDb } from "@/lib/mongodb"
 
 export async function GET(req: NextRequest) {
   const payload = await getAuthFromRequest(req)
-  if (!payload || !(await isUserAdmin(payload))) {
-    return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
+  if (!payload || !isAdminEmail(payload.email)) {
+    return NextResponse.json({ error: "Forbidden: Super admin access required" }, { status: 403 })
   }
 
   const superAdminEmail =
