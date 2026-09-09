@@ -13,7 +13,7 @@ import {
 } from "firebase/auth"
 
 const firebaseConfig = {
-  apiKey: process.env.NEXT_PUBLIC_FIREBASE_API_KEY || "AIzaSyB_aR4Of_BEaGJ4xnheVNa_wVdPlb80p7s",
+  apiKey: process.env.NEXT_PUBLIC_FIREBASE_API_KEY || "AIzaSyB",
   authDomain: process.env.NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN || "missionrehab-81613.firebaseapp.com",
   projectId: process.env.NEXT_PUBLIC_FIREBASE_PROJECT_ID || "missionrehab-81613",
   storageBucket: process.env.NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET || "missionrehab-81613.firebasestorage.app",
