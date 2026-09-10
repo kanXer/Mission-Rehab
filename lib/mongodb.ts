@@ -35,9 +35,9 @@ async function getClientPromise(): Promise<MongoClient> {
   const uri = getMongoUri()
   if (!global._mongoClientPromise) {
     const client = new MongoClient(uri, {
+      maxPoolSize: 10,
       serverSelectionTimeoutMS: 5000,
       connectTimeoutMS: 5000,
-      family: 4,
     })
     global._mongoClientPromise = client.connect().catch((err) => {
       // Clear cache on failure so future requests in warm containers can retry
