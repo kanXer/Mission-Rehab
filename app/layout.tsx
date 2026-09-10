@@ -12,8 +12,9 @@ import "./globals.css"
 
 const inter = Inter({
   subsets: ["latin"],
-  weight: ["400", "500", "600", "700", "800"],
+  weight: ["300", "400", "500", "600", "700", "800", "900"],
   display: "swap",
+  variable: "--font-inter",
 })
 
 const siteUrl = "https://gorakhpurmission.in"
@@ -179,8 +180,14 @@ export default function RootLayout({
   children: React.ReactNode
 }) {
   return (
-    <html lang="en" data-scroll-behavior="smooth" className="overflow-x-clip" suppressHydrationWarning>
+    <html lang="en" data-scroll-behavior="smooth" className={`${inter.variable} overflow-x-clip`} suppressHydrationWarning>
       <head>
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
+        <link
+          rel="stylesheet"
+          href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap"
+        />
         <link rel="preconnect" href="https://res.cloudinary.com" crossOrigin="anonymous" />
         <link rel="dns-prefetch" href="https://res.cloudinary.com" />
         <link rel="preconnect" href="https://images.unsplash.com" crossOrigin="anonymous" />
@@ -200,7 +207,7 @@ export default function RootLayout({
         )}
       </head>
       <body
-        className={`${inter.className} antialiased bg-white dark:bg-navy-900 text-navy-800 dark:text-slate-100 transition-colors duration-300 overflow-x-clip min-h-screen w-full relative`}
+        className={`${inter.className} font-sans antialiased bg-white dark:bg-navy-900 text-navy-800 dark:text-slate-100 transition-colors duration-300 overflow-x-clip min-h-screen w-full relative`}
         suppressHydrationWarning
       >
         <a
