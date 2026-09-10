@@ -83,7 +83,8 @@ export async function GET(req: NextRequest) {
     // 3. Fallback / Merge from Firebase Admin SDK if configured
     if (isFirebaseAdminConfigured()) {
       try {
-        const list = await getAdminAuth().listUsers(100)
+        const adminAuth = await getAdminAuth()
+        const list = await adminAuth.listUsers(100)
         for (const u of list.users) {
           if (u.customClaims?.admin === true && u.email) {
             const clean = u.email.trim().toLowerCase()
@@ -179,14 +180,15 @@ export async function POST(req: NextRequest) {
     if (isFirebaseAdminConfigured()) {
       try {
         let userRecord
+        const adminAuth = await getAdminAuth()
         try {
-          userRecord = await getAdminAuth().getUserByEmail(email)
+          userRecord = await adminAuth.getUserByEmail(email)
         } catch {
           // If user doesn't exist in Firebase yet, that's fine; they can register or sign in later
         }
 
         if (userRecord) {
-          await getAdminAuth().setCustomUserClaims(userRecord.uid, {
+          await adminAuth.setCustomUserClaims(userRecord.uid, {
             ...(userRecord.customClaims || {}),
             admin: true,
           })
@@ -239,9 +241,10 @@ export async function DELETE(req: NextRequest) {
     // 3. Best-effort Firebase Admin custom claims sync
     if (isFirebaseAdminConfigured()) {
       try {
-        const user = await getAdminAuth().getUserByEmail(email)
+        const adminAuth = await getAdminAuth()
+        const user = await adminAuth.getUserByEmail(email)
         if (user) {
-          await getAdminAuth().setCustomUserClaims(user.uid, {
+          await adminAuth.setCustomUserClaims(user.uid, {
             ...(user.customClaims || {}),
             admin: false,
           })

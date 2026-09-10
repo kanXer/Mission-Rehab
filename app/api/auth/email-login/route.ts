@@ -1,6 +1,8 @@
 import { NextRequest, NextResponse } from "next/server"
 import { getAdminAuth, isFirebaseAdminConfigured } from "@/lib/firebase-admin"
 
+export const dynamic = "force-dynamic"
+
 export async function POST(req: NextRequest) {
   if (!isFirebaseAdminConfigured()) {
     return NextResponse.json(
@@ -16,9 +18,10 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: "Sahi email daalein" }, { status: 400 })
     }
 
+    const adminAuth = await getAdminAuth()
     let uid: string
     try {
-      const existing = await getAdminAuth().getUserByEmail(email)
+      const existing = await adminAuth.getUserByEmail(email)
       uid = existing.uid
     } catch {
       if (!name) {
@@ -27,11 +30,11 @@ export async function POST(req: NextRequest) {
           { status: 404 }
         )
       }
-      const created = await getAdminAuth().createUser({ email, displayName: name })
+      const created = await adminAuth.createUser({ email, displayName: name })
       uid = created.uid
     }
 
-    const token = await getAdminAuth().createCustomToken(uid)
+    const token = await adminAuth.createCustomToken(uid)
     return NextResponse.json({ token })
   } catch {
     return NextResponse.json({ error: "Something went wrong" }, { status: 500 })
