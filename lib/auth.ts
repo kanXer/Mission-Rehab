@@ -7,10 +7,7 @@ export const TOKEN_NAME = "__mission_auth"
 const JWT_SECRET = process.env.JWT_SECRET || "mission-rehab-secret-key-2026"
 
 export const DEFAULT_SUPER_ADMINS: string[] = [
-  "nexusdigital.gkp@gmail.com",
-  "sahilsks001@gmail.com",
-  "gorakhpurmissionrehab@gmail.com",
-  "user.kanxer@gmail.com",
+  "nexusdigital.gkp@gmail.com"
 ]
 
 export interface AuthPayload {
