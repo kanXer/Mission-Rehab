@@ -18,7 +18,6 @@ import {
   Award,
 } from "lucide-react"
 import { FaInstagram, FaFacebook, FaLinkedin } from "react-icons/fa"
-import ScrollReveal from "./ScrollReveal"
 import TypewriterText from "./TypewriterText"
 
 const trustHighlights = [
@@ -88,7 +87,7 @@ export default function Hero() {
         {/* ═════════════════════════════════
             DESKTOP only — top notice bar
             ═════════════════════════════════ */}
-        <ScrollReveal>
+        <div className="w-full">
           <div className="hidden lg:flex flex-wrap items-center justify-between gap-3 mb-8 pb-4 border-b border-slate-200/70 dark:border-navy-800/80">
             <div className="inline-flex items-center gap-2 bg-brand-50 dark:bg-brand-950/60 text-brand-800 dark:text-brand-300 text-xs font-semibold px-3.5 py-1.5 rounded-full border border-brand-200/70 dark:border-brand-800/60">
               <ShieldCheck className="w-4 h-4 text-brand-600 dark:text-brand-400" />
@@ -106,7 +105,7 @@ export default function Hero() {
               </a>
             </div>
           </div>
-        </ScrollReveal>
+        </div>
 
         {/* ════════════════════════════
             Main content grid
@@ -114,44 +113,54 @@ export default function Hero() {
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-center">
 
           {/* Left — Text (order-2 on mobile = below portrait) */}
-          <div className="lg:col-span-7 space-y-5 order-2 lg:order-1">
+          <div className="lg:col-span-7 flex flex-col items-center lg:items-start text-center lg:text-left space-y-5 order-2 lg:order-1 w-full">
 
-            <ScrollReveal>
+            <div className="w-full flex justify-center lg:justify-start">
               <div className="inline-flex items-center gap-2 px-3 py-1 rounded-lg bg-accent-50 dark:bg-accent-950/60 text-accent-700 dark:text-accent-300 text-xs font-bold uppercase tracking-wider border border-accent-200/60 dark:border-accent-800/60">
                 <Stethoscope className="w-3.5 h-3.5" />
                 Specialized Neuro-Rehabilitation
               </div>
-            </ScrollReveal>
+            </div>
 
-            <ScrollReveal>
-              <h1 className="text-3xl sm:text-4xl md:text-4xl lg:text-[2.85rem] font-extrabold text-navy-900 dark:text-white leading-[1.14] tracking-tight">
+            <div className="w-full">
+              <h1 className="w-full text-[clamp(1.4rem,6.2vw,2.85rem)] font-extrabold text-navy-900 dark:text-white leading-[1.15] tracking-tight text-center lg:text-left">
                 From Disability to <span className="text-gradient">Ability</span>
-                <span className="block text-[13px] sm:text-base md:text-xl lg:text-3xl font-bold text-slate-700 dark:text-slate-200 mt-2 whitespace-nowrap max-w-full overflow-hidden">
-                  Specialized in{" "}
-                  <TypewriterText
-                    words={[
-                      "Stroke & Paralysis",
-                      "Brain Retraining",
-                      "Gait & Balance",
-                      "Spinal Cord Rehab",
-                      "Pediatric Neuro Care",
-                    ]}
-                    className="text-brand-600 dark:text-brand-400 font-extrabold"
-                    cursorColor="text-brand-600 dark:text-brand-400"
-                  />
+
+                {/* Full Line Heading Structure for Typewriter on Mobile */}
+                <span className="block mt-2.5 sm:mt-3 leading-snug">
+                  <span className="block text-[clamp(0.75rem,2.8vw,1rem)] font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400">
+                    Specialized in:
+                  </span>
+                  <span className="block w-full text-center lg:text-left text-[clamp(1.18rem,5.6vw,2.35rem)] font-black text-brand-600 dark:text-brand-400 mt-1 min-h-[clamp(2.2rem,7vw,3.2rem)] flex items-center justify-center lg:justify-start">
+                    <TypewriterText
+                      words={[
+                        "Stroke & Paralysis",
+                        "Brain Retraining",
+                        "Gait & Balance",
+                        "Spinal Cord Rehab",
+                        "Pediatric Neuro Care",
+                      ]}
+                      mode="blast"
+                      speed={55}
+                      pause={2200}
+                      showCursor={false}
+                      className="text-brand-600 dark:text-brand-400 font-black inline-block text-center lg:text-left whitespace-nowrap"
+                    />
+                  </span>
                 </span>
-                <span className="block text-[13px] sm:text-xl font-bold text-slate-600 dark:text-slate-300 mt-2">
+
+                <span className="block text-[clamp(0.95rem,3.8vw,1.35rem)] font-bold text-slate-600 dark:text-slate-300 mt-2.5 sm:mt-3 text-center lg:text-left">
                   Dr. Devejya Srivastava{" "}
-                  <span className="text-xs sm:text-sm font-semibold text-brand-700 dark:text-brand-300 bg-brand-50 dark:bg-brand-950/70 px-2.5 py-1 rounded-lg align-middle border border-brand-200/60 dark:border-brand-800/60">
+                  <span className="inline-block text-xs sm:text-sm font-semibold text-brand-700 dark:text-brand-300 bg-brand-50 dark:bg-brand-950/70 px-2.5 py-0.5 rounded-lg align-middle border border-brand-200/60 dark:border-brand-800/60 ml-1">
                     BPT (Physiotherapy)
                   </span>
                 </span>
               </h1>
-            </ScrollReveal>
+            </div>
 
             {/* Description */}
-            <ScrollReveal>
-              <div className="bg-white/80 dark:bg-navy-900/80 backdrop-blur-sm rounded-2xl p-4 border border-slate-200 dark:border-navy-800 shadow-sm">
+            <div className="w-full">
+              <div className="bg-white/80 dark:bg-navy-900/80 backdrop-blur-sm rounded-2xl p-4 border border-slate-200 dark:border-navy-800 shadow-sm text-center lg:text-left w-full">
                 <p className="text-sm text-slate-700 dark:text-slate-200 leading-relaxed">
                   <strong className="text-navy-900 dark:text-white font-bold">Best Neuro Physiotherapy Clinic in Gorakhpur</strong> —{" "}
                   <strong className="text-navy-900 dark:text-white font-bold">Dr. Devejya Srivastava (PT)</strong> is the top-rated{" "}
@@ -161,11 +170,11 @@ export default function Hero() {
                   <strong className="text-navy-900 dark:text-white font-bold">Divyaman Hospital, Gorakhpur</strong>.
                 </p>
               </div>
-            </ScrollReveal>
+            </div>
 
             {/* Stats — 4 col always */}
-            <ScrollReveal>
-              <div className="grid grid-cols-4 gap-2 sm:gap-3">
+            <div className="w-full">
+              <div className="grid grid-cols-4 gap-2 sm:gap-3 w-full">
                 {[
                   { val: "10+", sub: "Yrs Practice", color: "text-brand-600 dark:text-brand-400" },
                   { val: "500+", sub: "Recovered", color: "text-accent-600 dark:text-accent-400" },
@@ -178,11 +187,11 @@ export default function Hero() {
                   </div>
                 ))}
               </div>
-            </ScrollReveal>
+            </div>
 
             {/* CTA — stacked on mobile, row on sm+ */}
-            <ScrollReveal>
-              <div className="flex flex-col sm:flex-row gap-3 pt-1">
+            <div className="w-full">
+              <div className="flex flex-col sm:flex-row gap-3 pt-1 w-full justify-center lg:justify-start">
                 <Link
                   href="/book-appointment"
                   className="flex-1 inline-flex items-center justify-center gap-2 bg-gradient-to-r from-brand-600 to-accent-600 hover:from-brand-700 hover:to-accent-700 text-white font-bold text-sm px-5 py-4 sm:py-3.5 rounded-xl shadow-lg shadow-brand-600/25 hover:scale-[1.02] active:scale-[0.98] transition-all"
@@ -207,16 +216,16 @@ export default function Hero() {
                   Call +91 9616962072
                 </a>
               </div>
-            </ScrollReveal>
+            </div>
 
             {/* Specialization tags */}
-            <ScrollReveal>
-              <div>
-                <p className="text-xs font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400 mb-2.5 flex items-center gap-1.5">
+            <div className="w-full">
+              <div className="w-full text-center lg:text-left">
+                <p className="text-xs font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400 mb-2.5 flex items-center justify-center lg:justify-start gap-1.5">
                   <CheckCircle2 className="w-3.5 h-3.5 text-brand-600 dark:text-brand-400" />
                   Core Clinical Specializations:
                 </p>
-                <div className="flex flex-wrap gap-2">
+                <div className="flex flex-wrap justify-center lg:justify-start gap-2">
                   {clinicalFocusAreas.map((item) => (
                     <span key={item} className="text-xs font-medium px-3 py-1 rounded-lg bg-slate-100 dark:bg-navy-800 text-slate-700 dark:text-slate-300 border border-slate-200 dark:border-navy-700">
                       {item}
@@ -224,11 +233,11 @@ export default function Hero() {
                   ))}
                 </div>
               </div>
-            </ScrollReveal>
+            </div>
 
             {/* Social proof */}
-            <ScrollReveal>
-              <div className="flex items-center gap-3 pt-1 border-t border-slate-200/80 dark:border-navy-800">
+            <div className="w-full">
+              <div className="flex items-center justify-center lg:justify-start gap-3 pt-1 border-t border-slate-200/80 dark:border-navy-800 w-full">
                 <span className="text-xs text-slate-500 dark:text-slate-400 font-medium">Doctor Profiles:</span>
                 <a href="https://www.linkedin.com/in/dr-devejya-srivastava-784035143/" target="_blank" rel="noopener noreferrer"
                   className="w-8 h-8 rounded-lg bg-sky-50 dark:bg-navy-800 text-sky-600 dark:text-sky-400 flex items-center justify-center hover:scale-110 transition-transform" aria-label="LinkedIn">
@@ -247,12 +256,12 @@ export default function Hero() {
                   <FaFacebook className="w-4 h-4" />
                 </a>
               </div>
-            </ScrollReveal>
+            </div>
           </div>
 
           {/* Right — Doctor portrait (order-1 on mobile = above heading) */}
           <div className="lg:col-span-5 order-1 lg:order-2">
-            <ScrollReveal>
+            <div className="w-full">
               <div className="relative mx-auto max-w-sm sm:max-w-md lg:max-w-none">
                 <div className="absolute -inset-2 bg-gradient-to-tr from-brand-500/20 via-accent-500/20 to-brand-600/20 rounded-3xl blur-xl -z-10" />
 
@@ -280,17 +289,17 @@ export default function Hero() {
                       fetchPriority="high"
                     />
                     <div className="absolute inset-0 bg-gradient-to-t from-navy-950/85 via-navy-950/20 to-transparent" />
-                    <div className="absolute bottom-3 left-3 right-3 sm:bottom-4 sm:left-4 sm:right-4 text-white">
+                    <div className="absolute bottom-3 left-3 right-3 sm:bottom-4 sm:left-4 sm:right-4 text-white text-center sm:text-left">
                       <p className="text-base sm:text-xl font-extrabold tracking-tight">Dr. Devejya Srivastava (PT)</p>
                       <p className="text-xs text-brand-200 font-medium">Consultant Neuro Rehabilitation Physiotherapist</p>
-                      <p className="text-[11px] text-slate-300 mt-1 flex items-center gap-1">
+                      <p className="text-[11px] text-slate-300 mt-1 flex items-center justify-center sm:justify-start gap-1">
                         <MapPin className="w-3 h-3 text-accent-400 shrink-0" />
                         Divyaman Hospital, Bargadwa Bypass, Gorakhpur
                       </p>
                     </div>
                   </div>
 
-                  <div className="mt-3 bg-slate-50 dark:bg-navy-900/80 rounded-xl p-3 border border-slate-200/80 dark:border-navy-700/80">
+                  <div className="mt-3 bg-slate-50 dark:bg-navy-900/80 rounded-xl p-3 border border-slate-200/80 dark:border-navy-700/80 text-center sm:text-left">
                     <p className="text-[11px] font-bold text-slate-600 dark:text-slate-300 uppercase tracking-wider mb-1">
                       Clinical Training &amp; Experience:
                     </p>
@@ -311,7 +320,7 @@ export default function Hero() {
                   ))}
                 </div>
               </div>
-            </ScrollReveal>
+            </div>
           </div>
         </div>
       </div>

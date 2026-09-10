@@ -7,7 +7,7 @@ import { usePathname } from "next/navigation"
 import {
   Menu, X, Calendar, Phone, HelpCircle,
   Home, Stethoscope, BookOpen, Image as ImageIcon,
-  Info, Mail, LayoutDashboard, User, LogIn,
+  Info, Mail, LayoutDashboard, User, LogIn, LogOut,
   ChevronRight, ChevronDown, MessageSquare,
   Activity, HeartPulse, Sparkles, ArrowRight,
   ShieldCheck, Clock, MapPin
@@ -64,18 +64,28 @@ const servicesSubMenu = [
   },
 ]
 
+function initials(name: string): string {
+  return name
+    .split(" ")
+    .filter(Boolean)
+    .slice(0, 2)
+    .map((w) => w[0]?.toUpperCase() || "")
+    .join("")
+}
+
 export default function Header() {
   const [open, setOpen] = useState(false)
   const [scrolled, setScrolled] = useState(false)
   const [servicesOpen, setServicesOpen] = useState(false)
+  const [userMenuOpen, setUserMenuOpen] = useState(false)
   const headerRef = useRef<HTMLElement>(null)
-  const { user } = useAuth()
+  const { user, logout } = useAuth()
   const pathname = usePathname()
 
-  // Auto-close the mobile drawer when resized up to desktop
+  // Auto-close the mobile drawer when resized up to desktop (960px)
   useEffect(() => {
     const update = () => {
-      if (window.innerWidth >= 768) setOpen(false)
+      if (window.innerWidth >= 960) setOpen(false)
     }
     update()
     window.addEventListener("resize", update)
@@ -94,27 +104,32 @@ export default function Header() {
   useEffect(() => {
     setOpen(false)
     setServicesOpen(false)
+    setUserMenuOpen(false)
   }, [pathname])
 
   // Lock body scroll when mobile menu is open
   useEffect(() => {
-    if (open) setServicesOpen(false)
+    if (open) {
+      setServicesOpen(false)
+      setUserMenuOpen(false)
+    }
     document.body.style.overflow = open ? "hidden" : ""
     return () => {
       document.body.style.overflow = ""
     }
   }, [open])
 
-  // Close services dropdown on outside click
+  // Close dropdowns on outside click
   useEffect(() => {
-    if (!servicesOpen) return
+    if (!servicesOpen && !userMenuOpen) return
     const handler = (e: MouseEvent) => {
       const t = e.target as HTMLElement
-      if (!t.closest("[data-services-menu]")) setServicesOpen(false)
+      if (servicesOpen && !t.closest("[data-services-menu]")) setServicesOpen(false)
+      if (userMenuOpen && !t.closest("[data-user-menu]")) setUserMenuOpen(false)
     }
     document.addEventListener("click", handler)
     return () => document.removeEventListener("click", handler)
-  }, [servicesOpen])
+  }, [servicesOpen, userMenuOpen])
 
   const isActive = (href: string) =>
     href === "/" ? pathname === "/" : pathname.startsWith(href)
@@ -141,18 +156,18 @@ export default function Header() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div
             className={`flex items-center justify-between transition-all duration-300 ${
-              scrolled ? "h-14 md:h-[58px]" : "h-15 md:h-[64px]"
+              scrolled ? "h-14 nav:h-[58px]" : "h-15 nav:h-[64px]"
             }`}
           >
             {/* ══════════════════════════════════════════
                 1. LOGO & BRAND BLOCK (Desktop + Mobile)
                 ══════════════════════════════════════════ */}
             <div className="flex items-center gap-3">
-              {/* Desktop Logo */}
+              {/* Desktop Logo (>= 960px) */}
               <Link
                 href="/"
                 aria-label="Gorakhpur Mission Rehab — Home"
-                className="hidden md:flex items-center gap-3 group"
+                className="hidden nav:flex items-center gap-3 group"
               >
                 <div className="relative p-1 rounded-xl bg-gradient-to-br from-brand-500/10 via-accent-500/5 to-transparent border border-brand-500/20 dark:border-brand-400/20 group-hover:border-brand-500/40 group-hover:shadow-sm group-hover:shadow-brand-500/10 transition-all duration-300">
                   <Image
@@ -161,7 +176,7 @@ export default function Header() {
                     width={42}
                     height={42}
                     quality={90}
-                    className="h-9 w-9 md:h-10 md:w-10 object-contain flex-shrink-0 drop-shadow-xs group-hover:scale-105 transition-transform duration-300"
+                    className="h-9 w-9 nav:h-10 nav:w-10 object-contain flex-shrink-0 drop-shadow-xs group-hover:scale-105 transition-transform duration-300"
                     priority
                   />
                 </div>
@@ -184,11 +199,11 @@ export default function Header() {
                 </div>
               </Link>
 
-              {/* Mobile Logo */}
+              {/* Mobile Logo (< 960px) */}
               <Link
                 href="/"
                 aria-label="Gorakhpur Mission Rehab — Home"
-                className="md:hidden flex items-center gap-2.5 group"
+                className="nav:hidden flex items-center gap-2.5 group"
               >
                 <div className="relative p-1 rounded-xl bg-gradient-to-br from-brand-500/10 to-accent-500/5 border border-brand-500/20">
                   <Image
@@ -216,9 +231,9 @@ export default function Header() {
             </div>
 
             {/* ══════════════════════════════════════════
-                2. DESKTOP SLEEK NAVIGATION BAR (md+)
+                2. DESKTOP SLEEK NAVIGATION BAR (>= 960px)
                 ══════════════════════════════════════════ */}
-            <nav className="hidden md:flex items-center gap-0.5 bg-slate-100/70 dark:bg-navy-900/60 p-1 rounded-full border border-slate-200/60 dark:border-navy-800/60 backdrop-blur-md shadow-2xs">
+            <nav className="hidden nav:flex items-center gap-0.5 bg-slate-100/70 dark:bg-navy-900/60 p-1 rounded-full border border-slate-200/60 dark:border-navy-800/60 backdrop-blur-md shadow-2xs">
               {navLinks.map((link) => {
                 const active = isActive(link.href)
 
@@ -334,7 +349,7 @@ export default function Header() {
               {/* Doctor Hotline Call Pill */}
               <a
                 href="tel:+919616962072"
-                className="hidden md:inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-[11.5px] font-semibold text-emerald-700 dark:text-emerald-300 bg-emerald-50/90 dark:bg-emerald-950/50 border border-emerald-200/80 dark:border-emerald-800/60 hover:bg-emerald-100 dark:hover:bg-emerald-900/60 transition-all shadow-2xs hover:shadow-xs hover:scale-[1.02] active:scale-[0.98]"
+                className="hidden nav:inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-[11.5px] font-semibold text-emerald-700 dark:text-emerald-300 bg-emerald-50/90 dark:bg-emerald-950/50 border border-emerald-200/80 dark:border-emerald-800/60 hover:bg-emerald-100 dark:hover:bg-emerald-900/60 transition-all shadow-2xs hover:shadow-xs hover:scale-[1.02] active:scale-[0.98]"
                 title="Direct Clinic Helpline"
               >
                 <span className="relative flex h-2 w-2">
@@ -349,7 +364,7 @@ export default function Header() {
               {/* Book Appointment CTA Button */}
               <Link
                 href="/book-appointment"
-                className="hidden md:inline-flex items-center gap-1.5 bg-gradient-to-r from-brand-600 via-brand-500 to-accent-600 hover:from-brand-700 hover:via-brand-600 hover:to-accent-700 text-white text-[12px] font-semibold px-3.5 py-1.5 rounded-full shadow-xs shadow-brand-600/20 hover:shadow-sm hover:scale-[1.02] active:scale-[0.98] transition-all duration-200 relative overflow-hidden group"
+                className="hidden nav:inline-flex items-center gap-1.5 bg-gradient-to-r from-brand-600 via-brand-500 to-accent-600 hover:from-brand-700 hover:via-brand-600 hover:to-accent-700 text-white text-[12px] font-semibold px-3.5 py-1.5 rounded-full shadow-xs shadow-brand-600/20 hover:shadow-sm hover:scale-[1.02] active:scale-[0.98] transition-all duration-200 relative overflow-hidden group"
               >
                 {/* Subtle shine shimmer */}
                 <span className="absolute inset-0 w-1/2 h-full bg-white/20 skew-x-12 -translate-x-full group-hover:translate-x-[300%] transition-transform duration-700 ease-out" />
@@ -358,33 +373,198 @@ export default function Header() {
                 <span className="lg:hidden">Book</span>
               </Link>
 
-              {/* Theme Toggle & Auth */}
-              <div className="hidden md:flex items-center gap-1 pl-0.5">
+              {/* Theme Toggle */}
+              <div className="flex items-center">
                 <ThemeToggle />
-                <Link
-                  href={authHref}
-                  aria-label={authLabel}
-                  className={`flex items-center justify-center p-1.5 rounded-full transition-colors border border-transparent hover:border-slate-200 dark:hover:border-navy-700 ${
-                    isActive("/login") || isActive("/profile") || isActive("/admin")
-                      ? "text-brand-600 dark:text-brand-400 bg-brand-50 dark:bg-brand-950/60"
-                      : "text-slate-500 dark:text-slate-400 hover:text-brand-600 dark:hover:text-brand-400 hover:bg-slate-100 dark:hover:bg-navy-800"
-                  }`}
-                  title={authLabel}
-                >
-                  {user?.isAdmin ? (
-                    <LayoutDashboard className="w-3.5 h-3.5 text-amber-500" />
-                  ) : user ? (
-                    <User className="w-3.5 h-3.5" />
-                  ) : (
-                    <LogIn className="w-3.5 h-3.5" />
-                  )}
-                </Link>
               </div>
 
-              {/* Mobile Hamburger Toggle (only below md) */}
+              {/* Desktop Auth / User Profile */}
+              {user ? (
+                <div className="hidden nav:block relative" data-user-menu>
+                  <button
+                    onClick={() => setUserMenuOpen((v) => !v)}
+                    className={`relative flex items-center justify-center w-8.5 h-8.5 rounded-full transition-all duration-200 shadow-2xs hover:shadow-md cursor-pointer border ${
+                      userMenuOpen || isActive("/profile") || isActive("/admin")
+                        ? "border-brand-500 ring-2 ring-brand-500/25"
+                        : "border-slate-200/90 dark:border-navy-700/90 hover:border-brand-400 dark:hover:border-brand-500"
+                    }`}
+                    aria-expanded={userMenuOpen}
+                    aria-label="User Account Menu"
+                    title={user.name || "Patient Profile"}
+                  >
+                    {user.photo ? (
+                      <img
+                        src={user.photo}
+                        alt={user.name}
+                        className="w-full h-full rounded-full object-cover"
+                      />
+                    ) : (
+                      <div className="w-full h-full rounded-full bg-gradient-to-br from-brand-600 via-brand-500 to-accent-600 text-white text-[10.5px] font-black flex items-center justify-center shadow-xs">
+                        {initials(user.name || user.email)}
+                      </div>
+                    )}
+                    <span
+                      className={`absolute -bottom-0.5 -right-0.5 w-2.5 h-2.5 rounded-full ring-2 ring-white dark:ring-navy-950 ${
+                        user.isAdmin ? "bg-amber-500" : "bg-emerald-500"
+                      }`}
+                    />
+                  </button>
+
+                  {/* User Dropdown Menu Card */}
+                  <div
+                    className={`absolute right-0 top-[calc(100%+10px)] w-72 origin-top-right rounded-2xl border border-slate-200/90 dark:border-navy-700/90 bg-white/95 dark:bg-navy-900/95 backdrop-blur-2xl shadow-xl shadow-navy-950/15 p-2 ring-1 ring-black/5 transition-all duration-200 z-50 ${
+                      userMenuOpen
+                        ? "opacity-100 translate-y-0 scale-100 pointer-events-auto"
+                        : "opacity-0 translate-y-2 scale-95 pointer-events-none"
+                    }`}
+                  >
+                    {/* Header info badge */}
+                    <div className="p-3 rounded-xl bg-gradient-to-br from-slate-50 to-brand-50/40 dark:from-navy-950/80 dark:to-brand-950/20 border border-slate-100 dark:border-navy-800 mb-1.5">
+                      <div className="flex items-center gap-2.5">
+                        {user.photo ? (
+                          <img
+                            src={user.photo}
+                            alt={user.name}
+                            className="w-9 h-9 rounded-full object-cover border-2 border-white dark:border-navy-800 shadow-sm shrink-0"
+                          />
+                        ) : (
+                          <div className="w-9 h-9 rounded-full bg-gradient-to-br from-brand-600 to-accent-600 text-white text-xs font-black flex items-center justify-center shrink-0 shadow-sm">
+                            {initials(user.name || user.email)}
+                          </div>
+                        )}
+                        <div className="min-w-0 flex-1">
+                          <p className="text-[13px] font-bold text-navy-900 dark:text-white truncate">
+                            {user.name}
+                          </p>
+                          <p className="text-[10.5px] text-slate-500 dark:text-slate-400 truncate">
+                            {user.email}
+                          </p>
+                        </div>
+                      </div>
+                      <div className="mt-2.5 pt-2 border-t border-slate-200/60 dark:border-navy-800/80 flex items-center justify-between">
+                        <span
+                          className={`inline-flex items-center gap-1 text-[9.5px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-full ${
+                            user.isAdmin
+                              ? "bg-amber-50 dark:bg-amber-950/60 text-amber-700 dark:text-amber-300 border border-amber-200/80 dark:border-amber-800/80"
+                              : "bg-brand-50 dark:bg-brand-950/60 text-brand-700 dark:text-brand-300 border border-brand-200/80 dark:border-brand-800/80"
+                          }`}
+                        >
+                          <ShieldCheck className="w-3 h-3" />
+                          {user.isSuperAdmin ? "Super Admin" : user.isAdmin ? "Clinical Admin" : "Verified Patient"}
+                        </span>
+                        <span className="text-[10px] text-slate-400">Divyaman Hospital</span>
+                      </div>
+                    </div>
+
+                    {/* Action Links */}
+                    <div className="space-y-0.5">
+                      <Link
+                        href="/profile"
+                        onClick={() => setUserMenuOpen(false)}
+                        className="flex items-center gap-2.5 px-3 py-2 rounded-xl text-[12.5px] font-semibold text-slate-700 dark:text-slate-200 hover:text-brand-600 dark:hover:text-brand-300 hover:bg-brand-50/70 dark:hover:bg-navy-800/70 transition-colors group"
+                      >
+                        <User className="w-4 h-4 text-brand-500 group-hover:scale-110 transition-transform" />
+                        <span className="flex-1">My Health Profile</span>
+                        <ChevronRight className="w-3.5 h-3.5 text-slate-400 opacity-60 group-hover:opacity-100 group-hover:translate-x-0.5 transition-all" />
+                      </Link>
+
+                      <Link
+                        href="/book-appointment"
+                        onClick={() => setUserMenuOpen(false)}
+                        className="flex items-center gap-2.5 px-3 py-2 rounded-xl text-[12.5px] font-semibold text-slate-700 dark:text-slate-200 hover:text-brand-600 dark:hover:text-brand-300 hover:bg-brand-50/70 dark:hover:bg-navy-800/70 transition-colors group"
+                      >
+                        <Calendar className="w-4 h-4 text-accent-500 group-hover:scale-110 transition-transform" />
+                        <span className="flex-1">Book Consultation</span>
+                        <ChevronRight className="w-3.5 h-3.5 text-slate-400 opacity-60 group-hover:opacity-100 group-hover:translate-x-0.5 transition-all" />
+                      </Link>
+
+                      {user.isAdmin && (
+                        <Link
+                          href="/admin"
+                          onClick={() => setUserMenuOpen(false)}
+                          className="flex items-center gap-2.5 px-3 py-2 rounded-xl text-[12.5px] font-semibold text-amber-700 dark:text-amber-300 hover:bg-amber-50/70 dark:hover:bg-amber-950/40 transition-colors group"
+                        >
+                          <LayoutDashboard className="w-4 h-4 text-amber-500 group-hover:scale-110 transition-transform" />
+                          <span className="flex-1">Admin Dashboard</span>
+                          <ChevronRight className="w-3.5 h-3.5 text-amber-500/60 group-hover:opacity-100 group-hover:translate-x-0.5 transition-all" />
+                        </Link>
+                      )}
+                    </div>
+
+                    {/* Sign Out CTA */}
+                    <div className="mt-1 pt-1 border-t border-slate-100 dark:border-navy-800">
+                      <button
+                        onClick={async () => {
+                          setUserMenuOpen(false)
+                          await logout()
+                        }}
+                        className="w-full flex items-center gap-2.5 px-3 py-2 rounded-xl text-[12.5px] font-semibold text-rose-600 dark:text-rose-400 hover:bg-rose-50/80 dark:hover:bg-rose-950/30 transition-colors cursor-pointer"
+                      >
+                        <LogOut className="w-4 h-4" />
+                        <span>Sign Out</span>
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              ) : (
+                <Link
+                  href="/login"
+                  aria-label="Patient Portal Login"
+                  title="Patient Portal Login"
+                  className={`hidden nav:flex items-center justify-center w-8.5 h-8.5 rounded-full transition-all duration-300 shadow-2xs hover:shadow-md relative group ${
+                    isActive("/login")
+                      ? "bg-gradient-to-br from-brand-600 to-accent-600 text-white shadow-brand-500/25 ring-2 ring-brand-500/20"
+                      : "bg-slate-100/90 dark:bg-navy-900/80 hover:bg-white dark:hover:bg-navy-800 text-slate-600 dark:text-slate-300 hover:text-brand-600 dark:hover:text-brand-400 border border-slate-200/80 dark:border-navy-700/80 hover:border-brand-400/60 dark:hover:border-brand-500/60"
+                  }`}
+                >
+                  <User className="w-4 h-4 transition-transform duration-300 group-hover:scale-110" />
+                  <span className="absolute -top-0.5 -right-0.5 w-2 h-2 rounded-full bg-brand-500 ring-2 ring-white dark:ring-navy-950 opacity-80 group-hover:opacity-100 transition-opacity" />
+                </Link>
+              )}
+
+              {/* Mobile Quick Profile/Login Button (< 960px) */}
+              <div className="nav:hidden flex items-center">
+                {user ? (
+                  <Link
+                    href="/profile"
+                    aria-label="My Profile"
+                    title={user.name || "My Profile"}
+                    className="relative flex items-center justify-center w-8 h-8 rounded-full border border-brand-500/40 bg-brand-50/60 dark:bg-navy-800 shadow-2xs"
+                  >
+                    {user.photo ? (
+                      <img
+                        src={user.photo}
+                        alt={user.name}
+                        className="w-full h-full rounded-full object-cover"
+                      />
+                    ) : (
+                      <div className="w-full h-full rounded-full bg-gradient-to-br from-brand-600 to-accent-600 text-white text-[10px] font-black flex items-center justify-center">
+                        {initials(user.name || user.email)}
+                      </div>
+                    )}
+                    <span
+                      className={`absolute -bottom-0.5 -right-0.5 w-2 h-2 rounded-full ring-2 ring-white dark:ring-navy-950 ${
+                        user.isAdmin ? "bg-amber-500" : "bg-emerald-500"
+                      }`}
+                    />
+                  </Link>
+                ) : (
+                  <Link
+                    href="/login"
+                    aria-label="Patient Portal Login"
+                    title="Patient Portal Login"
+                    className="relative flex items-center justify-center w-8 h-8 rounded-full bg-slate-100/90 dark:bg-navy-900/80 text-slate-600 dark:text-slate-300 hover:text-brand-600 border border-slate-200/80 dark:border-navy-700 shadow-2xs group transition-colors"
+                  >
+                    <User className="w-4 h-4 transition-transform group-hover:scale-110" />
+                    <span className="absolute -top-0.5 -right-0.5 w-2 h-2 rounded-full bg-brand-500 ring-2 ring-white dark:ring-navy-950" />
+                  </Link>
+                )}
+              </div>
+
+              {/* Mobile Hamburger Toggle (< 960px) */}
               <button
                 onClick={() => setOpen((v) => !v)}
-                className={`md:hidden flex items-center justify-center w-9 h-9 rounded-xl transition-all duration-200 ${
+                className={`nav:hidden flex items-center justify-center w-9 h-9 rounded-xl transition-all duration-200 ${
                   open
                     ? "bg-gradient-to-br from-brand-600 to-accent-600 text-white shadow-md shadow-brand-600/30"
                     : "text-slate-700 dark:text-slate-200 bg-slate-100/80 dark:bg-navy-800/80 hover:bg-slate-200 dark:hover:bg-navy-700 border border-slate-200/80 dark:border-navy-700/80 shadow-xs"
@@ -400,10 +580,10 @@ export default function Header() {
       </header>
 
       {/* ══════════════════════════════════════════
-          4. ULTRA-PREMIUM MOBILE MENU DRAWER (< md)
+          4. ULTRA-PREMIUM MOBILE MENU DRAWER (< 960px)
           ══════════════════════════════════════════ */}
       <div
-        className={`md:hidden fixed inset-0 z-[80] transition-all duration-300 ${
+        className={`nav:hidden fixed inset-0 z-[80] transition-all duration-300 ${
           open ? "pointer-events-auto opacity-100 visible" : "pointer-events-none opacity-0 invisible"
         }`}
         role="dialog"
@@ -544,46 +724,102 @@ export default function Header() {
               )
             })}
 
-            {/* Auth / Account Link */}
-            {(() => {
-              const href = user?.isAdmin ? "/admin" : user ? "/profile" : "/login"
-              const label = user?.isAdmin ? "Admin Dashboard" : user ? "My Patient Profile" : "Doctor / Patient Login"
-              const Icon = user?.isAdmin ? LayoutDashboard : user ? User : LogIn
-              const active = isActive("/admin") || isActive("/login") || isActive("/profile")
-              return (
-                <Link
-                  href={href}
-                  onClick={() => setOpen(false)}
-                  className={`group flex items-center gap-3.5 px-3.5 py-3 rounded-2xl transition-all duration-200 ${
-                    active
-                      ? "bg-gradient-to-r from-brand-50 to-accent-50/80 dark:from-brand-950/60 dark:to-accent-950/60 border border-brand-200/60 dark:border-brand-800/60 shadow-xs"
-                      : "hover:bg-slate-100 dark:hover:bg-navy-800/70 border border-transparent"
-                  }`}
-                >
-                  <span
-                    className={`flex items-center justify-center w-9 h-9 rounded-xl shrink-0 transition-all ${
-                      active
-                        ? "bg-gradient-to-br from-brand-600 to-accent-600 text-white shadow-md shadow-brand-600/30"
-                        : "bg-slate-100 dark:bg-navy-800 text-slate-500 dark:text-slate-400 group-hover:bg-brand-600 group-hover:text-white"
-                    }`}
+            {/* Auth / Account Card */}
+            {user ? (
+              <div className="p-3.5 rounded-2xl bg-gradient-to-br from-slate-50 to-brand-50/40 dark:from-navy-950/80 dark:to-brand-950/20 border border-brand-200/60 dark:border-brand-800/60 shadow-xs space-y-3">
+                <div className="flex items-center gap-3">
+                  {user.photo ? (
+                    <img
+                      src={user.photo}
+                      alt={user.name}
+                      className="w-11 h-11 rounded-2xl object-cover border-2 border-white dark:border-navy-800 shadow-sm"
+                    />
+                  ) : (
+                    <div className="w-11 h-11 rounded-2xl bg-gradient-to-br from-brand-600 via-brand-500 to-accent-600 text-white text-sm font-black flex items-center justify-center shadow-sm">
+                      {initials(user.name || user.email)}
+                    </div>
+                  )}
+                  <div className="min-w-0 flex-1">
+                    <div className="flex items-center gap-1.5">
+                      <p className="text-sm font-bold text-navy-900 dark:text-white truncate">
+                        {user.name}
+                      </p>
+                      {user.isAdmin && <ShieldCheck className="w-4 h-4 text-amber-500 shrink-0" />}
+                    </div>
+                    <p className="text-[11px] text-slate-500 dark:text-slate-400 truncate">
+                      {user.email}
+                    </p>
+                    <span
+                      className={`inline-block text-[9px] font-bold uppercase tracking-wider px-2 py-0.5 mt-1 rounded-full ${
+                        user.isAdmin
+                          ? "bg-amber-50 dark:bg-amber-950/60 text-amber-700 dark:text-amber-300 border border-amber-200/80 dark:border-amber-800/80"
+                          : "bg-brand-50 dark:bg-brand-950/60 text-brand-700 dark:text-brand-300 border border-brand-200/80 dark:border-brand-800/80"
+                      }`}
+                    >
+                      {user.isSuperAdmin ? "Super Admin" : user.isAdmin ? "Clinical Admin" : "Verified Patient"}
+                    </span>
+                  </div>
+                </div>
+
+                <div className="flex items-center gap-2 pt-1 border-t border-slate-200/60 dark:border-navy-800/80">
+                  <Link
+                    href="/profile"
+                    onClick={() => setOpen(false)}
+                    className="flex-1 flex items-center justify-center gap-1.5 py-2 px-3 rounded-xl bg-white dark:bg-navy-800 text-brand-700 dark:text-brand-300 font-bold text-xs border border-brand-200/80 dark:border-brand-800/80 shadow-2xs hover:shadow-xs"
                   >
-                    <Icon className="w-4 h-4" />
-                  </span>
-                  <span
-                    className={`flex-1 font-bold text-[14.5px] ${
-                      active ? "text-brand-700 dark:text-brand-300" : "text-slate-700 dark:text-slate-200"
-                    }`}
+                    <User className="w-3.5 h-3.5 text-brand-600" />
+                    <span>My Health Profile</span>
+                  </Link>
+
+                  {user.isAdmin && (
+                    <Link
+                      href="/admin"
+                      onClick={() => setOpen(false)}
+                      className="flex items-center justify-center gap-1.5 py-2 px-3 rounded-xl bg-amber-50 dark:bg-amber-950/60 text-amber-700 dark:text-amber-300 font-bold text-xs border border-amber-200 dark:border-amber-800/80 shadow-2xs"
+                    >
+                      <LayoutDashboard className="w-3.5 h-3.5 text-amber-600" />
+                      <span>Admin</span>
+                    </Link>
+                  )}
+
+                  <button
+                    onClick={async () => {
+                      setOpen(false)
+                      await logout()
+                    }}
+                    className="p-2 rounded-xl border border-rose-200 dark:border-rose-900/60 text-rose-600 dark:text-rose-400 hover:bg-rose-50 dark:hover:bg-rose-950/30 transition-colors cursor-pointer"
+                    title="Sign Out"
+                    aria-label="Sign Out"
                   >
-                    {label}
-                  </span>
-                  <ChevronRight
-                    className={`w-4 h-4 shrink-0 ${
-                      active ? "text-brand-600 dark:text-brand-400" : "text-slate-300 dark:text-navy-600"
-                    }`}
-                  />
-                </Link>
-              )
-            })()}
+                    <LogOut className="w-4 h-4" />
+                  </button>
+                </div>
+              </div>
+            ) : (
+              <Link
+                href="/login"
+                onClick={() => setOpen(false)}
+                className="group flex items-center gap-3.5 p-3 rounded-2xl bg-gradient-to-r from-brand-50 to-accent-50/80 dark:from-brand-950/60 dark:to-accent-950/60 border border-brand-200/60 dark:border-brand-800/60 shadow-xs"
+              >
+                <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-brand-600 to-accent-600 text-white flex items-center justify-center shadow-md shadow-brand-600/30 shrink-0 group-hover:scale-105 transition-transform">
+                  <LogIn className="w-5 h-5" />
+                </div>
+                <div className="flex-1 min-w-0">
+                  <div className="flex items-center gap-1.5">
+                    <p className="text-sm font-bold text-brand-800 dark:text-brand-300 leading-tight">
+                      Patient Portal Login
+                    </p>
+                    <span className="text-[9px] font-extrabold uppercase px-1.5 py-0.5 rounded bg-brand-600 text-white">
+                      Sign In
+                    </span>
+                  </div>
+                  <p className="text-[11px] text-slate-500 dark:text-slate-400 mt-0.5 truncate">
+                    Manage appointments &amp; saved health records
+                  </p>
+                </div>
+                <ChevronRight className="w-4 h-4 text-brand-600 shrink-0 group-hover:translate-x-0.5 transition-transform" />
+              </Link>
+            )}
           </div>
 
           {/* ── Mobile Drawer Footer ── */}
