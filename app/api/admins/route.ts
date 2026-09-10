@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server"
-import { getAuthFromRequest, isUserAdmin, isAdminEmail } from "@/lib/auth"
+import { getAuthFromRequest, isUserAdmin, isAdminEmail, getSuperAdminEmails } from "@/lib/auth"
 import { getAdminAuth, isFirebaseAdminConfigured } from "@/lib/firebase-admin"
 import { getDb } from "@/lib/mongodb"
 
@@ -23,21 +23,8 @@ export async function GET(req: NextRequest) {
       )
     }
 
-    const superAdminEmail =
-      process.env.ADMIN_SECRET_EMAIL ||
-      process.env.OWNER_EMAIL ||
-      ""
-
-    const superAdminEmails = Array.from(
-      new Set([
-        ...DEFAULT_SUPER_ADMINS,
-        ...(process.env.ADMIN_SECRET_EMAIL || "").split(","),
-        process.env.OWNER_EMAIL || "",
-        ...(process.env.NEXT_PUBLIC_ADMIN_EMAIL || "").split(","),
-      ])
-    )
-      .map((e) => e.trim().toLowerCase())
-      .filter(Boolean)
+    const superAdminEmails = getSuperAdminEmails()
+    const superAdminEmail = superAdminEmails[0] || process.env.ADMIN_SECRET_EMAIL || ""
 
     const adminMap = new Map<string, { _id: string; email: string; name?: string; addedBy?: string; createdAt?: string }>()
 

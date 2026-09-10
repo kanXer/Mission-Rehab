@@ -1,6 +1,6 @@
-import { NextResponse } from "next/server"
+import { NextRequest, NextResponse } from "next/server"
 import { v2 as cloudinary } from "cloudinary"
-import { verifyToken, getTokenFromCookies, isUserAdmin } from "@/lib/auth"
+import { getAuthFromRequest, verifyToken, getTokenFromCookies, isUserAdmin } from "@/lib/auth"
 
 export const dynamic = "force-dynamic"
 
@@ -10,9 +10,10 @@ cloudinary.config({
   api_secret: process.env.CLOUDINARY_API_SECRET,
 })
 
-export async function GET() {
-  const tokenStr = await getTokenFromCookies()
-  const payload = tokenStr ? await verifyToken(tokenStr) : null
+export async function GET(req: NextRequest) {
+  const payload =
+    (await getAuthFromRequest(req)) ||
+    (await verifyToken((await getTokenFromCookies()) || ""))
   if (!payload || !(await isUserAdmin(payload))) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
   }

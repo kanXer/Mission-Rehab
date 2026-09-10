@@ -45,7 +45,7 @@ export async function GET() {
     const authMod = await import("@/lib/auth")
     modules.auth = {
       loaded: true,
-      defaultSuperAdmins: authMod.DEFAULT_SUPER_ADMINS,
+      superAdminEmails: authMod.getSuperAdminEmails ? authMod.getSuperAdminEmails() : [],
     }
   } catch (e: any) {
     modules.auth = {

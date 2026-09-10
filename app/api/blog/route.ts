@@ -1,8 +1,12 @@
 import { NextRequest, NextResponse } from "next/server"
 import { getDb } from "@/lib/mongodb"
-import { verifyToken, getTokenFromCookies, isUserAdmin } from "@/lib/auth"
+import { verifyToken, getTokenFromCookies, isUserAdmin, getAuthFromRequest } from "@/lib/auth"
 
-async function isAdminRequest(): Promise<boolean> {
+async function isAdminRequest(req?: NextRequest): Promise<boolean> {
+  if (req) {
+    const payload = await getAuthFromRequest(req)
+    if (payload) return await isUserAdmin(payload)
+  }
   const tokenStr = await getTokenFromCookies()
   if (!tokenStr) return false
   const payload = await verifyToken(tokenStr)
@@ -29,7 +33,7 @@ export async function GET() {
 }
 
 export async function POST(req: NextRequest) {
-  if (!(await isAdminRequest())) {
+  if (!(await isAdminRequest(req))) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
   }
   try {

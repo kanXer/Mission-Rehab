@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server"
 import { getDb } from "@/lib/mongodb"
-import { verifyToken, getTokenFromCookies, isUserAdmin } from "@/lib/auth"
+import { verifyToken, getTokenFromCookies, isUserAdmin, getAuthFromRequest } from "@/lib/auth"
 import { v2 as cloudinary } from "cloudinary"
 
 export const dynamic = "force-dynamic"
@@ -32,7 +32,11 @@ function extractImageUrls(content: string, coverImage: string): string[] {
   return urls.filter(u => u.includes("cloudinary"))
 }
 
-async function isAdminRequest(): Promise<boolean> {
+async function isAdminRequest(req?: Request): Promise<boolean> {
+  if (req) {
+    const payload = await getAuthFromRequest(req)
+    if (payload) return await isUserAdmin(payload)
+  }
   const tokenStr = await getTokenFromCookies()
   if (!tokenStr) return false
   const payload = await verifyToken(tokenStr)
@@ -66,7 +70,7 @@ export async function GET(_: Request, { params }: { params: Promise<{ slug: stri
 }
 
 export async function PUT(req: NextRequest, { params }: { params: Promise<{ slug: string }> }) {
-  if (!(await isAdminRequest())) {
+  if (!(await isAdminRequest(req))) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
   }
   try {
@@ -112,8 +116,8 @@ export async function PUT(req: NextRequest, { params }: { params: Promise<{ slug
   }
 }
 
-export async function DELETE(_: Request, { params }: { params: Promise<{ slug: string }> }) {
-  if (!(await isAdminRequest())) {
+export async function DELETE(req: Request, { params }: { params: Promise<{ slug: string }> }) {
+  if (!(await isAdminRequest(req))) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
   }
   try {
