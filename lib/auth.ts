@@ -7,7 +7,6 @@ export const TOKEN_NAME = "__mission_auth"
 const JWT_SECRET = process.env.JWT_SECRET || "mission-rehab-secret-key-2026"
 
 
-
 export interface AuthPayload {
   id: string
   email: string
@@ -16,18 +15,21 @@ export interface AuthPayload {
   isAdmin?: boolean
 }
 
-export function isAdminEmail(email?: string | null): boolean {
-  if (!email) return false
-  const cleanEmail = email.trim().toLowerCase()
-  const list = [
-    ...DEFAULT_SUPER_ADMINS,
+export function getSuperAdminEmails(): string[] {
+  const envAdmins = [
     ...(process.env.ADMIN_SECRET_EMAIL || "").split(","),
-    process.env.OWNER_EMAIL || "",
     ...(process.env.NEXT_PUBLIC_ADMIN_EMAIL || "").split(","),
   ]
     .map((e) => e.trim().toLowerCase())
     .filter(Boolean)
 
+  return Array.from(new Set(envAdmins))
+}
+
+export function isAdminEmail(email?: string | null): boolean {
+  if (!email) return false
+  const cleanEmail = email.trim().toLowerCase()
+  const list = getSuperAdminEmails()
   return list.includes(cleanEmail)
 }
 
@@ -158,37 +160,12 @@ export async function verifyToken(idToken: string): Promise<AuthPayload | null> 
         isAdmin: decoded.admin === true || isAdminEmail(email),
       }
     } catch {
-      // fall through to unexpired JWT decode
+      // Verification failed
     }
   }
 
-  // 4. Decode unexpired Google ID token payload
-  try {
-    const parts = idToken.split(".")
-    if (parts.length === 3) {
-      const payloadStr = Buffer.from(parts[1], "base64url").toString("utf8")
-      const parsed = JSON.parse(payloadStr)
-      if (
-        parsed &&
-        parsed.email &&
-        parsed.exp &&
-        parsed.exp * 1000 > Date.now() &&
-        (parsed.iss?.includes("securetoken.google.com") || parsed.aud?.includes("missionrehab") || parsed.email)
-      ) {
-        const email = parsed.email.toLowerCase()
-        return {
-          id: parsed.user_id || parsed.sub || "user",
-          email,
-          name: parsed.name || parsed.displayName || email.split("@")[0],
-          photo: parsed.picture || "",
-          isAdmin: parsed.admin === true || isAdminEmail(email),
-        }
-      }
-    }
-  } catch {
-    // ignore
-  }
-
+  // If token signature cannot be cryptographically verified by our JWT secret,
+  // Google's Identitytoolkit API, or Firebase Admin SDK, reject it immediately.
   return null
 }
 

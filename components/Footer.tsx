@@ -166,7 +166,7 @@ export default function Footer() {
         </div>
 
         {/* Footer Bottom Bar */}
-        <div className="border-t border-navy-700 dark:border-navy-800 mt-6 pt-6 flex flex-col sm:flex-row items-center justify-between gap-3 text-center sm:text-left text-xs text-slate-500 dark:text-slate-400">
+        <div className="border-t border-navy-700 dark:border-navy-800 mt-6 pt-6 flex flex-col items-center justify-center gap-2 text-center text-xs text-slate-500 dark:text-slate-400">
           <p>
             &copy; {new Date().getFullYear()} Gorakhpur Mission Rehab &bull; Dr. Devejya Srivastava (PT). All rights reserved.
           </p>
@@ -175,7 +175,7 @@ export default function Footer() {
             <Heart className="w-3.5 h-3.5 text-red-500 fill-red-500/20 inline-block" aria-hidden="true" />
             <span>by</span>
             <a
-              href="https://nexusdigitalmarketingcompany.com"
+              href="https://thenexusdigital.in"
               target="_blank"
               rel="noopener noreferrer"
               className="text-brand-400 hover:text-brand-300 transition-colors font-semibold underline underline-offset-2 decoration-brand-600/30"

@@ -74,17 +74,11 @@ async function refresh(setUser: (u: User | null) => void, idToken?: string) {
     if (auth?.currentUser) {
       const fbUser = auth.currentUser
       const email = fbUser.email?.toLowerCase() || ""
-      const defaultAdmins = [
-        "nexusdigital.gkp@gmail.com",
-        "sahilsks001@gmail.com",
-        "gorakhpurmissionrehab@gmail.com",
-        "user.kanxer@gmail.com",
-      ]
       const adminList = (process.env.NEXT_PUBLIC_ADMIN_EMAIL || "")
         .toLowerCase()
         .split(",")
         .map((e) => e.trim())
-        .concat(defaultAdmins)
+        .filter(Boolean)
 
       const isSuper = adminList.includes(email)
       setUser({
@@ -105,13 +99,13 @@ async function refresh(setUser: (u: User | null) => void, idToken?: string) {
     if (auth?.currentUser) {
       const fbUser = auth.currentUser
       const email = fbUser.email?.toLowerCase() || ""
-      const defaultAdmins = [
-        "nexusdigital.gkp@gmail.com",
-        "sahilsks001@gmail.com",
-        "gorakhpurmissionrehab@gmail.com",
-        "user.kanxer@gmail.com",
-      ]
-      const isSuper = defaultAdmins.includes(email)
+      const adminList = (process.env.NEXT_PUBLIC_ADMIN_EMAIL || "")
+        .toLowerCase()
+        .split(",")
+        .map((e) => e.trim())
+        .filter(Boolean)
+
+      const isSuper = adminList.includes(email)
       setUser({
         id: fbUser.uid,
         email: fbUser.email || "",
