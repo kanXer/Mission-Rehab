@@ -44,16 +44,37 @@ export default function AdminAdmins() {
       const headers: Record<string, string> = {}
       if (token) headers["Authorization"] = `Bearer ${token}`
       const r = await fetch("/api/admins", { headers })
-      const d = await r.json()
+
+      let d: any = null
+      const contentType = r.headers.get("content-type") || ""
+      if (contentType.includes("application/json")) {
+        d = await r.json()
+      } else {
+        const text = await r.text()
+        console.error("[ADMINS] Non-JSON response:", r.status, text)
+      }
+
       if (!r.ok) {
-        setError(d.error || "Failed to load admins")
+        if (r.status === 401) {
+          setError("Session expired. Please log in again to manage admins.")
+        } else if (r.status === 403) {
+          setError(d?.error || "Access denied: Super admin account required.")
+        } else if (r.status === 504) {
+          setError("Database timeout (504). Please ensure MongoDB Atlas allows access from all IPs (0.0.0.0/0).")
+        } else {
+          setError(d?.error || `Server error (${r.status}). Please check Vercel environment variables & logs.`)
+        }
         return
       }
-      if (d.admins) setAdmins(d.admins)
-      if (d.superAdminEmail) setSuperAdminEmail(d.superAdminEmail)
-      if (d.superAdminEmails) setSuperAdminEmails(d.superAdminEmails)
-    } catch {
-      setError("Failed to load admins")
+
+      if (d) {
+        if (d.admins) setAdmins(d.admins)
+        if (d.superAdminEmail) setSuperAdminEmail(d.superAdminEmail)
+        if (d.superAdminEmails) setSuperAdminEmails(d.superAdminEmails)
+      }
+    } catch (err: any) {
+      console.error("[ADMINS] Fetch error:", err)
+      setError(err?.message || "Failed to load admins")
     } finally {
       setLoading(false)
     }
@@ -78,9 +99,12 @@ export default function AdminAdmins() {
         headers,
         body: JSON.stringify({ email: newEmail.trim(), name: newName.trim() }),
       })
-      const data = await res.json()
+      let data: any = null
+      if (res.headers.get("content-type")?.includes("application/json")) {
+        data = await res.json()
+      }
       if (!res.ok) {
-        setError(data.error || "Failed to add admin")
+        setError(data?.error || `Failed to add admin (${res.status})`)
         setAdding(false)
         return
       }
@@ -88,8 +112,8 @@ export default function AdminAdmins() {
       setNewName("")
       toast("Admin added successfully")
       fetchAdmins()
-    } catch {
-      setError("Network error — could not reach server")
+    } catch (err: any) {
+      setError(err?.message || "Network error — could not reach server")
     } finally {
       setAdding(false)
     }
@@ -106,15 +130,18 @@ export default function AdminAdmins() {
         method: "DELETE",
         headers,
       })
+      let data: any = null
+      if (res.headers.get("content-type")?.includes("application/json")) {
+        data = await res.json()
+      }
       if (!res.ok) {
-        const data = await res.json()
-        setError(data.error || "Failed to remove admin")
+        setError(data?.error || `Failed to remove admin (${res.status})`)
         return
       }
       toast("Admin removed successfully")
       fetchAdmins()
-    } catch {
-      setError("Network error — could not reach server")
+    } catch (err: any) {
+      setError(err?.message || "Network error — could not reach server")
     }
   }
 

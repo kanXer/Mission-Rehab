@@ -3,102 +3,123 @@ import { getAuthFromRequest, isUserAdmin, isAdminEmail, DEFAULT_SUPER_ADMINS } f
 import { getAdminAuth, isFirebaseAdminConfigured } from "@/lib/firebase-admin"
 import { getDb } from "@/lib/mongodb"
 
+export const dynamic = "force-dynamic"
+
 export async function GET(req: NextRequest) {
-  const payload = await getAuthFromRequest(req)
-  if (!payload || !isAdminEmail(payload.email)) {
-    return NextResponse.json({ error: "Forbidden: Super admin access required" }, { status: 403 })
-  }
-
-  const superAdminEmail =
-    process.env.ADMIN_SECRET_EMAIL ||
-    process.env.OWNER_EMAIL ||
-    DEFAULT_SUPER_ADMINS[0] ||
-    ""
-
-  const superAdminEmails = Array.from(
-    new Set([
-      ...DEFAULT_SUPER_ADMINS,
-      ...(process.env.ADMIN_SECRET_EMAIL || "").split(","),
-      process.env.OWNER_EMAIL || "",
-      ...(process.env.NEXT_PUBLIC_ADMIN_EMAIL || "").split(","),
-    ])
-  )
-    .map((e) => e.trim().toLowerCase())
-    .filter(Boolean)
-
-  const adminMap = new Map<string, { _id: string; email: string; name?: string; addedBy?: string; createdAt?: string }>()
-
   try {
-    const db = await getDb()
-
-    // 1. Fetch from MongoDB 'admins' collection
-    const dbAdmins = await db.collection("admins").find({}).toArray()
-    for (const doc of dbAdmins) {
-      if (doc.email) {
-        const clean = String(doc.email).trim().toLowerCase()
-        adminMap.set(clean, {
-          _id: doc._id.toString(),
-          email: clean,
-          name: doc.name || "",
-          addedBy: doc.addedBy || "Admin",
-          createdAt: doc.createdAt || undefined,
-        })
-      }
+    const payload = await getAuthFromRequest(req)
+    if (!payload) {
+      console.warn("[ADMINS GET] No valid auth token found in request")
+      return NextResponse.json(
+        { error: "Unauthorized: Invalid or expired session. Please re-login." },
+        { status: 401 }
+      )
+    }
+    if (!isAdminEmail(payload.email)) {
+      console.warn(`[ADMINS GET] User '${payload.email}' is not in super admin list`)
+      return NextResponse.json(
+        { error: `Forbidden: '${payload.email}' is not authorized as a Super Admin.` },
+        { status: 403 }
+      )
     }
 
-    // 2. Fetch from MongoDB 'users' collection with role: 'admin'
-    const dbUsers = await db.collection("users").find({ role: "admin" }).toArray()
-    for (const doc of dbUsers) {
-      if (doc.email) {
-        const clean = String(doc.email).trim().toLowerCase()
-        if (!adminMap.has(clean)) {
+    const superAdminEmail =
+      process.env.ADMIN_SECRET_EMAIL ||
+      process.env.OWNER_EMAIL ||
+      DEFAULT_SUPER_ADMINS[0] ||
+      ""
+
+    const superAdminEmails = Array.from(
+      new Set([
+        ...DEFAULT_SUPER_ADMINS,
+        ...(process.env.ADMIN_SECRET_EMAIL || "").split(","),
+        process.env.OWNER_EMAIL || "",
+        ...(process.env.NEXT_PUBLIC_ADMIN_EMAIL || "").split(","),
+      ])
+    )
+      .map((e) => e.trim().toLowerCase())
+      .filter(Boolean)
+
+    const adminMap = new Map<string, { _id: string; email: string; name?: string; addedBy?: string; createdAt?: string }>()
+
+    try {
+      const db = await getDb()
+
+      // 1. Fetch from MongoDB 'admins' collection
+      const dbAdmins = await db.collection("admins").find({}).toArray()
+      for (const doc of dbAdmins) {
+        if (doc.email) {
+          const clean = String(doc.email).trim().toLowerCase()
           adminMap.set(clean, {
             _id: doc._id.toString(),
             email: clean,
             name: doc.name || "",
-            addedBy: "System",
+            addedBy: doc.addedBy || "Admin",
             createdAt: doc.createdAt || undefined,
           })
         }
       }
-    }
-  } catch (dbErr) {
-    console.error("[ADMINS GET] MongoDB error:", dbErr)
-  }
 
-  // 3. Fallback / Merge from Firebase Admin SDK if configured
-  if (isFirebaseAdminConfigured()) {
-    try {
-      const list = await getAdminAuth().listUsers(100)
-      for (const u of list.users) {
-        if (u.customClaims?.admin === true && u.email) {
-          const clean = u.email.trim().toLowerCase()
+      // 2. Fetch from MongoDB 'users' collection with role: 'admin'
+      const dbUsers = await db.collection("users").find({ role: "admin" }).toArray()
+      for (const doc of dbUsers) {
+        if (doc.email) {
+          const clean = String(doc.email).trim().toLowerCase()
           if (!adminMap.has(clean)) {
             adminMap.set(clean, {
-              _id: u.uid,
+              _id: doc._id.toString(),
               email: clean,
-              name: u.displayName || "",
-              addedBy: "Firebase",
-              createdAt: u.metadata?.creationTime || undefined,
+              name: doc.name || "",
+              addedBy: "System",
+              createdAt: doc.createdAt || undefined,
             })
           }
         }
       }
-    } catch (fbErr) {
-      console.warn("[ADMINS GET] Firebase listUsers warning:", fbErr)
+    } catch (dbErr) {
+      console.error("[ADMINS GET] MongoDB connection error (Check MongoDB Atlas IP Whitelist 0.0.0.0/0):", dbErr)
     }
+
+    // 3. Fallback / Merge from Firebase Admin SDK if configured
+    if (isFirebaseAdminConfigured()) {
+      try {
+        const list = await getAdminAuth().listUsers(100)
+        for (const u of list.users) {
+          if (u.customClaims?.admin === true && u.email) {
+            const clean = u.email.trim().toLowerCase()
+            if (!adminMap.has(clean)) {
+              adminMap.set(clean, {
+                _id: u.uid,
+                email: clean,
+                name: u.displayName || "",
+                addedBy: "Firebase",
+                createdAt: u.metadata?.creationTime || undefined,
+              })
+            }
+          }
+        }
+      } catch (fbErr) {
+        console.warn("[ADMINS GET] Firebase listUsers warning:", fbErr)
+      }
+    }
+
+    // Filter out super admins from additional admins list so they aren't duplicated
+    const admins = Array.from(adminMap.values()).filter(
+      (a) => !superAdminEmails.includes(a.email.toLowerCase())
+    )
+
+    return NextResponse.json({
+      admins,
+      superAdminEmail,
+      superAdminEmails,
+    })
+  } catch (err: any) {
+    console.error("[ADMINS GET] Unexpected error:", err)
+    return NextResponse.json(
+      { error: err?.message || "Internal server error fetching administrators" },
+      { status: 500 }
+    )
   }
-
-  // Filter out super admins from additional admins list so they aren't duplicated
-  const admins = Array.from(adminMap.values()).filter(
-    (a) => !superAdminEmails.includes(a.email.toLowerCase())
-  )
-
-  return NextResponse.json({
-    admins,
-    superAdminEmail,
-    superAdminEmails,
-  })
 }
 
 export async function POST(req: NextRequest) {
