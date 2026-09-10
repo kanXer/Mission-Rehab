@@ -145,11 +145,34 @@ export default function AdminDashboard() {
         fetch("/api/enquiries", { headers }),
       ])
 
-      const [bData, eData] = await Promise.all([bRes.json(), eRes.json()])
+      let bData: any = null
+      let eData: any = null
 
-      if (bData?.bookings) setBookings(bData.bookings)
-      if (eData?.enquiries) setEnquiries(eData.enquiries)
-    } catch {
+      if (bRes.headers.get("content-type")?.includes("application/json")) {
+        bData = await bRes.json()
+      }
+      if (eRes.headers.get("content-type")?.includes("application/json")) {
+        eData = await eRes.json()
+      }
+
+      if (bRes.ok && bData?.bookings) {
+        setBookings(bData.bookings)
+      } else if (!bRes.ok) {
+        console.error("[ADMIN DASHBOARD] Bookings fetch failed:", bRes.status, bData)
+      }
+
+      if (eRes.ok && eData?.enquiries) {
+        setEnquiries(eData.enquiries)
+      } else if (!eRes.ok) {
+        console.error("[ADMIN DASHBOARD] Enquiries fetch failed:", eRes.status, eData)
+      }
+
+      if (!bRes.ok && !eRes.ok) {
+        const errorMsg = bData?.error || eData?.error || `Error loading data (${bRes.status})`
+        toast(errorMsg)
+      }
+    } catch (err) {
+      console.error("[ADMIN DASHBOARD] Error loading data:", err)
       toast("Error refreshing dashboard data")
     } finally {
       setFetching(false)

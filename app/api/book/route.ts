@@ -3,6 +3,8 @@ import { saveAppointment, getBookedSlots, isSlotBooked } from "@/lib/storage"
 import { sendOwnerNotification, sendCustomerConfirmation } from "@/lib/email"
 import { sendTelegramNotification } from "@/lib/telegram"
 
+export const dynamic = "force-dynamic"
+
 export async function GET() {
   const slots = await getBookedSlots()
   return NextResponse.json({ slots })

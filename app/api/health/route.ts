@@ -18,6 +18,45 @@ export async function GET() {
     databaseName: process.env.MONGODB_DB_NAME || "missionrehab",
   }
 
+  const modules: Record<string, any> = {}
+
+  try {
+    const jwt = await import("jsonwebtoken")
+    modules.jwt = "ok"
+  } catch (e: any) {
+    modules.jwt = e?.message || String(e)
+  }
+
+  try {
+    const fbAdmin = await import("@/lib/firebase-admin")
+    modules.firebaseAdmin = {
+      loaded: true,
+      configured: fbAdmin.isFirebaseAdminConfigured(),
+    }
+  } catch (e: any) {
+    modules.firebaseAdmin = {
+      loaded: false,
+      error: e?.message || String(e),
+      stack: e?.stack?.slice(0, 300),
+    }
+  }
+
+  try {
+    const authMod = await import("@/lib/auth")
+    modules.auth = {
+      loaded: true,
+      defaultSuperAdmins: authMod.DEFAULT_SUPER_ADMINS,
+    }
+  } catch (e: any) {
+    modules.auth = {
+      loaded: false,
+      error: e?.message || String(e),
+      stack: e?.stack?.slice(0, 300),
+    }
+  }
+
+  diagnostics.modules = modules
+
   if (!isMongoConfigured()) {
     diagnostics.status = "error"
     diagnostics.message = "MONGODB_URI is not configured in environment variables."

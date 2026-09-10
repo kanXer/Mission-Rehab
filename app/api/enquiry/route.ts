@@ -3,6 +3,8 @@ import { saveEnquiry } from "@/lib/storage"
 import { sendOwnerEnquiryNotification, sendCustomerEnquiryConfirmation } from "@/lib/email"
 import { sendTelegramNotification } from "@/lib/telegram"
 
+export const dynamic = "force-dynamic"
+
 export async function POST(request: NextRequest) {
   try {
     const { name, phone, email, subject, message } = await request.json()

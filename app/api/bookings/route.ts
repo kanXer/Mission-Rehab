@@ -7,12 +7,15 @@ async function checkAdmin(payload: AuthPayload | null): Promise<boolean> {
   return !!payload && await isUserAdmin(payload)
 }
 
+export const dynamic = "force-dynamic"
+
 export async function GET(req: NextRequest) {
-  const payload = await getAuthFromRequest(req)
-  if (!await checkAdmin(payload)) {
-    return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
-  }
   try {
+    const payload = await getAuthFromRequest(req)
+    if (!await checkAdmin(payload)) {
+      return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
+    }
+
     const db = await getDb()
     const bookings = await db
       .collection("appointments")
@@ -22,9 +25,9 @@ export async function GET(req: NextRequest) {
 
     const sanitized = bookings.map(({ _id, ...rest }) => ({ ...rest, _id: _id.toString() }))
     return NextResponse.json({ bookings: sanitized })
-  } catch (e) {
+  } catch (e: any) {
     console.error("Bookings fetch error:", e)
-    return NextResponse.json({ bookings: [] })
+    return NextResponse.json({ bookings: [], error: e?.message || "Internal server error" }, { status: 500 })
   }
 }
 

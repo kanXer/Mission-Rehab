@@ -2,6 +2,8 @@ import { NextRequest, NextResponse } from "next/server"
 import { getDb } from "@/lib/mongodb"
 import { verifyToken } from "@/lib/auth"
 
+export const dynamic = "force-dynamic"
+
 export async function POST(req: NextRequest, { params }: { params: Promise<{ slug: string }> }) {
   try {
     const { slug } = await params

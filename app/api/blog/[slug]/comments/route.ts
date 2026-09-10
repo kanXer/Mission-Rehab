@@ -13,6 +13,8 @@ export interface Comment {
   createdAt: string
 }
 
+export const dynamic = "force-dynamic"
+
 export async function GET(_: Request, { params }: { params: Promise<{ slug: string }> }) {
   try {
     const { slug } = await params

@@ -8,6 +8,8 @@ async function isAdminRequest(req: NextRequest): Promise<boolean> {
   return payload ? await isUserAdmin(payload) : false
 }
 
+export const dynamic = "force-dynamic"
+
 export async function GET() {
   try {
     const db = await getDb()
