@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server"
-import { getAuthFromRequest, isUserAdmin, isAdminEmail, DEFAULT_SUPER_ADMINS } from "@/lib/auth"
+import { getAuthFromRequest, isUserAdmin, isAdminEmail } from "@/lib/auth"
 import { getAdminAuth, isFirebaseAdminConfigured } from "@/lib/firebase-admin"
 import { getDb } from "@/lib/mongodb"
 
@@ -26,7 +26,6 @@ export async function GET(req: NextRequest) {
     const superAdminEmail =
       process.env.ADMIN_SECRET_EMAIL ||
       process.env.OWNER_EMAIL ||
-      DEFAULT_SUPER_ADMINS[0] ||
       ""
 
     const superAdminEmails = Array.from(
