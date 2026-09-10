@@ -197,8 +197,12 @@ export async function verifyToken(idToken: string): Promise<AuthPayload | null> 
 }
 
 export async function getTokenFromCookies(): Promise<string | undefined> {
-  const cookieStore = await cookies()
-  return cookieStore.get(TOKEN_NAME)?.value || cookieStore.get("token")?.value
+  try {
+    const cookieStore = await cookies()
+    return cookieStore.get(TOKEN_NAME)?.value || cookieStore.get("token")?.value
+  } catch {
+    return undefined
+  }
 }
 
 export async function getAuth(): Promise<AuthPayload | null> {
