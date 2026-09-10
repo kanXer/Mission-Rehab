@@ -107,24 +107,7 @@ export async function verifyToken(idToken: string): Promise<AuthPayload | null> 
     // Not a custom JWT, continue to Firebase verification
   }
 
-  // 2. Firebase Admin SDK verification
-  if (isFirebaseAdminConfigured()) {
-    try {
-      const decoded = await getAdminAuth().verifyIdToken(idToken)
-      const email = (decoded.email || "").toLowerCase()
-      return {
-        id: decoded.uid,
-        email,
-        name: decoded.name || email.split("@")[0] || "",
-        photo: decoded.picture || "",
-        isAdmin: decoded.admin === true || isAdminEmail(email),
-      }
-    } catch {
-      // fall through to REST fallback
-    }
-  }
-
-  // 3. Google Identitytoolkit REST verification fallback
+  // 2. Google Identitytoolkit REST verification (fast, standalone, zero ESM bundle issues)
   const apiKey =
     process.env.NEXT_PUBLIC_FIREBASE_API_KEY ||
     "AIzaSyB_aR4Of_BEaGJ4xnheVNa_wVdPlb80p7s"
@@ -162,7 +145,25 @@ export async function verifyToken(idToken: string): Promise<AuthPayload | null> 
         }
       }
     } catch {
-      // Fall through to unexpired JWT decode
+      // Fall through to Firebase Admin SDK or JWT decode
+    }
+  }
+
+  // 3. Firebase Admin SDK verification (if configured)
+  if (isFirebaseAdminConfigured()) {
+    try {
+      const adminAuth = await getAdminAuth()
+      const decoded = await adminAuth.verifyIdToken(idToken)
+      const email = (decoded.email || "").toLowerCase()
+      return {
+        id: decoded.uid,
+        email,
+        name: decoded.name || email.split("@")[0] || "",
+        photo: decoded.picture || "",
+        isAdmin: decoded.admin === true || isAdminEmail(email),
+      }
+    } catch {
+      // fall through to unexpired JWT decode
     }
   }
 

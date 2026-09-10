@@ -3,6 +3,7 @@ const nextConfig = {
   turbopack: {
     root: __dirname,
   },
+  serverExternalPackages: ["firebase-admin"],
   compress: true,
   poweredByHeader: false,
   experimental: {
