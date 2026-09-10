@@ -43,16 +43,17 @@ function clearTokenCookie() {
 async function refresh(setUser: (u: User | null) => void, idToken?: string) {
   try {
     let token = idToken
-    if (!token && typeof document !== "undefined") {
-      const match = document.cookie.match(/__mission_auth=([^;]+)/)
-      if (match) token = decodeURIComponent(match[1])
-    }
     if (!token && auth?.currentUser) {
       try {
-        token = await auth.currentUser.getIdToken(true)
+        token = await auth.currentUser.getIdToken(false)
+        if (token) setTokenCookie(token)
       } catch (e) {
         console.warn("[AUTH] refresh: currentUser.getIdToken warning:", e)
       }
+    }
+    if (!token && typeof document !== "undefined") {
+      const match = document.cookie.match(/__mission_auth=([^;]+)/)
+      if (match) token = decodeURIComponent(match[1])
     }
     const headers: Record<string, string> = {}
     if (token) {
@@ -231,16 +232,20 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   }
 
   async function getIdToken(): Promise<string | null> {
+    if (auth?.currentUser) {
+      try {
+        const freshToken = await auth.currentUser.getIdToken(false)
+        if (freshToken) {
+          setTokenCookie(freshToken)
+          return freshToken
+        }
+      } catch (e) {
+        console.warn("[AUTH] getIdToken fresh token error:", e)
+      }
+    }
     if (typeof document !== "undefined") {
       const match = document.cookie.match(/__mission_auth=([^;]+)/)
       if (match) return decodeURIComponent(match[1])
-    }
-    if (auth?.currentUser) {
-      try {
-        return await auth.currentUser.getIdToken()
-      } catch {
-        return null
-      }
     }
     return null
   }

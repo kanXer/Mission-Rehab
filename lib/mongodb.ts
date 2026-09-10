@@ -2,6 +2,15 @@ import { MongoClient, type Db } from "mongodb"
 
 const DB_NAME = process.env.MONGODB_DB_NAME || "missionrehab"
 
+export function isMongoConfigured(): boolean {
+  return !!(
+    process.env.MONGODB_URI ||
+    process.env.NEXT_PUBLIC_MONGODB_URI ||
+    process.env.DATABASE_URL ||
+    process.env.MONGO_URI
+  )
+}
+
 function getMongoUri(): string {
   const uri =
     process.env.MONGODB_URI ||
@@ -22,31 +31,27 @@ declare global {
   var _mongoClientPromise: Promise<MongoClient> | undefined
 }
 
-let clientPromise: Promise<MongoClient>
-
-if (process.env.NODE_ENV === "development") {
+async function getClientPromise(): Promise<MongoClient> {
+  const uri = getMongoUri()
   if (!global._mongoClientPromise) {
-    const uri = getMongoUri()
     const client = new MongoClient(uri, {
-      serverSelectionTimeoutMS: 10000,
+      serverSelectionTimeoutMS: 5000,
+      connectTimeoutMS: 5000,
       family: 4,
     })
-    global._mongoClientPromise = client.connect()
+    global._mongoClientPromise = client.connect().catch((err) => {
+      // Clear cache on failure so future requests in warm containers can retry
+      global._mongoClientPromise = undefined
+      throw err
+    })
   }
-  clientPromise = global._mongoClientPromise
-} else {
-  const uri = getMongoUri()
-  const client = new MongoClient(uri, {
-    serverSelectionTimeoutMS: 10000,
-    family: 4,
-  })
-  clientPromise = client.connect()
+  return global._mongoClientPromise
 }
 
 let indexChecked = false
 
 export async function getDb(): Promise<Db> {
-  const client = await clientPromise
+  const client = await getClientPromise()
   const db = client.db(DB_NAME)
 
   if (!indexChecked) {

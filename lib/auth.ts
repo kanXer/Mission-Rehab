@@ -125,7 +125,9 @@ export async function verifyToken(idToken: string): Promise<AuthPayload | null> 
   }
 
   // 3. Google Identitytoolkit REST verification fallback
-  const apiKey = process.env.NEXT_PUBLIC_FIREBASE_API_KEY
+  const apiKey =
+    process.env.NEXT_PUBLIC_FIREBASE_API_KEY ||
+    "AIzaSyB_aR4Of_BEaGJ4xnheVNa_wVdPlb80p7s"
   if (apiKey) {
     try {
       const res = await fetch(
